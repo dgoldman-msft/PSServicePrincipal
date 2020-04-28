@@ -2,18 +2,18 @@ Function New-ServicePrincipalObject
 {
         <#
 		.SYNOPSIS
-            Cmdlet for creating a new azure active directory service principal. 
+            Cmdlet for creating a new azure active directory service principal.
             
 		.DESCRIPTION
             This function will create a new azure active directory service principal.
-            All messages are logged by defaul to the following folder [[Environment]::GetFolderPath("MyDocuments") "\PowerShell Script Logs"]. 
+            All messages are logged by defaul to the following folder [[Environment]::GetFolderPath("MyDocuments") "\PowerShell Script Logs"].
             For more information please visit: https://psframework.org/
             PSFramework Logging: https://psframework.org/documentation/quickstart/psframework/logging.html
             PSFramework Configuration: https://psframework.org/documentation/quickstart/psframework/configuration.html
             PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
 
         .PARAMETER EnableException
-            This parameters disables user-friendly warnings and enables the throwing of exceptions. 
+            This parameters disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
@@ -41,19 +41,19 @@ Function New-ServicePrincipalObject
             When passing in the application ID it is the Azure ApplicationID from your registered application
             
             WARNING: If you do not connect to an Azure tenant when you run Import-Module Az.Resources you will be logged in interactively to your default Azure subscription.
-            After signing in, you'll see information indicating which of your Azure subscriptions is active. 
-            If you have multiple Azure subscriptions in your account and want to select a different one, 
+            After signing in, you'll see information indicating which of your Azure subscriptions is active.
+            If you have multiple Azure subscriptions in your account and want to select a different one,
             get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription ID.
             
-            INFORMATION: The default parameter set uses default values for parameters if the user does not provide one for them. 
-            For more information on the default values used, please see the description for the given parameters below. 
-            This cmdlet has the ability to assign a role to the service principal with the Role and Scope parameters; 
-            if neither of these parameters are provided, no role will be assigned to the service principal. 
+            INFORMATION: The default parameter set uses default values for parameters if the user does not provide one for them.
+            For more information on the default values used, please see the description for the given parameters below.
+            This cmdlet has the ability to assign a role to the service principal with the Role and Scope parameters;
+            if neither of these parameters are provided, no role will be assigned to the service principal.
             
-            The default values for the Role and Scope parameters are "Contributor" and the current subscription, 
-            respectively (note: the defaults are only used when the user provides a value for one of the two parameters, but not the other). 
-            The cmdlet also implicitly creates an application and sets its properties (if the ApplicationId is not provided). 
-            In order to update the application specific parameters please use Set-AzADApplication cmdlet. 
+            The default values for the Role and Scope parameters are "Contributor" and the current subscription,
+            respectively (note: the defaults are only used when the user provides a value for one of the two parameters, but not the other).
+            The cmdlet also implicitly creates an application and sets its properties (if the ApplicationId is not provided).
+            In order to update the application specific parameters please use Set-AzADApplication cmdlet.
 
             Microsoft TechNet Documentation: https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azadserviceprincipal?view=azps-3.8.0
     #>
@@ -75,16 +75,16 @@ Function New-ServicePrincipalObject
         Clear-Host
         $spnCounter = 0
         Write-PSFMessage -Level Host -Message "Starting Script Run"
-        Write-PSFMessage -Level Host -Message "You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount" 
+        Write-PSFMessage -Level Host -Message "You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
         
-        try 
+        try
         {
-            #Connect-AzAccount -ErrorAction Stop
+           #Connect-AzAccount -ErrorAction Stop
         }
-        catch 
+        catch
         {
             Stop-PSFFunction -Message $_.Exception.InnerException.Message -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-            return    
+            return
         }
 
         # Try to obtain the list of names so we can batch create the SPNS
@@ -95,7 +95,7 @@ Function New-ServicePrincipalObject
             if(-NOT (Test-Path -Path $NameFile))
             {
                 Stop-PSFFunction -Message "Error: File problem. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                return 
+                return
             }
             else
             {
@@ -106,14 +106,14 @@ Function New-ServicePrincipalObject
                 if(0 -eq $listofSPNStoCreate.Length)
                 {
                     Stop-PSFFunction -Message "Error with imported content. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                    return 
+                    return
                 }
             }
         }
         else
         {
             #Stop-PSFFunction -Message "You must pass in a file name and use the -BatchJob parameter. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-            #return 
+            #return
         }
             
         Write-Host @"
@@ -127,29 +127,29 @@ What type of Service Principal do you want to generate?
 Default with select option (1):
 "@
 
-        $spType = Get-PSFUserChoice -Options 'Default SPN', 'Passowrd SPN', 'AppID SPN', 'Cert SPN ', 'E&xit' -Caption 'Please select an option'  
+        $spType = Get-PSFUserChoice -Options 'Default SPN', 'Passowrd SPN', 'AppID SPN', 'Cert SPN ', 'E&xit' -Caption 'Please select an option'
 
         switch($spType)
         {
             0
             {
-                try 
+                try
                 {
-                        $newSPN = New-AzADServicePrincipal -ErrorAction Stop
-                        Write-PSFMessage -Level Host -Message "Creating a simple SPN - Name {0}" -StringValues $newSPN.DisplayName
-                        Add-RoleToSPN -spnToProcess $newSPN
-                        $spnCounter ++
+                    $newSPN = New-AzADServicePrincipal -ErrorAction Stop
+                    Write-PSFMessage -Level Host -Message "Creating a simple SPN - Name {0}" -StringValues $newSPN.DisplayName
+                    Add-RoleToSPN -spnToProcess $newSPN
+                    $spnCounter ++
                 }
-                catch 
+                catch
                 {
                     Stop-PSFFunction -Message "ERROR: Creating a simple SPN failed" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                    return    
+                    return
                 }
             }
 
             1
             {
-                try 
+                try
                 {
                     # Check to make sure we have the list of objects to process
                     if($listofSPNStoCreate)
@@ -170,12 +170,12 @@ Default with select option (1):
                             }
                             elseif($ProcessError)
                             {
-                                Write-PSFMessage -Level Warning "$($ProcessError[0].Exception.Message) for SPN {0}" -StringValues $spn   
+                                Write-PSFMessage -Level Warning "$($ProcessError[0].Exception.Message) for SPN {0}" -StringValues $spn
                             }
                         }
 
                         if($roleListToProcess.Count -gt 0)
-                        {   
+                        {
                             Add-RoleToSPN -spnToProcess $roleListToProcess
                         }
                     }
@@ -194,10 +194,10 @@ Default with select option (1):
                             $newSPN = New-AzADServicePrincipal -DisplayName $ServicePrincipalName -PasswordCredential $securityPassword -ErrorAction Stop
                             Add-RoleToSPN -spnToProcess $newSPN
                             $spnCounter ++
-                        } 
+                        }
                     }
                 }
-                catch 
+                catch
                 {
                     Stop-PSFFunction -Message "ERROR: Generating PSADPasswordCredential Object with GUID. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return
@@ -206,7 +206,7 @@ Default with select option (1):
             
             2
             {
-                try 
+                try
                 {
                     $ApplicationID = Read-Host "Please input your registered Azure ApplicationID:"
                 
@@ -223,7 +223,7 @@ Default with select option (1):
                         $spnCounter ++
                     }
                 }
-                catch 
+                catch
                 {
                     Stop-PSFFunction -Message "ERROR: No ApplicationID specified. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return
@@ -232,7 +232,7 @@ Default with select option (1):
             
             3
             {
-                try 
+                try
                 {
                     # Configure the secure password for the service principal
                     $servicePrincipalName = Read-Host "Please enter your Service Principal name"
@@ -249,7 +249,7 @@ Default with select option (1):
                         Write-PSFMessage -Level Host -Message "New SPN created with DisplayName and cert key credential - Name: {0}" -StringValues $newSPN.DisplayName
                         Add-RoleToSPN -spnToProcess $newSPN
                         $spnCounter ++
-                    } 
+                    }
                 }
                 catch 
                 {
@@ -275,7 +275,7 @@ Default with select option (1):
         else
         {
             Write-PSFMessage -Level Host -Message "{0} SPN objects created sucessfully!" -StringValues $spnCounter
-        }  
+        }
 
         Write-PSFMessage -Level Host -Message "Script run complete!"
         Write-PSFMessage -Level Host -Message 'Log saved to: {0}' -StringValues $script:loggingFolder #-Once 'LoggingDestination'

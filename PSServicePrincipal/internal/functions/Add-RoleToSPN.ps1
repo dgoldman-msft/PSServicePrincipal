@@ -1,7 +1,7 @@
 ﻿Function Add-RoleToSPN {
     <#
 		.SYNOPSIS
-            Cmdlet for applying Role Assignments to service principal. 
+            Cmdlet for applying Role Assignments to service principal
             
 		.DESCRIPTION
             This function just applies the Reader role to the newly created service principal object
@@ -26,5 +26,5 @@
             $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0}" -StringValues $newRole
         } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 10 #-RetryErrorType ActualExpcetionType
-    } 
+    }
 }
