@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{7B5023F5-D788-427F-A16D-C6EBA6F885A5}") = "PSServicePrincipal", "PSServicePrincipal\PSServicePrincipal.csproj", "{9B49841A-02BC-4B09-A2D4-CD0A8A5EB007}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B49841A-02BC-4B09-A2D4-CD0A8A5EB007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B49841A-02BC-4B09-A2D4-CD0A8A5EB007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B49841A-02BC-4B09-A2D4-CD0A8A5EB007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B49841A-02BC-4B09-A2D4-CD0A8A5EB007}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6EBF33F5-0521-4676-A236-EC425CC061D0}
+	EndGlobalSection
+EndGlobal

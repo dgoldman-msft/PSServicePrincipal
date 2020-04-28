@@ -1,0 +1,11 @@
+﻿TOPIC
+	about_PSServicePrincipal
+	
+SHORT DESCRIPTION
+	Explains how to use the PSServicePrincipal powershell module
+	
+LONG DESCRIPTION
+	<Insert Content here>
+
+KEYWORDS
+	PSServicePrincipal
