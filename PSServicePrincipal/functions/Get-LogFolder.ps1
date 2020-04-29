@@ -7,7 +7,7 @@
             This function will open your general output logging directory or your debug logging directory
             
         .PARAMETER LogFolder
-            This parameters will tab complete allowing you to open the module debug logging folder which contains indepth debug logs for the logging provider
+            This parameter will tab complete allowing you to open the module debug logging folder which contains indepth debug logs for the logging provider
 
         .EXAMPLE
             PS c:\> Get-LogFolder -LogFolder OutputLoggingFolder

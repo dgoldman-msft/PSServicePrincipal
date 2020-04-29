@@ -13,8 +13,17 @@
             PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
 
         .PARAMETER EnableException
-            This parameters disables user-friendly warnings and enables the throwing of exceptions.
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
+        
+        .PARAMETER BatchJob
+            This parameter switch is used when we are passing in a object file containing user names to be batch processed.
+        
+        .PARAMETER NameFile
+            This parameter is the name of the file being passed in to be processed.
+        
+        .PARAMETER ServicePrincipalName
+            This parameter is the name of the SPN object you wish to create.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject
