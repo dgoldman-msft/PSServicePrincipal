@@ -1,9 +1,9 @@
 ﻿Function Get-LogFolder {
     <#
-		.SYNOPSIS
+        .SYNOPSIS
             Cmdlet for creating opening log folder paths.
 
-		.DESCRIPTION
+        .DESCRIPTION
             This function will open your general output logging directory or your debug logging directory
             
         .PARAMETER LogFolder
