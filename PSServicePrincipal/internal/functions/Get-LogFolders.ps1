@@ -26,21 +26,28 @@
         .Notes
             None
             
-            #>
+    #>
+    
     [CmdletBinding()]
     Param (
-        [switch]
-        $OutputLoggingFolder,
-        [switch]
-        $DebugLoggingFolder
+        [string]
+        $LogFolder
     )
     
-    if($OutputLoggingFolder)
+    switch($LogFolder)
     {
-        $OutputLoggingFolder = $script:loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging" | Invoke-Item
-    }
-    if($DebugLoggingFolder)
-    {
-        $DebugLoggingFolder = Get-PSFConfigValue -FullName "PSFramework.Logging.FileSystem.LogPath" | Invoke-Item
+        "OutputLoggingFolder"
+        {
+            $script:loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging"
+            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $script:loggingFolder
+            $script:loggingFolder | Invoke-Item
+        }
+
+        "DebugLoggingFolder"
+        {
+            $debugFolder = Get-PSFConfigValue -FullName "PSFramework.Logging.FileSystem.LogPath"
+            Write-PSFMessage -Level Host -Message "Opening debug logging folder: {0}" -StringValues $debugFolder
+            $debugFolder| Invoke-Item
+        }
     }
 }
