@@ -25,6 +25,6 @@
         Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to newly created SPN object - $($spn)" -Target $spn -ScriptBlock {
             $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0}" -StringValues $newRole
-        } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 10 #-RetryErrorType ActualExpcetionType
+        } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 10 -RetryErrorType Microsoft.Rest.Azure.CloudException
     }
 }

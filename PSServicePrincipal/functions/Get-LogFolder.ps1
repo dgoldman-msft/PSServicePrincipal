@@ -29,9 +29,9 @@
     
     switch ($LogFolder) {
         "OutputLoggingFolder" {
-            $script:loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging"
-            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $script:loggingFolder
-            $script:loggingFolder | Invoke-Item
+            $loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging"
+            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $loggingFolder
+            $loggingFolder | Invoke-Item
         }
 
         "DebugLoggingFolder" {
