@@ -30,4 +30,4 @@ Remember, it's the first thing a visitor will see.
  - Install Prerequisites (PowerShell Task; VSTS-Prerequisites.ps1)
  - Validate (PowerShell Task; VSTS-Validate.ps1)
  - Build (PowerShell Task; VSTS-Build.ps1)
- - Publish Test Results (Publish Test Results; NUnit format; Run no matter what)
+ - Publish Test Results (Publish Test Results; NUnit format; Run no matter what).
