@@ -43,6 +43,7 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 	'New-ServicePrincipalObject'
+	'Get-LogFolders'
     )
 	
 	# Cmdlets to export from this module
