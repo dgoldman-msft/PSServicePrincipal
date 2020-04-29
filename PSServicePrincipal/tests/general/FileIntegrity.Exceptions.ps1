@@ -28,7 +28,7 @@ $global:MayContainCommand = @{
 	"Write-Verbose" = @()
 	"Write-Warning" = @()
 	"Write-Error"  = @()
-	"Write-Output" = @()
+	"Write-Output" = @('PSServicePrincipal.provider.ps1')
 	"Write-Information" = @()
 	"Write-Debug" = @()
 }

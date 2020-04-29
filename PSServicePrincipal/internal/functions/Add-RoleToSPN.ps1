@@ -6,14 +6,14 @@
 		.DESCRIPTION
             This function just applies the Reader role to the newly created service principal object
         
-        .PARAMETER spnToProcess
+        .PARAMETER SpnToProcess
             This is the Service Principal object being passed in to process
 
         .EXAMPLE
-            None
+            PS c:\> Add-RoleToSPN -SpnToProcess $newSPN
 
-        .Notes
-            None
+            This is passing in an ArrayList of SPN objects to be processed. We will apply a new role assigment of Contriubtor to each object.
+
     #>
     
     [CmdletBinding()]

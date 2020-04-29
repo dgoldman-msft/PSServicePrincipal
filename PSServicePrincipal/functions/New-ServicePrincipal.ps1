@@ -1,4 +1,4 @@
-Function New-ServicePrincipalObject
+﻿Function New-ServicePrincipalObject
 {
         <#
 		.SYNOPSIS
@@ -58,6 +58,7 @@ Function New-ServicePrincipalObject
             Microsoft TechNet Documentation: https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azadserviceprincipal?view=azps-3.8.0
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param(
         [switch]
@@ -116,7 +117,7 @@ Function New-ServicePrincipalObject
             #return
         }
             
-        Write-Host @"
+        Write-PSFHostColor @"
 What type of Service Principal do you want to generate?
 
 1. Default Service Principal - Auto-generated name and ApplicationID
@@ -251,7 +252,7 @@ Default with select option (1):
                         $spnCounter ++
                     }
                 }
-                catch 
+                catch
                 {
                     Stop-PSFFunction -Message "ERROR: No certificate as base64-encoded string specified. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return

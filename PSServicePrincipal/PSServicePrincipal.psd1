@@ -42,8 +42,8 @@
 	
 	# Functions to export from this module
 	FunctionsToExport = @(
-	'New-ServicePrincipalObject'
-	'Get-LogFolders'
+		'Get-LogFolder'
+		'New-ServicePrincipalObject'
     )
 	
 	# Cmdlets to export from this module
