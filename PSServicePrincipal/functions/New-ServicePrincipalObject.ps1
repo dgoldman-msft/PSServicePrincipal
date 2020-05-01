@@ -34,7 +34,7 @@
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject
 
-            This creates an AD service principal using default values for parameters not provided. Since an application id was not provided, an application was created for the service principal. 
+            This creates an AD service principal using default values for parameters not provided. Since an application id was not provided, an application was created for the service principal.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject -ApplicationID 34a28ad2-dec4-4a41-bc3b-d22ddf90000e
@@ -155,7 +155,6 @@ What type of Service Principal do you want to generate?
 [R] - Retrieve a Service Principal and Application object and display all information - Service Principal name needed
 Default select option (X):
 "@
-
         $optonSelected = Get-PSFUserChoice -Options 'E&xit', 'Default SPN', 'Passowrd SPN', 'AppID SPN', 'Certificate SPN', 'Retrieve SPN and App' -Caption 'Please select an option'
 
         switch($optonSelected)
@@ -289,7 +288,7 @@ Default select option (X):
 
             5
             {
-                try 
+                try
                 {
                     Get-AppAndSPN -DisplayName $ServicePrincipalName
                     $gotObject = $true
