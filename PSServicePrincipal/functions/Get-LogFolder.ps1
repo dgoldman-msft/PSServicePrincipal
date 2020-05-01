@@ -1,4 +1,5 @@
-﻿Function Get-LogFolder {
+﻿Function Get-LogFolder
+{
     <#
         .SYNOPSIS
             Cmdlet for creating opening log folder paths.
@@ -18,7 +19,6 @@
             PS c:\> Get-LogFolder -LogFolder DebugLoggingFolder
 
             This will open the debug output log folder for this module
-           
     #>
     
     [CmdletBinding()]
