@@ -1,4 +1,4 @@
-﻿Function Add-RoleToSPN 
+﻿Function Add-RoleToSPN
 {
     <#
 		.SYNOPSIS
