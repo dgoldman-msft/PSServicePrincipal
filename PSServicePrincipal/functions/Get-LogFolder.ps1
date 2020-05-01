@@ -1,4 +1,5 @@
-﻿Function Get-LogFolder {
+﻿Function Get-LogFolder 
+{
     <#
         .SYNOPSIS
             Cmdlet for creating opening log folder paths.
