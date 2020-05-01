@@ -294,7 +294,7 @@ Default select option (X):
                     Get-AppAndSPN -DisplayName $ServicePrincipalName
                     $gotObject = $true
                 }
-                catch 
+                catch
                 {
                     Stop-PSFFunction -Message "ERROR:Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return

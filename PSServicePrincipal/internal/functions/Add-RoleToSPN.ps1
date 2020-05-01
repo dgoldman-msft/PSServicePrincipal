@@ -1,4 +1,5 @@
-﻿Function Add-RoleToSPN {
+﻿Function Add-RoleToSPN 
+{
     <#
 		.SYNOPSIS
             Cmdlet for applying Role Assignments to service principal
@@ -23,7 +24,8 @@
     foreach ($spn in $SpnToProcess) {
         Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to newly SPN - $($spn)" -Target $spn -ScriptBlock {
             Write-PSFMessage -Level Host -Message "Checking current Role Assignment: on SPN {0}. Waiting on AD Replication" -StringValues $spn
-            $checkRole = Get-AzRoleAssignment -ObjectId $spn.id 
+            $checkRole = Get-AzRoleAssignment -ObjectId $spn.id
+            
             if(-NOT $checkRole)
             {
                 $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
