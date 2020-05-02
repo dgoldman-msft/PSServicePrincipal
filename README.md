@@ -1,6 +1,6 @@
 ﻿# Description
 
-Insert a useful description for the PSServicePrincipal project here.
+This is a PowerShell module that will aid in the creation (single and batch) service principal and applications when used with Microsoft Exchange application development with use with Basic Authentication deprecation.
 
 Remember, it's the first thing a visitor will see.
 
