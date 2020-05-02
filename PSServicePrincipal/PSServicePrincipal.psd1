@@ -18,7 +18,7 @@
 	Copyright = '(c) 2020 Dave Goldman. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description = 'PowerShell module for creating single and batch Service Principal objects for automation tasks'
+	Description = 'PowerShell module for creating single and batch Service Principals for automation tasks'
 	
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.0'
@@ -68,7 +68,13 @@
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
-			Tags = @('ServicePrincipal')
+			Tags = @(
+				'Exchange'	
+				'ServicePrincipal'
+				'Configuration'
+				'Windows'
+				'Linux'
+				'Mac')
 			
 			# A URL to the license for this module.
 			# LicenseUri = ''
