@@ -22,6 +22,7 @@
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
     
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param(
         [switch]
