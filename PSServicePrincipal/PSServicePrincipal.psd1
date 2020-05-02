@@ -18,7 +18,7 @@
 	Copyright = '(c) 2020 Dave Goldman. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description = 'Module for Service Principal Functions'
+	Description = 'PowerShell module for creating single and batch Service Principal objects for automation tasks'
 	
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.0'
@@ -30,7 +30,7 @@
 		'Az.Accounts' 
     	'Az.Resources'
 	)
-	
+
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\PSServicePrincipal.dll')
 	
