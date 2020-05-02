@@ -69,11 +69,11 @@
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(
-				'Exchange'	
+				'Exchange'
+				'Azure'	
 				'ServicePrincipal'
 				'Configuration'
 				'Windows'
-				'Linux'
 				'Mac')
 			
 			# A URL to the license for this module.
