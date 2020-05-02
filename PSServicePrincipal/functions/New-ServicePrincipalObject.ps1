@@ -37,7 +37,7 @@
             This creates an AD service principal using default values for parameters not provided. Since an application id was not provided, an application was created for the service principal.
 
         .EXAMPLE
-            PS c:\> New-ServicePrincipalObject -ApplicationID 34a28ad2-dec4-4a41-bc3b-d22ddf90000e.
+            PS c:\> New-ServicePrincipalObject -ApplicationID 34a28ad2-dec4-4a41-bc3b-d22ddf90000e
 
             This Creates a new Active Directory service principal for the application with application id '34a28ad2-dec4-4a41-bc3b-d22ddf90000e'.
         
