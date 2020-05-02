@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.0.0'
+	ModuleVersion = '1.0.1'
 	
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -68,7 +68,7 @@
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
-			# Tags = @()
+			Tags = @('Service Principal')
 			
 			# A URL to the license for this module.
 			# LicenseUri = ''
