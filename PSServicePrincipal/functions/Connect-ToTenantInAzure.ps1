@@ -1,4 +1,4 @@
-﻿Function Connect-ToTenant
+﻿Function Connect-ToTenantInAzure
 {
     <#
 		.SYNOPSIS
