@@ -40,8 +40,15 @@
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject
 
-            This creates an AD service principal using default values for parameters not provided. Since an application id was not provided, an application was created for the service principal.
+            This example connects to an Azure tenant with an Azure account. You must provide a Microsoft account or organizational ID credentials. If multi-factor authentication is enabled for your credentials, you must log in using the interactive option or use service principal authentication.
+            Once connected this will create an Active Directory service principal using default values for parameters not provided. Since an application id was not provided, an application id will be created for the service principal.
 
+        .EXAMPLE
+            PS c:\> New-ServicePrincipalObject -Tenant 'xxxx-xxxx-xxxx-xxxx' -SubscriptionId 'yyyy-yyyy-yyyy-yyyy'
+
+            This example uses an interactive login to connect to a specific tenant and subscription.
+            Once connected this will create an Active Directory service principal using default values for parameters not provided. Since an application id was not provided, an application id will be created for the service principal.
+        
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject -ApplicationID 34a28ad2-dec4-4a41-bc3b-d22ddf90000e
 
@@ -68,16 +75,6 @@
             Creates a new service principal in AAD, after prompting for user preferences.
             If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
            
-        .EXAMPLE
-            PS c:\> Connect-AzAccount
-
-            This example connects to an Azure account. You must provide a Microsoft account or organizational ID credentials. If multi-factor authentication is enabled for your credentials, you must log in using the interactive option or use service principal authentication.
-
-        .EXAMPLE
-            PS c:\> Connect-AzAccount -Tenant 'xxxx-xxxx-xxxx-xxxx' -SubscriptionId 'yyyy-yyyy-yyyy-yyyy'
-
-            This example uses an interactive login to connect to a specific tenant and subscription.
-
         .NOTES
             When passing in the application ID it is the Azure ApplicationID from your registered application.
             
@@ -123,19 +120,29 @@
         Clear-Host
         $spnCounter = 0
         Write-PSFMessage -Level Host -Message "Starting Script Run"
-        Write-PSFMessage -Level Host -Message "You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
         
         try
         {
-            if(($Tenant) -and ($SubscriptionId))
+            $context = Get-AzContext
+
+            if (-NOT ($context -or ($context.Subscription.Id -ne $SubscriptionId)))
             {
-                Write-PSFMessage -Level Host -Message "Connecting to Azure with interactive logon as: {0} - {1}" -StringValues $TenantId, $SubscriptionId
-                Connect-AzAccount -Tenant $TenantId -Subscription $SubscriptionId -ErrorAction Stop     
-            }
-            else
+                Write-PSFMessage -Level Host -Message "No existing prior Azure connection. You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
+                
+                if(($Tenant) -and ($SubscriptionId))
+                {
+                    Write-PSFMessage -Level Host -Message "Connecting to Azure with interactive logon as: {0} - {1}" -StringValues $TenantId, $SubscriptionId
+                    Connect-AzAccount -Tenant $TenantId -Subscription $SubscriptionId -ErrorAction Stop     
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host -Message "Connecting to Azure with Microsoft account or organizational ID credentials"
+                    Connect-AzAccount -ErrorAction Stop     
+                }
+            } 
+            else 
             {
-                Write-PSFMessage -Level Host -Message "Connecting to Azure with Microsoft account or organizational ID credentials"
-                Connect-AzAccount -ErrorAction Stop     
+                Write-PSFMessage -Level Host -Message "Azure session found! Connected to {0} as {1} in tenant {2} wiht Environment as {3}" -StringValues $context.Subscription.Name, $context.Account.Id, $context.Tenant.Id, $context.Environment.Name
             }
         }
         catch
@@ -198,9 +205,21 @@ Default select option (X):
             {
                 try
                 {
-                    Write-PSFMessage -Level Host -Message "Creating a simple SPN - Name {0}" -StringValues $newSPN.DisplayName
+                    Write-PSFMessage -Level Host -Message "Creating a simple SPN with auto generated values"
                     $newSPN = New-AzADServicePrincipal -ErrorAction Stop
-                    Add-RoleToSPN -spnToProcess $newSPN
+                    Write-PSFMessage -Level Host -Message "SPN {0} created with application id {1}" -StringValues $newSPN.DisplayName, $newSPN.ApplicationId
+                    
+                    # Retreive secret key for user
+                    $getSecretKey = Read-Host "would you like to retreive the secret key for this SPN?"
+                    
+                    if($getSecretKey)
+                    {
+                        $Marshal = [System.Runtime.InteropServices.Marshal]
+                        $BSTR = $Marshal::SecureStringToBSTR($newSPN.Secret)
+                        $secretKey = $Marshal::PtrToStringAuto($BSTR)
+                        Write-PSFMessage -Level Host -Message "WARNING. This will not be written to logfile. Please write this key down and secure it: Secret Key: {0}" -StringValues $secretKey
+                    }
+                    
                     $spnCounter ++
                 }
                 catch
