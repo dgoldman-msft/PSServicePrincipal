@@ -16,7 +16,7 @@
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
 
-        .PARAMETER Reconect
+        .PARAMETER Reconnect
             This parameter switch is used when forcing a new connection to an Azure tenant subscription.
 
         .PARAMETER BatchJob
@@ -34,7 +34,7 @@
         .PARAMETER Certificate
             This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
 
-        .PARAMETER Tenant
+        .PARAMETER TenantId
             This parameter is the Azure tenant you are connecting to.
 
         .PARAMETER SubscriptionId
@@ -141,8 +141,7 @@
 
         try
         {
-            Get-ConnectStatus
-            Get-TenantConnections -Reconnct $Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
+            Get-TenantConnection -Reconnct $Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
         }
         catch
         {

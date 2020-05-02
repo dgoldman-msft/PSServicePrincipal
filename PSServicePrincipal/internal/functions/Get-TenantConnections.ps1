@@ -1,4 +1,4 @@
-﻿Function Get-TenantConnections
+﻿Function Get-TenantConnection
 {
     <#
 		.SYNOPSIS
@@ -17,7 +17,7 @@
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Get-TenantConenctions -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId 
+            PS c:\> Get-TenantConenctions -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -133,7 +133,7 @@ Function New-DefaultAzureConnection
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> New-DefaultAzureConnection 
+            PS c:\> New-DefaultAzureConnection
 
             We will attempt to make a connection to an Azure tenant or reconnect.
     #>
