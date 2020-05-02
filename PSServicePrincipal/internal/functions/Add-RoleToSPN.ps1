@@ -22,18 +22,18 @@
     )
 
     foreach ($spn in $SpnToProcess) {
-        Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to newly SPN - $($spn)" -Target $spn -ScriptBlock {
-            Write-PSFMessage -Level Host -Message "Checking current Role Assignment: on SPN {0}. Waiting on AD Replication" -StringValues $spn
+        Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to SPN" -Target $spn -ScriptBlock {
+            Write-PSFMessage -Level Host -Message "Checking current Role Assignment. Waiting for AD Replication" -FunctionName Internal -ModuleName PSServicePrincipal
             $checkRole = Get-AzRoleAssignment -ObjectId $spn.id
             
             if(-NOT $checkRole)
             {
                 $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
-                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0}" -StringValues $newRole.RoleDefinitionName
+                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0}" -StringValues $newRole.RoleDefinitionName -FunctionName Internal -ModuleName PSServicePrincipal
             }
             else
             {
-                Write-PSFMessage -Level Host -Message "$($spn) already has this Role Assignment"
+                Write-PSFMessage -Level Host -Message "$($spn) already has this Role Assignment" -FunctionName Internal -ModuleName PSServicePrincipal
             }
         } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 5 -RetryErrorType Microsoft.Rest.Azure.CloudException
     }
