@@ -2,10 +2,10 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for creating opening log folder paths.
+            Cmdlet for opening log folder paths.
 
         .DESCRIPTION
-            This function will open your general output logging directory or your debug logging directory
+            This function will open your general output logging directory or the debug logging directory
             
         .PARAMETER LogFolder
             This parameter will tab complete allowing you to open the module debug logging folder which contains indepth debug logs for the logging provider

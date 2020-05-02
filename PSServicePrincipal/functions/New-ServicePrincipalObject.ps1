@@ -107,7 +107,7 @@
         
         try
         {
-           #Connect-AzAccount -ErrorAction Stop
+           Connect-AzAccount -ErrorAction Stop
         }
         catch
         {
