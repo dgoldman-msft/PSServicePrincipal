@@ -17,7 +17,7 @@
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Get-TenantConenctions -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
+            PS c:\> Get-TenantConenction -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -45,11 +45,11 @@
             
             if(($Tenant) -and ($SubscriptionId))
             {
-                New-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
+                Start-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
             }
             else
             {
-                New-DefaultAzureConnection
+                Start-DefaultAzureConnection
             }
             
             return
@@ -60,11 +60,11 @@
             
             if(($Tenant) -and ($SubscriptionId))
             {
-                New-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
+                Start-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
             }
             else
             {
-                New-DefaultAzureConnection
+                Start-DefaultAzureConnection
             }
         }
         else
@@ -79,7 +79,7 @@
     }
 }
 
-Function New-InteractiveAzureConnection
+Function Start-InteractiveAzureConnection
 {
     <#
 		.SYNOPSIS
@@ -95,7 +95,7 @@ Function New-InteractiveAzureConnection
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> New-InteractiveAzureConnection -Tenant $tenant -SubscriptionId $SubscriptionId
+            PS c:\> Start-InteractiveAzureConnection -Tenant $tenant -SubscriptionId $SubscriptionId
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -121,7 +121,7 @@ Function New-InteractiveAzureConnection
     }
 }
 
-Function New-DefaultAzureConnection
+Function Start-DefaultAzureConnection
 {
     <#
 		.SYNOPSIS
@@ -133,7 +133,7 @@ Function New-DefaultAzureConnection
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> New-DefaultAzureConnection
+            PS c:\> Start-DefaultAzureConnection
 
             We will attempt to make a connection to an Azure tenant or reconnect.
     #>
