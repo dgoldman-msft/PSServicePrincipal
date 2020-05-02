@@ -141,7 +141,7 @@
 
         try
         {
-            Get-TenantConnection -Reconnct $Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
+            Connect-ToTenantInAzure -Reconnct $Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
         }
         catch
         {

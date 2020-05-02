@@ -1,4 +1,4 @@
-﻿Function Get-TenantConnection
+﻿Function Connect-ToTenant
 {
     <#
 		.SYNOPSIS
@@ -17,7 +17,7 @@
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Get-TenantConenction -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
+            PS c:\> Connect-ToTenant -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -46,11 +46,11 @@
             
             if(($Tenant) -and ($SubscriptionId))
             {
-                Start-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
+                Connect-ToAzureInteractively -Tenant $Tenant -SubscriptionId $SubscriptionId
             }
             else
             {
-                Start-DefaultAzureConnection
+                Connect-ToAzureDefaultConnection
             }
             
             return
@@ -61,11 +61,11 @@
             
             if(($Tenant) -and ($SubscriptionId))
             {
-                Start-InteractiveAzureConnection -Tenant $Tenant -SubscriptionId $SubscriptionId
+                Connect-ToAzureInteractively -Tenant $Tenant -SubscriptionId $SubscriptionId
             }
             else
             {
-                Start-DefaultAzureConnection
+                Connect-ToAzureDefaultConnection
             }
         }
         else
@@ -80,7 +80,7 @@
     }
 }
 
-Function Start-InteractiveAzureConnection
+Function Connect-ToAzureInteractively
 {
     <#
 		.SYNOPSIS
@@ -96,11 +96,12 @@ Function Start-InteractiveAzureConnection
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Start-InteractiveAzureConnection -Tenant $tenant -SubscriptionId $SubscriptionId
+            PS c:\> Connect-ToAzureInteractively -Tenant $tenant -SubscriptionId $SubscriptionId
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
     
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param(
         [string]
@@ -122,7 +123,7 @@ Function Start-InteractiveAzureConnection
     }
 }
 
-Function Start-DefaultAzureConnection
+Function Connect-ToAzureDefaultConnection
 {
     <#
 		.SYNOPSIS
@@ -134,11 +135,12 @@ Function Start-DefaultAzureConnection
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Start-DefaultAzureConnection
+            PS c:\> Connect-ToAzureDefaultConnection
 
             We will attempt to make a connection to an Azure tenant or reconnect.
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param()
 
