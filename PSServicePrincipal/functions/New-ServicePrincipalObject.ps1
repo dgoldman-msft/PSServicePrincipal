@@ -30,6 +30,12 @@
 
         .PARAMETER Certificate
             This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
+        
+        .PARAMETER Tenant
+            This parameter is the Azure tenant you are connecting to.
+        
+        .PARAMETER SubscriptionId
+            This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject
@@ -62,6 +68,16 @@
             Creates a new service principal in AAD, after prompting for user preferences.
             If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
            
+        .EXAMPLE
+            PS c:\> Connect-AzAccount
+
+            This example connects to an Azure account. You must provide a Microsoft account or organizational ID credentials. If multi-factor authentication is enabled for your credentials, you must log in using the interactive option or use service principal authentication.
+
+        .EXAMPLE
+            PS c:\> Connect-AzAccount -Tenant 'xxxx-xxxx-xxxx-xxxx' -SubscriptionId 'yyyy-yyyy-yyyy-yyyy'
+
+            This example uses an interactive login to connect to a specific tenant and subscription.
+
         .NOTES
             When passing in the application ID it is the Azure ApplicationID from your registered application.
             
@@ -95,7 +111,11 @@
         [string]
         $ServicePrincipalName,
         [string]
-        $Certificate
+        $Certificate,
+        [string]
+        $TenantId,
+        [string]
+        $SubscriptionId
     )
 
     Process
@@ -107,7 +127,16 @@
         
         try
         {
-           Connect-AzAccount -ErrorAction Stop
+            if(($Tenant) -and ($SubscriptionId))
+            {
+                Write-PSFMessage -Level Host -Message "Connecting to Azure with interactive logon as: {0} - {1}" -StringValues $TenantId, $SubscriptionId
+                Connect-AzAccount -Tenant $TenantId -Subscription $SubscriptionId -ErrorAction Stop     
+            }
+            else
+            {
+                Write-PSFMessage -Level Host -Message "Connecting to Azure with Microsoft account or organizational ID credentials"
+                Connect-AzAccount -ErrorAction Stop     
+            }
         }
         catch
         {
