@@ -43,7 +43,8 @@
 	FunctionsToExport = @(
 		'Get-LogFolder'
 		'New-ServicePrincipalObject'
-		'Connect-ToTenantInAzure')
+		'Connect-ToTenantInAzure'
+		)
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = ''
