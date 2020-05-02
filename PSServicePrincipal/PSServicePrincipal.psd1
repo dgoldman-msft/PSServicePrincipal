@@ -28,8 +28,7 @@
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.1.59' }
 		'Az.Accounts' 
-    	'Az.Resources'
-	)
+    	'Az.Resources')
 
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\PSServicePrincipal.dll')
@@ -44,8 +43,7 @@
 	FunctionsToExport = @(
 		'Get-LogFolder'
 		'New-ServicePrincipalObject'
-		'Connect-ToTenantInAzure '
-    )
+		'Connect-ToTenantInAzure')
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = ''
