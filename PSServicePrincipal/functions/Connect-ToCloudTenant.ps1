@@ -1,4 +1,4 @@
-﻿Function Connect-ToTenantInAzure
+﻿Function Connect-ToCloudTenant
 {
     <#
 		.SYNOPSIS
@@ -17,7 +17,7 @@
             This parameter is that Azure subscription you are connecting to.
 
         .EXAMPLE
-            PS c:\> Connect-ToTenant -Reconnect $Reconnect -Tenant $tenant -SubscriptionId $SubscriptionId
+            PS c:\> Connect-ToCloudTenant -Tenant $tenant -SubscriptionId $SubscriptionId -Reconnect 
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -29,7 +29,7 @@
         $Reconnect,
 
         [string]
-        $Tenant,
+        $TenantId,
 
         [string]
         $SubscriptionId
@@ -46,7 +46,7 @@
             
             if(($Tenant) -and ($SubscriptionId))
             {
-                Connect-ToAzureInteractively -Tenant $Tenant -SubscriptionId $SubscriptionId
+                Connect-ToAzureInteractively -Tenant $Tenant -SubscriptionId $SubscriptionId $b
             }
             else
             {
@@ -83,10 +83,10 @@
 Function Connect-ToAzureInteractively
 {
     <#
-		.SYNOPSIS
+        .SYNOPSIS
             Cmdlet for making an interactive connections to an Azure tenant and subscription
-            
-		.DESCRIPTION
+
+        .DESCRIPTION
             This function will make an interactive connections to an Azure tenant and subscription
         
         .PARAMETER Tenant
@@ -114,7 +114,7 @@ Function Connect-ToAzureInteractively
     try
     {
         Write-PSFMessage -Level Host -Message "Connecting to Azure with interactive logon as: {0} - {1}" -StringValues $TenantId, $SubscriptionId
-        Connect-AzAccount -Tenant $TenantId -Subscription $SubscriptionId -ErrorAction Stop
+        Connect-AzAccount -Tenant $TenantId -Subscription $SubscriptionId 
     }
     catch
     {
@@ -147,7 +147,7 @@ Function Connect-ToAzureDefaultConnection
     try
     {
         Write-PSFMessage -Level Host -Message "Connecting to Azure with Microsoft account or organizational ID credentials"
-        Connect-AzAccount -ErrorAction Stop
+        Connect-AzAccount
     }
     catch
     {

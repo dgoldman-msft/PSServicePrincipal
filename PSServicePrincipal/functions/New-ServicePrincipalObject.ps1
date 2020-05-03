@@ -52,6 +52,11 @@
             This example uses an interactive login to connect to a specific tenant and subscription.
             Once connected this will create an Active Directory service principal using default values for parameters not provided. Since an application id was not provided, an application id will be created for the service principal.
 
+		.EXAMPLE
+            PS c:\> New-ServicePrincipalObject -Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
+
+			This will take a Azure tenant id and Azure subscription and force a reconnect to that specific tenant. Useful when switching between Azure tenants.
+			
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject -ApplicationID 34a28ad2-dec4-4a41-bc3b-d22ddf90000e
 
@@ -71,11 +76,6 @@
             PS c:\> New-ServicePrincipalObject -NameFile -BatchJob
 
             This will consume a file of service principals to batch created. You must use the -BatchJob parameter to indicate this is a batch create.
-
-        .EXAMPLE
-            PS c:\> New-ServicePrincipalObject -Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
-
-            This will take a Azure tenant id and Azure subscription and force a reconnect to that specific tenant. Useful when switching between Azure tenants.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipalObject -EnableException
@@ -141,14 +141,15 @@
 
         try
         {
-            Connect-ToTenantInAzure -Reconnct $Reconnect -Tenant $TenantId -SubscriptionId $SubscriptionId
+           Connect-ToCloudTenant -tenantid $TenantId -subscriptionId $SubscriptionId -Reconnect
+           return
         }
         catch
         {
             Stop-PSFFunction -Message $_.Exception.InnerException.Message -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
             return
         }
-
+		
         # Try to obtain the list of names so we can batch create the SPNS
         if(($NameFile) -and ($BatchJob))
         {
@@ -341,7 +342,7 @@ Default select option (X):
                 }
                 catch
                 {
-                    Stop-PSFFunction -Message "ERROR:Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                    Stop-PSFFunction -Message "ERROR: Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return
                 }
             }
@@ -358,17 +359,21 @@ Default select option (X):
     {
         if(-NOT $gotObject)
         {
-            if(1 -le $spnCounter)
+            if(0 -eq $spnCounter)
+            {
+                Write-PSFMessage -Level Host -Message "No SPN objects created!" -StringValues $spnCounter
+            }
+            elseif(1 -eq $spnCounter)
             {
                 Write-PSFMessage -Level Host -Message "{0} SPN object created sucessfully!" -StringValues $spnCounter
             }
-            else
+            elseif(1 -gt $spnCounter)
             {
                 Write-PSFMessage -Level Host -Message "{0} SPN objects created sucessfully!" -StringValues $spnCounter
             }
         }
 
         Write-PSFMessage -Level Host -Message "Script run complete!"
-        Write-PSFMessage -Level Host -Message 'Log saved to: {0}. Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder #-Once 'LoggingDestination'
+        Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder #-Once 'LoggingDestination'
     }
 }

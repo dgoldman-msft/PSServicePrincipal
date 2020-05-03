@@ -74,7 +74,7 @@
 				'ServicePrincipal'
 				'Configuration'
 				'Windows'
-				'Mac')
+				'MacOS')
 			
 			# A URL to the license for this module.
 			# LicenseUri = ''
