@@ -257,4 +257,5 @@ $configuration_Settings = {
 	Set-PSFConfig -Module LoggingProvider -Name 'PSServicePrincipal.ExcludeTags' -Value @() -Initialize -Validation "stringarray" -Handler { if ([PSFramework.Logging.ProviderHost]::Providers['PSServicePrincipal']) { [PSFramework.Logging.ProviderHost]::Providers['PSServicePrincipal'].ExcludeTags = ($args[0] | Write-Output) } } -Description "Tag blacklist. Messages with these tags will not be logged"
 }
 
+# This is needed to register the PSServicePrincipal logging provider
 Register-PSFLoggingProvider -Name "PSServicePrincipal" -RegistrationEvent $registrationEvent -BeginEvent $begin_event -StartEvent $start_event -MessageEvent $message_Event -ErrorEvent $error_Event -EndEvent $end_event -FinalEvent $final_event -ConfigurationParameters $configurationParameters -ConfigurationScript $configurationScript -IsInstalledScript $isInstalledScript -InstallationScript $installationScript -InstallationParameters $installationParameters -ConfigurationSettings $configuration_Settings

@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 	
 	# Version number of this module.
-	ModuleVersion = '1.0.0'
+	ModuleVersion = '1.0.1'
 	
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -18,7 +18,7 @@
 	Copyright = '(c) 2020 Dave Goldman. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description = 'Module for Service Principal Functions'
+	Description = 'PowerShell module for creating single and batch Service Principals for automation tasks'
 	
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.0'
@@ -28,9 +28,8 @@
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.1.59' }
 		'Az.Accounts' 
-    	'Az.Resources'
-	)
-	
+    	'Az.Resources')
+
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\PSServicePrincipal.dll')
 	
@@ -42,9 +41,12 @@
 	
 	# Functions to export from this module
 	FunctionsToExport = @(
+		'Connect-ToCloudTenant'
+		'Get-AppAndSPNPair'
 		'Get-LogFolder'
+		'Get-SpnsByDisplayName'
 		'New-ServicePrincipalObject'
-    )
+		)
 	
 	# Cmdlets to export from this module
 	CmdletsToExport = ''
@@ -68,7 +70,13 @@
 		PSData = @{
 			
 			# Tags applied to this module. These help with module discovery in online galleries.
-			# Tags = @()
+			Tags = @(
+				'Exchange'
+				'Azure'	
+				'ServicePrincipal'
+				'Configuration'
+				'Windows'
+				'MacOS')
 			
 			# A URL to the license for this module.
 			# LicenseUri = ''

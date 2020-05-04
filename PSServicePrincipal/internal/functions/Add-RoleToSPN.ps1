@@ -18,7 +18,8 @@
     
     [CmdletBinding()]
     param(
-        [object]$SpnToProcess
+        [object]
+        $SpnToProcess
     )
 
     foreach ($spn in $SpnToProcess) {
@@ -29,7 +30,7 @@
             if(-NOT $checkRole)
             {
                 $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
-                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0}" -StringValues $newRole.RoleDefinitionName -FunctionName Internal -ModuleName PSServicePrincipal
+                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0} to {1}" -StringValues $newRole.RoleDefinitionName, $newRole.DisplayName -FunctionName Internal -ModuleName PSServicePrincipal
             }
             else
             {
