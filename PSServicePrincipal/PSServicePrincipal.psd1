@@ -41,9 +41,11 @@
 	
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Get-LogFolder'
-		'New-ServicePrincipalObject'
 		'Connect-ToCloudTenant'
+		'Get-AppAndSPNPair'
+		'Get-LogFolder'
+		'Get-SpnsByDisplayName'
+		'New-ServicePrincipalObject'
 		)
 	
 	# Cmdlets to export from this module
