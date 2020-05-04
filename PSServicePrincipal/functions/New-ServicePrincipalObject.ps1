@@ -385,7 +385,6 @@
                 Stop-PSFFunction -Message "ERROR: Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return
             }
-
         }
     }
 
