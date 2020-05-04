@@ -34,9 +34,6 @@
         .PARAMETER CreateSPNsWithNameAndCert
              This switch is used when creating wanting to create Service Principal using a certificate.
 
-        .PARAMETER GetSPNByName
-            This switch is used to retrieve a single Service Principal from the Azure active directory.
-
         .PARAMETER GetSPNSByName
              This switch is used to retrieve a multiple Service Principals via wildcard search from the Azure active directory.
         
@@ -146,13 +143,10 @@
         $CreateSPNsWithNameAndCert,
         
         [switch]
-        $GetSPNByName,
-
-        [switch]
         $GetSPNSByName,
 
         [switch]
-        $GetAppAndSPN,
+        $GetAppAndSPNPair,
 
         [string]
         $NameFile,
@@ -367,13 +361,11 @@
             }
         }
 
-        if($GetAppAndSPN)
+        if($GetAppAndSPNPair)
         {
-            
             try
             {
                 Get-AppAndSPNPair -DisplayName $DisplayName
-                $gotObject = $true
             }
             catch
             {
@@ -381,11 +373,25 @@
                 return
             }
         }
+
+        if($GetSPNSByName)
+        {
+            try
+            {
+                Get-SpnsByDisplayName -DisplayName $DisplayName
+            }
+            catch
+            {
+                Stop-PSFFunction -Message "ERROR: Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                return
+            }
+
+        }
     }
 
     end
     {
-        if(-NOT $gotObject)
+        if($spnCounter)
         {
             if(0 -eq $spnCounter)
             {

@@ -11,7 +11,7 @@
             This parameter is the display name of the objects you are retrieving
 
         .EXAMPLE
-            PS c:\> Get-AppAndSPN -DisplayName App1234
+            PS c:\> Get-AppAndSPNPair -DisplayName App1234
 
             This will retrieve the application and service principal information
     #>
