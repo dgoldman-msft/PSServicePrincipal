@@ -37,7 +37,7 @@
         .PARAMETER GetSPNSByName
              This switch is used to retrieve a multiple Service Principals via wildcard search from the Azure active directory.
         
-        .PARAMETER GetAppAndSPN
+        .PARAMETER GetAppAndSPNPair
             This switch is used to retrieve an Application and Service Principal pair from the Azure active directory.
 
         .PARAMETER NameFile
