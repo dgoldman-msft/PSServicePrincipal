@@ -22,7 +22,7 @@
         $DisplayName
     )
     
-    try 
+    try
     {
         Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name" -FunctionName Internal -ModuleName PSServicePrincipal
         $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName

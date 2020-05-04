@@ -94,7 +94,7 @@
 			This example will force a reconnect to a specific Azure tenant. Useful when switching between Azure tenants. This will also make an interactive connection.
         
         .EXAMPLE
-            PS c:\> New-ServicePrincipalObject -GetSPNSByName -DisplayName $DisplayName 
+            PS c:\> New-ServicePrincipalObject -GetSPNSByName -DisplayName $DisplayName
 
             This example will retrieve Service Principals the Azure active directory by display name.
             
