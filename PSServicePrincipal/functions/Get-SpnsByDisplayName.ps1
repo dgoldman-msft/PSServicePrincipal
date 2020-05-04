@@ -22,7 +22,26 @@
         $DisplayName
     )
 
-    Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name" -FunctionName Internal -ModuleName PSServicePrincipal
-    $DisplayNameWC = $DisplayName, "*" -join ""
-    Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+    try
+    {
+        Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name" -FunctionName Internal -ModuleName PSServicePrincipal
+        $DisplayNameWC = $DisplayName, "*" -join ""
+        $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+
+        $count = 0
+        foreach($item in $spnOutput)
+        {
+            $count++
+            [pscustomobject]@{
+                Index = $count
+                DisplayName = $item.DisplayName
+                AppID = $item.ApplicationID
+                ObjectID = $item.ObjectID
+            }
+        }
+    }
+    catch
+    {
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+    }
 }

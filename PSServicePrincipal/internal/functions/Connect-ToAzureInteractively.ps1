@@ -7,7 +7,7 @@
         .DESCRIPTION
             This function will make an interactive connections to an Azure tenant and subscription
         
-        .PARAMETER Tenant
+        .PARAMETER TenantId
             This parameter is the Azure tenant you are connecting to.
         
         .PARAMETER SubscriptionId
@@ -23,7 +23,7 @@
     [CmdletBinding()]
     param(
         [string]
-        $Tenant,
+        $TenantId,
 
         [string]
         $SubscriptionId

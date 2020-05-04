@@ -154,9 +154,6 @@
         [switch]
         $GetAppAndSPN,
 
-        [switch]
-        $BatchJob,
-
         [string]
         $NameFile,
 
@@ -164,7 +161,7 @@
         $ApplicationID,
 
         [string]
-        $Name,
+        $DisplayName,
 
         [string]
         $Certificate,
@@ -375,7 +372,7 @@
             
             try
             {
-                Get-AppAndSPN -DisplayName $DisplayName
+                Get-AppAndSPNPair -DisplayName $DisplayName
                 $gotObject = $true
             }
             catch

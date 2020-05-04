@@ -10,11 +10,15 @@
         .PARAMETER Reconnect
             This parameter is used to force a new connection to an Azure tenant
         
-        .PARAMETER Tenant
+        .PARAMETER TenantId
             This parameter is the Azure tenant you are connecting to.
         
         .PARAMETER SubscriptionId
             This parameter is that Azure subscription you are connecting to.
+
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Connect-ToCloudTenant -Tenant $tenant -SubscriptionId $SubscriptionId -Reconnect
@@ -57,7 +61,7 @@
 
         if($Tenant -and $SubscriptionId)
         {
-            Connect-ToAzureInteractively @parameters 
+            Connect-ToAzureInteractively @parameters
         }
         else
         {
@@ -70,4 +74,3 @@
         return
     }
 }
-
