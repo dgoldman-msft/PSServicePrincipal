@@ -207,7 +207,7 @@
             else
             {
                 Write-PSFMessage -Level Host -Message "{0} accessable. Reading in content" -StringValues $NameFile
-                $listofSPNStoCreate = Get-Content $NameFile
+                $listofSPNStoCreate = Get-Content $NameFile | ForEach-Object {$_.TrimEnd()} | Where-Object {$_ -ne ""}
 
                 # Validate that we have data and if we dont we exit out
                 if(0 -eq $listofSPNStoCreate.Length)
