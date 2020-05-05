@@ -27,7 +27,7 @@
         if(![string]::IsNullOrEmpty($DisplayName))
         {
             Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name"
-            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName
+            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName

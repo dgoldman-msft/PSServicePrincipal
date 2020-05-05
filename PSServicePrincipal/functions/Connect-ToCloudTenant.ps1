@@ -49,8 +49,12 @@
         Write-PSFMessage -Level Host -Message "Checking for an existing connection to Azure"
         $context = Get-AzContext
 
-        if($Reconnect) {Write-PSFMessage -Level Host -Message "Forcing a reconnection to Azure"}
-        elseif(-NOT ($context -or ($context.Subscription.Id -ne $SubscriptionID))) {
+        if($Reconnect)
+        {
+            Write-PSFMessage -Level Host -Message "Forcing a reconnection to Azure"
+        }
+        elseif(-NOT $context)
+        {
             Write-PSFMessage -Level Host -Message "No existing prior Azure connection. You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
         }
         else

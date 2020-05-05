@@ -27,7 +27,7 @@
         if($ApplicationId)
         {
             Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
-            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID
+            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName
