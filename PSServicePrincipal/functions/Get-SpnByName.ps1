@@ -24,13 +24,20 @@
 
     try
     {
-        Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name"
-        $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName
+        if(![string]::IsNullOrEmpty($DisplayName))
+        {
+            Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name"
+            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName
 
-        [pscustomobject]@{
-            DisplayName = $spnOutput.DisplayName
-            AppID = $spnOutput.ApplicationID
-            ObjectID = $spnOutput.ObjectID
+            [pscustomobject]@{
+                DisplayName = $spnOutput.DisplayName
+                AppID = $spnOutput.ApplicationID
+                ObjectID = $spnOutput.ObjectID
+            }
+        }
+        else
+        {
+            Write-PSFMessage -Level Verbose "ERROR: You did not provide a display name. Search failed."
         }
     }
     catch

@@ -24,20 +24,27 @@
 
     try
     {
-        Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
-        $DisplayNameWC = $DisplayName, "*" -join ""
-        $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
-
-        $count = 0
-        foreach($item in $spnOutput)
+        if($DisplayName)
         {
-            $count++
-            [pscustomobject]@{
-                Index = $count
-                DisplayName = $item.DisplayName
-                AppID = $item.ApplicationID
-                ObjectID = $item.ObjectID
+            Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
+            $DisplayNameWC = $DisplayName, "*" -join ""
+            $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+
+            $count = 0
+            foreach($item in $spnOutput)
+            {
+                $count++
+                [pscustomobject]@{
+                    Index = $count
+                    DisplayName = $item.DisplayName
+                    AppID = $item.ApplicationID
+                    ObjectID = $item.ObjectID
+                }
             }
+        }
+        else
+        {
+            Write-PSFMessage -Level Verbose "ERROR: You did not provide a display name. Search failed."
         }
     }
     catch

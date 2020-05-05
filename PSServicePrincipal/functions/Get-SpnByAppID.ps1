@@ -24,13 +24,20 @@
 
     try
     {
-        Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
-        $spnOutput = Get-AzADServicePrincipal -ApplicationId $ApplicationId
+        if($ApplicationId)
+        {
+            Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
+            $spnOutput = Get-AzADServicePrincipal -ApplicationId $ApplicationId
 
-        [pscustomobject]@{
-            DisplayName = $spnOutput.DisplayName
-            AppID = $spnOutput.ApplicationID
-            ObjectID = $spnOutput.ObjectID
+            [pscustomobject]@{
+                DisplayName = $spnOutput.DisplayName
+                AppID = $spnOutput.ApplicationID
+                ObjectID = $spnOutput.ObjectID
+            }
+        }
+        else
+        {
+            Write-PSFMessage -Level Verbose "ERROR: You did not provide a application id. Search failed."
         }
     }
     catch

@@ -201,7 +201,7 @@
 
     Process
     {
-        $spnCounter = 0
+        $script:spnCounter = 0
         Write-PSFMessage -Level Host -Message "Starting Script Run"
 
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantId, SubscriptionId, Reconnect
@@ -292,7 +292,7 @@
                     }
                 }
                 
-                $spnCounter ++
+                $script:spnCounter ++
             }
             catch
             {
@@ -320,7 +320,7 @@
                         {
                             Write-PSFMessage -Level Host -Message "SPN created: DisplayName: {0} - Password: {1}" -StringValues $spn, $password
                             $roleListToProcess += $newSPN
-                            $spnCounter ++
+                            $script:spnCounter ++
                         }
                         elseif($ProcessError)
                         {
@@ -359,7 +359,7 @@
                     Write-PSFMessage -Level Host -Message "Creating new SPN with ApplicationID: {0}" -Format $ApplicationID
                     $newSPN = New-AzADServicePrincipal -ApplicationId $ApplicationID
                     Add-RoleToSPN -spnToProcess $newSPN
-                    $spnCounter ++
+                    $script:spnCounter ++
                 }
             }
             catch
@@ -383,7 +383,7 @@
                     Write-PSFMessage -Level Host -Message "Creating new SPN DisplayName and certificate key - DisplayName: {0}" -StringValues $newSPN.DisplayName
                     $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $Certificate -EndDate "2024-12-31"
                     Add-RoleToSPN -spnToProcess $newSPN
-                    $spnCounter ++
+                    $script:spnCounter ++
                 }
             }
             catch
@@ -397,7 +397,14 @@
         {
             try
             {
-                Get-SpnByName -DisplayName $DisplayName
+                if($DisplayName)
+                {
+                    Get-SpnByName -DisplayName $DisplayName
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
+                }
             }
             catch
             {
@@ -410,7 +417,14 @@
         {
             try
             {
-                Get-SpnByAppID -ApplicationID $ApplicationID
+                if($ApplicationID)
+                {
+                    Get-SpnByAppID -ApplicationID $ApplicationID
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a application id. Search failed."
+                }
             }
             catch
             {
@@ -423,7 +437,14 @@
         {
             try
             {
-                Get-SpnsByName -DisplayName $DisplayName
+                if($DisplayName)
+                {
+                    Get-SpnsByName -DisplayName $DisplayName
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
+                }
             }
             catch
             {
@@ -436,7 +457,14 @@
         {
             try
             {
-                Get-AppAndSPNPair -DisplayName $DisplayName
+                if($DisplayName)
+                {
+                    Get-AppAndSPNPair -DisplayName $DisplayName
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
+                }
             }
             catch
             {
@@ -448,19 +476,19 @@
 
     end
     {
-        if($spnCounter)
+        if($script:spnCounter)
         {
-            if(0 -eq $spnCounter)
+            if(0 -eq $script:spnCounter)
             {
-                Write-PSFMessage -Level Host -Message "No SPN objects created!" -StringValues $spnCounter
+                Write-PSFMessage -Level Host -Message "No SPN objects created!" -StringValues $script:spnCounter
             }
-            elseif(1 -eq $spnCounter)
+            elseif(1 -eq $script:spnCounter)
             {
-                Write-PSFMessage -Level Host -Message "{0} SPN object created sucessfully!" -StringValues $spnCounter
+                Write-PSFMessage -Level Host -Message "{0} SPN object created sucessfully!" -StringValues $script:spnCounter
             }
-            elseif(1 -gt $spnCounter)
+            elseif(1 -gt $script:spnCounter)
             {
-                Write-PSFMessage -Level Host -Message "{0} SPN objects created sucessfully!" -StringValues $spnCounter
+                Write-PSFMessage -Level Host -Message "{0} SPN objects created sucessfully!" -StringValues $script:spnCounter
             }
         }
 
