@@ -44,7 +44,9 @@
 		'Connect-ToCloudTenant'
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
-		'Get-SpnsByDisplayName'
+		'Get-SpnByName'
+		'Get-SpnsByName'
+		'Get-SpnByAppID'
 		'New-ServicePrincipalObject'
 		)
 	

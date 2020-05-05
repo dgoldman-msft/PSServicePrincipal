@@ -397,7 +397,7 @@
         {
             try
             {
-                Get-SpnByName -DisplayName $DisplayName  
+                Get-SpnByName -DisplayName $DisplayName
             }
             catch
             {
@@ -410,7 +410,7 @@
         {
             try
             {
-                Get-SpnByAppID -ApplicationID $ApplicationID  
+                Get-SpnByAppID -ApplicationID $ApplicationID
             }
             catch
             {
