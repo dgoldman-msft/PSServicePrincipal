@@ -7,11 +7,11 @@
         .DESCRIPTION
             This function will retrieve a Service Principal from the Azure Active Directory by application id.
 
-        .PARAMETER ApplicationId
+        .PARAMETER ApplicationID
             This parameter is the application id of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-SpnByAppID $ApplicationId
+            PS c:\> Get-SpnByAppID $ApplicationID
 
             This will retrieve a Service Principal by application id from the Azure active directory.
     #>
@@ -19,7 +19,7 @@
     [CmdletBinding()]
     Param (
         [string]
-        $ApplicationId
+        $ApplicationID
     )
 
     try
@@ -27,7 +27,7 @@
         if($ApplicationId)
         {
             Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
-            $spnOutput = Get-AzADServicePrincipal -ApplicationId $ApplicationId
+            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName

@@ -25,7 +25,7 @@
     .PARAMETER CreateBatchSPNS
         This switch is used when creating a batch of Service Principals from a text file.
 
-    .PARAMETER CreateSPNWithAppId
+    .PARAMETER CreateSPNWithAppID
         This switch is used when creating a Service Principal and a registered Azure application.
 
     .PARAMETER CreateSPNWithPassword
@@ -46,11 +46,23 @@
     .PARAMETER GetAppAndSPNPair
         This switch is used to retrieve an Application and Service Principal pair from the Azure active directory.
 
+    .PARAMETER OpenAzurePortal
+        This switch is used to when connecting to the online web Azure portal.
+
     .PARAMETER NameFile
         This parameter is the name of the file that contains the list of Service Principals being passed in for creation.
 
     .PARAMETER ApplicationID
-        This parameter is the unique application id for a Service Principal in a tenant. Once created this property cannot be changed.
+        This parameter is the unique ApplicationID for a Service Principal in a tenant. Once created this property cannot be changed.
+
+    .PARAMETER ObjectID
+        This parameter is the unique ApplicationID for a Service Principal in a tenant. Once created this property cannot be changed.
+
+    .PARAMETER DeleteApp
+        This parameter is a switch used to specify the deletion of an Azure application.
+
+    .PARAMETER DeleteSpn
+        This parameter is a switch used to specify the deletion of a Service Principal.
 
     .PARAMETER DisplayName
         This parameter is the friendly name of the Service Principal you want to create.
@@ -58,11 +70,11 @@
     .PARAMETER Certificate
         This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
 
-    .PARAMETER TenantId
-        This parameter is the Azure tenant you are connecting to.
+    .PARAMETER TenantID
+        This parameter is the Azure TenantID you are connecting to.
 
-    .PARAMETER SubscriptionId
-        This parameter is that Azure subscription you are connecting to.
+    .PARAMETER SubscriptionID
+        This parameter is that Azure SubscriptionID you are connecting to.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSingleSPN
@@ -77,15 +89,15 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSingleSPN -CreateSPNWithPassword -Name CompanySPN
 
-        This example creates a new Service Principal with a display name of 'Your SPNs Name' and password (user supplied password) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
+        This example creates a new Service Principal with a display name of 'Your SPNs Name' and a (user supplied password) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateBatchSPNS -NameFile c:\temp\Namefile.txt
 
-        This example connects to an Azure tenant with an Azure account and creates a batch of Service Princpial objects from a file passed in.
+        This example connects to an Azure tenant with and creates a batch of Service Princpial objects from a file passed in.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateSPNWithAppId -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -CreateSPNWithAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
         This example creates a new Service Principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
@@ -95,9 +107,9 @@
         This example creates a new Service Principal with a display name of 'Your SPNs Name' and certifcate and creates the Service Principal based on the application just created. The end date is added to key credential.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -Reconnect -Tenant 679fa186-5871-43a8-aje5-b20c66a3a6b4 -SubscriptionId a706cb6e-8eb1-4341-8055-f34bz3b511f8
+        PS c:\> New-ServicePrincipalObject -Reconnect -TenantID 679fa186-5871-43a8-aje5-b20c66a3a6b4 -SubscriptionID a706cb6e-8eb1-4341-8055-f34bz3b511f8
 
-        This example will force a reconnect to a specific Azure tenant. Useful when switching between Azure tenants. This will also make an interactive connection.
+        This example will force a reconnect to a specific Azure tenant using a TenantID and SubscriptionID. Useful when switching between Azure tenants. This will also make an interactive connection.
     
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -GetSpnByName -DisplayName CompanySPN
@@ -105,7 +117,7 @@
         This example will retrieve a Service Principal from the Azure active directory by display name.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetSpnByAppID -ApplicationId 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -GetSpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
         This example will retrieve a Service Principal from the Azure active directory by application id.
 
@@ -120,18 +132,55 @@
         This example will retrieve a Service Principal and Application pair from the Azure active directory.
     
     .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppAndSPNPair -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+        This example will delete a Service Principal and Application pair from the Azure active directory using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppAndSPNPair -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+
+        This example will delete a Service Principal and Application pair from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+        This example will delete a single Service Principal from the Azure active directory using the -ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ObjectID -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+
+        This example will delete a single Service Principal from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+    
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+        This example will delete a singple application from the Azure Active directory using the -ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteApp -ObjectID -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+
+        This example will delete a singple application from the Azure Active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -OpenAzurePortal
+
+        This example will open a web connection to the Microsoft Azure Portal
+
+    .EXAMPLE
         PS c:\> New-ServicePrincipalObject -EnableException
 
         Creates example a new Service Principal in AAD, after prompting for user preferences.
         If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
     .NOTES
+        All of these cmdlets can also be ran by the exported cmdlet name as well for single use. When running the exported cmdlets the varablie input will change based on cmdlet.
+
         When passing in the application ID it is the Azure ApplicationID from your registered application.
 
         WARNING: If you do not connect to an Azure tenant when you run Import-Module Az.Resources you will be logged in interactively to your default Azure subscription.
         After signing in, you will see information indicating which of your Azure subscriptions is active.
         If you have multiple Azure subscriptions in your account and want to select a different one,
-        get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription ID.
+        get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription id.
 
         INFORMATION: The default parameter set uses default values for parameters if the user does not provide one for them.
         For more information on the default values used, please see the description for the given parameters below.
@@ -160,7 +209,7 @@
         $CreateBatchSPNS,
  
         [switch]
-        $CreateSPNWithAppId,
+        $CreateSPNWithAppID,
 
         [switch]
         $CreateSPNWithPassword,
@@ -178,7 +227,21 @@
         $GetSPNSByName,
 
         [switch]
+        $RemoveAppOrSpn,
+
+        [switch]
         $GetAppAndSPNPair,
+
+        [switch]
+
+        [switch]
+        $DeleteApp,
+
+        [switch]
+        $DeleteSpn,
+
+        [switch]
+        $OpenAzurePortal,
 
         [string]
         $NameFile,
@@ -187,16 +250,19 @@
         $ApplicationID,
 
         [string]
+        $ObjectID,
+
+        [string]
         $DisplayName,
 
         [string]
         $Certificate,
 
         [string]
-        $TenantId,
+        $TenantID,
 
         [string]
-        $SubscriptionId
+        $SubscriptionID
     )
 
     Process
@@ -204,8 +270,9 @@
         $script:spnCounter = 0
         Write-PSFMessage -Level Host -Message "Starting Script Run"
 
-        $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantId, SubscriptionId, Reconnect
-
+        $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantID, SubscriptionID, Reconnect
+        $deleteParameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include ApplicationID, ObjectID
+        
         try
         {
             Connect-ToCloudTenant @parameters -EnableException
@@ -215,7 +282,7 @@
             Stop-PSFFunction -Message $_ -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
             return
         }
-		
+        		
         # Try to obtain the list of names so we can batch create the SPNS
         if($NameFile -and $CreateBatchSPNS)
         {
@@ -261,7 +328,7 @@
                 elseif($DisplayName)
                 {
                     $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName
-                    Write-PSFMessage -Level Host -Message "SPN created: DisplayName: {0} - ApplicationId: {1}" -StringValues $newSPN.DisplayName, $newSPN.ApplicationId
+                    Write-PSFMessage -Level Host -Message "SPN created: DisplayName: {0} - ApplicationID: {1}" -StringValues $newSPN.DisplayName, $newSPN.ApplicationID
                 }
                 else
                 {
@@ -345,7 +412,7 @@
             }
         }
 
-        if($CreateSPNWithAppId)
+        if($CreateSPNWithAppID)
         {
             try
             {
@@ -357,7 +424,7 @@
                 else
                 {
                     Write-PSFMessage -Level Host -Message "Creating new SPN with ApplicationID: {0}" -Format $ApplicationID
-                    $newSPN = New-AzADServicePrincipal -ApplicationId $ApplicationID
+                    $newSPN = New-AzADServicePrincipal -ApplicationID $ApplicationID
                     Add-RoleToSPN -spnToProcess $newSPN
                     $script:spnCounter ++
                 }
@@ -465,6 +532,70 @@
                 {
                     Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
                 }
+            }
+            catch
+            {
+                Stop-PSFFunction -Message "ERROR: Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                return
+            }
+        }
+
+        if($RemoveAppAndSPNPair)
+        {
+            try
+            {
+                if($ApplicationID)
+                {
+                    Remove-AppAndSPNPair -ApplicationID $ApplicationID
+                    return
+                }
+                if($ObjectID)
+                {
+                    Remove-AppAndSPNPair -ObjectID $ObjectID
+                    return
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a object value."
+                }
+            }
+            catch
+            {
+                Stop-PSFFunction -Message "ERROR: Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                return
+            }
+
+        }
+
+        if($RemoveAppOrSpn)
+        {
+            if($DeleteApp -or $DeleteSpn)
+            {
+                if($DeleteApp)
+                {
+                Remove-AppOrSPN @deleteParameters -DeleteApp
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a object value."
+                }
+
+                if($DeleteSpn)
+                {
+                    Remove-AppOrSPN @deleteParameters -DeleteSpn
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a object value."
+                }
+            }
+        }
+
+        if($OpenAzurePortal)
+        {
+            try
+            {
+                Start-Process "https://portal.azure.com"
             }
             catch
             {

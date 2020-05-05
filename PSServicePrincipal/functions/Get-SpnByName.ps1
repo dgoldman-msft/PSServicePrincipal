@@ -31,7 +31,7 @@
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName
-                AppID = $spnOutput.ApplicationID
+                ApplicationID = $spnOutput.ApplicationID
                 ObjectID = $spnOutput.ObjectID
             }
         }

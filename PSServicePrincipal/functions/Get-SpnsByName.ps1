@@ -37,7 +37,7 @@
                 [pscustomobject]@{
                     Index = $count
                     DisplayName = $item.DisplayName
-                    AppID = $item.ApplicationID
+                    AppicationID = $item.ApplicationID
                     ObjectID = $item.ObjectID
                 }
             }

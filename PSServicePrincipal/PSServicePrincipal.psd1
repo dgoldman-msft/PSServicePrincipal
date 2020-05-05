@@ -45,9 +45,11 @@
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
 		'Get-SpnByName'
-		'Get-SpnsByName'
 		'Get-SpnByAppID'
+		'Get-SpnsByName'
 		'New-ServicePrincipalObject'
+		'Remove-AppOrSPN'
+		'Remove-AppAndSPNPair'
 		)
 	
 	# Cmdlets to export from this module
