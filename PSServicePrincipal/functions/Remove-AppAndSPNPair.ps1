@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Cmdlet for deleting an Azure Active Directory Application and Service Principal pair.
+            Deletes an azure active directory application and service principal pair.
 
         .DESCRIPTION
             This function will delete an Application and Service Principal pair from the Azure Active Directory.

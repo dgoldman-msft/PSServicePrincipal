@@ -2,11 +2,12 @@
 {
     <#
     .SYNOPSIS
-        Cmdlet for creating a new azure active directory Service Principal.
+        PowerShell module for creating a Azure Applications and Service Principal for automation tasks.
 
     .DESCRIPTION
-        This function will create a new azure active directory Service Principal.
-        All messages are logged by default to the following folder [[Environment]::GetFolderPath("MyDocuments") "\PowerShell Script Logs"].
+        This module will create a new Azure active directory applications and Service Principal that can be used for application automation.
+        Logging Provider: All messages are logged by default to the following folder [[Environment]::GetFolderPath("MyDocuments") "\PowerShell Script Logs"].
+        There are two logging folders for analysis: Get-LogFolder -LogFolder [OutputLoggingFolder] and [DebugLoggingFolder]
         For more information please visit: https://psframework.org/
         PSFramework Logging: https://psframework.org/documentation/quickstart/psframework/logging.html
         PSFramework Configuration: https://psframework.org/documentation/quickstart/psframework/configuration.html
@@ -26,23 +27,23 @@
         This switch is used when creating a batch of Service Principals from a text file.
 
     .PARAMETER CreateSPNWithAppID
-        This switch is used when creating a Service Principal and a registered Azure application.
+        This switch is used when creating a Service Principal and a registered Azure ApplicationID.
 
     .PARAMETER CreateSPNWithPassword
         This switch is used when creating a Service Principal and a registered Azure application with a user supplied password.
 
     .PARAMETER CreateSPNsWithNameAndCert
-        This switch is used when creating a Service Principal and a registered Azure application using a display name certificate.
+        This switch is used when creating a Service Principal and a registered Azure application using a display name and certificate.
 
     .PARAMETER GetSPNByName
         This switch is used to retrieve a Service Principal object from the Azure active directory via display name.
-    
+
     .PARAMETER GetSPNByAppID
-        This switch is used to retrieve a Service Principal object from the Azure active directory via application id.
-    
+        This switch is used to retrieve a Service Principal object from the Azure active directory via ApplicationID.
+
     .PARAMETER GetSPNSByName
         This switch is used to retrieve a batch of Service Principal objects via wildcard search from the Azure active directory.
-    
+
     .PARAMETER GetAppAndSPNPair
         This switch is used to retrieve an Application and Service Principal pair from the Azure active directory.
 
@@ -62,13 +63,13 @@
         This parameter is the unique ApplicationID for a Service Principal in a tenant. Once created this property cannot be changed.
 
     .PARAMETER ObjectID
-        This parameter is the unique ApplicationID for a Service Principal in a tenant. Once created this property cannot be changed.
+        This parameter is the unique ObjectID for a Service Principal in a tenant. Once created this property cannot be changed.
 
     .PARAMETER DeleteApp
-        This parameter is a switch used to specify the deletion of an Azure application.
+        This parameter is a switch used to delet3 an Azure application.
 
     .PARAMETER DeleteSpn
-        This parameter is a switch used to specify the deletion of a Service Principal.
+        This parameter is a switch used to delete a Service Principal.
 
     .PARAMETER DisplayName
         This parameter is the friendly name of the Service Principal you want to create.
@@ -85,8 +86,8 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSingleSPN
 
-        This example connects to an Azure tenant and created a single Service Principal object with default values
-    
+        This example connects to an Azure tenant and creates a single Service Principal object with default values
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSingleSPN -Name CompanySPN
 
@@ -95,28 +96,28 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSingleSPN -CreateSPNWithPassword -Name CompanySPN
 
-        This example creates a new Service Principal with a display name of 'Your SPNs Name' and a (user supplied password) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
+        This example creates a new Service Principal with a display name of 'CompanySPN' and a (user supplied password) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateBatchSPNS -NameFile c:\temp\Namefile.txt
 
-        This example connects to an Azure tenant with and creates a batch of Service Princpial objects from a file passed in.
+        This example connects to an Azure tenant and creates a batch of Service Princpial objects from a file passed in.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSPNWithAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-        This example creates a new Service Principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+        This example creates a new Service Principal with the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSPNsWithNameAndCert -Name CompanySPN -Certificate <public certificate as base64-encoded string>
 
-        This example creates a new Service Principal with a display name of 'Your SPNs Name' and certifcate and creates the Service Principal based on the application just created. The end date is added to key credential.
+        This example creates a new Service Principal with a display name of 'CompanySPN' and certifcate and creates the Service Principal based on the application just created. The end date is added to key credential.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -Reconnect -TenantID 679fa186-5871-43a8-aje5-b20c66a3a6b4 -SubscriptionID a706cb6e-8eb1-4341-8055-f34bz3b511f8
 
         This example will force a reconnect to a specific Azure tenant using a TenantID and SubscriptionID. Useful when switching between Azure tenants. This will also make an interactive connection.
-    
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -GetSpnByName -DisplayName CompanySPN
 
@@ -125,18 +126,18 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -GetSpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-        This example will retrieve a Service Principal from the Azure active directory by application id.
+        This example will retrieve a Service Principal from the Azure active directory by ApplicationID.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -GetSPNSByName -DisplayName CompanySPN
 
         This example will retrieve a batch of Service Principal objects from the Azure active directory by display name.
-        
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -GetAppAndSPNPair -DisplayName CompanySPN
 
         This example will retrieve a Service Principal and Application pair from the Azure active directory.
-    
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -RemoveAppAndSPNPair -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
@@ -153,10 +154,10 @@
         This example will delete a single Service Principal from the Azure active directory using the -ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ObjectID -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
         This example will delete a single Service Principal from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
-    
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
@@ -179,8 +180,6 @@
         If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
     .NOTES
-        All of these cmdlets can also be ran by the exported cmdlet name as well for single use. When running the exported cmdlets the varablie input will change based on cmdlet.
-
         When passing in the application ID it is the Azure ApplicationID from your registered application.
 
         WARNING: If you do not connect to an Azure tenant when you run Import-Module Az.Resources you will be logged in interactively to your default Azure subscription.
@@ -188,7 +187,7 @@
         If you have multiple Azure subscriptions in your account and want to select a different one,
         get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription id.
 
-        INFORMATION: The default parameter set uses default values for parameters if the user does not provide one for them.
+        INFORMATION: The default parameter set uses default values for parameters if the user does not provide any.
         For more information on the default values used, please see the description for the given parameters below.
         This cmdlet has the ability to assign a role to the Service Principal with the Role and Scope parameters;
         if neither of these parameters are provided, no role will be assigned to the Service Principal.
@@ -213,7 +212,7 @@
 
         [switch]
         $CreateBatchSPNS,
- 
+
         [switch]
         $CreateSPNWithAppID,
 
@@ -279,7 +278,7 @@
 
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantID, SubscriptionID, Reconnect
         $deleteParameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include ApplicationID, ObjectID
-        
+
         try
         {
             Connect-ToCloudTenant @parameters -EnableException
@@ -289,7 +288,7 @@
             Stop-PSFFunction -Message $_ -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
             return
         }
-        		
+
         # Try to obtain the list of names so we can batch create the SPNS
         if($NameFile -and $CreateBatchSPNS)
         {
@@ -365,7 +364,7 @@
                         }
                     }
                 }
-                
+
                 $script:spnCounter ++
             }
             catch

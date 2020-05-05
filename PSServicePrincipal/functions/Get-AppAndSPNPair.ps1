@@ -2,26 +2,26 @@
 {
 	<#
         .SYNOPSIS
-            Cmdlet for retrieving Azure Active Directory Applications and Service Principal pair.
+            Function for retrieving azure active directory applications and service principal pair.
 
         .DESCRIPTION
-            This function will retrieve an Application and Service Principal pair from the Azure Active Directory.
-            
+            This function will retrieve an Application and Service Principal pair from the Azure active Directory.
+
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-AppAndSPNPair -DisplayName App1234
+            PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN
 
             This will retrieve the Azure active directory application and Service Principal object.
     #>
-    
+
     [CmdletBinding()]
     Param (
         [string]
         $DisplayName
     )
-    
+
     try
     {
         Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
@@ -32,9 +32,9 @@
             DisplayName = $spnOutput.DisplayName
             AppID = $spnOutput.ApplicationID
             ObjectID = $spnOutput.ID}
-        
+
         $appOutput = Get-AzADApplication -DisplayName $DisplayName
-    
+
         [pscustomobject]@{
             ObjectType = "Application"
             DisplayName = $appOutput.DisplayName

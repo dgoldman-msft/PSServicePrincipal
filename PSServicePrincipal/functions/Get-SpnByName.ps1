@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for retrieving a Service Principal from the Azure active directory.
+            Filters active directory service principals by display name.
 
         .DESCRIPTION
             This function will retrieve a Service Principal from the Azure Active Directory by display name.
@@ -15,7 +15,7 @@
 
             This will retrieve a Service Principal by display name from the Azure active directory.
     #>
-    
+
     [CmdletBinding()]
     Param (
         [string]

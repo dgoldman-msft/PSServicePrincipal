@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for retrieving a batch of Service Principals from the Azure active directory.
+            Filters active directory service principals (batches via wildcard search).
 
         .DESCRIPTION
             This function will retrieve a batch of Service Principal objects from the Azure Active Directory by display name.
@@ -15,7 +15,7 @@
 
             This will retrieve a batch of service principals objects by display name using a wildcard search.
     #>
-    
+
     [CmdletBinding()]
     Param (
         [string]

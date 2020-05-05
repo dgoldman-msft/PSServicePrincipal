@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for retrieving a Service Principal from the Azure active directory.
+            Filters active directory service principals and applications.
 
         .DESCRIPTION
             This function will retrieve a Service Principal from the Azure Active Directory by application id.
@@ -15,7 +15,7 @@
 
             This will retrieve a Service Principal by application id from the Azure active directory.
     #>
-    
+
     [CmdletBinding()]
     Param (
         [string]
