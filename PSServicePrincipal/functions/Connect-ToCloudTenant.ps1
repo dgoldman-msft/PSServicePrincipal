@@ -2,17 +2,17 @@
 {
     <#
 		.SYNOPSIS
-            Cmdlet for making connections to an Azure tenant and subscription.
-            
+            Makes connections to an Azure tenant and subscription.
+
 		.DESCRIPTION
-            This function will connect to an Azure tenant and subscription.
-        
+            This cmdlet will connect to an Azure tenant and subscription.
+
         .PARAMETER Reconnect
             This parameter is used to force a new connection to an Azure tenant.
-        
+
         .PARAMETER TenantID
             This parameter is the Azure TenantID you are connecting to.
-        
+
         .PARAMETER SubscriptionID
             This parameter is that Azure SubscriptionID you are connecting to.
 
@@ -23,9 +23,9 @@
         .EXAMPLE
             PS c:\> Connect-ToCloudTenant -Tenant $tenant -SubscriptionId $SubscriptionId -Reconnect
 
-            These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
+            These parameters will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
-    
+
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     param(
