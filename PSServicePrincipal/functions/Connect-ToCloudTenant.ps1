@@ -2,19 +2,19 @@
 {
     <#
 		.SYNOPSIS
-            Cmdlet for making connections to an Azure tenant and subscription
+            Cmdlet for making connections to an Azure tenant and subscription.
             
 		.DESCRIPTION
-            This function will connect to an Azure tenant and subscription
+            This function will connect to an Azure tenant and subscription.
         
         .PARAMETER Reconnect
-            This parameter is used to force a new connection to an Azure tenant
+            This parameter is used to force a new connection to an Azure tenant.
         
-        .PARAMETER TenantId
-            This parameter is the Azure tenant you are connecting to.
+        .PARAMETER TenantID
+            This parameter is the Azure TenantID you are connecting to.
         
-        .PARAMETER SubscriptionId
-            This parameter is that Azure subscription you are connecting to.
+        .PARAMETER SubscriptionID
+            This parameter is that Azure SubscriptionID you are connecting to.
 
         .PARAMETER EnableException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
@@ -33,16 +33,16 @@
         $Reconnect,
 
         [string]
-        $TenantId,
+        $TenantID,
 
         [string]
-        $SubscriptionId,
+        $SubscriptionID,
 
         [switch]
         $EnableException
     )
 
-    $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantId, SubscriptionId
+    $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantID, SubscriptionID
 
     try
     {
@@ -50,7 +50,7 @@
         $context = Get-AzContext
 
         if($Reconnect) {Write-PSFMessage -Level Host -Message "Forcing a reconnection to Azure"}
-        elseif(-NOT ($context -or ($context.Subscription.Id -ne $SubscriptionId))) {
+        elseif(-NOT ($context -or ($context.Subscription.Id -ne $SubscriptionID))) {
             Write-PSFMessage -Level Host -Message "No existing prior Azure connection. You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
         }
         else
@@ -59,7 +59,7 @@
             return
         }
 
-        if($Tenant -and $SubscriptionId)
+        if($TenantID -and $SubscriptionID)
         {
             Connect-ToAzureInteractively @parameters
         }

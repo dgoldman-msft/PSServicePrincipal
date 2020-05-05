@@ -44,8 +44,12 @@
 		'Connect-ToCloudTenant'
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
-		'Get-SpnsByDisplayName'
+		'Get-SpnByName'
+		'Get-SpnByAppID'
+		'Get-SpnsByName'
 		'New-ServicePrincipalObject'
+		'Remove-AppOrSPN'
+		'Remove-AppAndSPNPair'
 		)
 	
 	# Cmdlets to export from this module
