@@ -233,6 +233,7 @@
         $GetAppAndSPNPair,
 
         [switch]
+        $RemoveAppAndSPNPair,
 
         [switch]
         $DeleteApp,
