@@ -1,19 +1,19 @@
-﻿Function Get-SpnsByDisplayName
+﻿Function Get-SpnsByName
 {
     <#
         .SYNOPSIS
-            Cmdlet for retrieving Azure Active Directory Applications and Service Principals.
+            Cmdlet for retrieving a batch of Service Principals from the Azure active directory.
 
         .DESCRIPTION
-            This function will retrieve Azure Active Directory Applications and Service Principals.
+            This function will retrieve a batch of Service Principal objects from the Azure Active Directory by display name.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the objects you are retrieving
+            This parameter is the display name of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-SpnsByDisplayName $DisplayName
+            PS c:\> Get-SpnsByName $DisplayName
 
-            This will retrieve all service principals by display name using a wildcard
+            This will retrieve a batch of service principals objects by display name using a wildcard search.
     #>
     
     [CmdletBinding()]
@@ -24,7 +24,7 @@
 
     try
     {
-        Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name" -FunctionName Internal -ModuleName PSServicePrincipal
+        Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
         $DisplayNameWC = $DisplayName, "*" -join ""
         $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
 

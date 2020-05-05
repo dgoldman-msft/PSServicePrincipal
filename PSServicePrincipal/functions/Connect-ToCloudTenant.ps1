@@ -2,13 +2,13 @@
 {
     <#
 		.SYNOPSIS
-            Cmdlet for making connections to an Azure tenant and subscription
+            Cmdlet for making connections to an Azure tenant and subscription.
             
 		.DESCRIPTION
-            This function will connect to an Azure tenant and subscription
+            This function will connect to an Azure tenant and subscription.
         
         .PARAMETER Reconnect
-            This parameter is used to force a new connection to an Azure tenant
+            This parameter is used to force a new connection to an Azure tenant.
         
         .PARAMETER TenantId
             This parameter is the Azure tenant you are connecting to.
