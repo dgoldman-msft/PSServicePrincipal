@@ -40,6 +40,7 @@
             This will delete the Azure application using the ObjectID.
     #>
     
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     Param (
         [string]

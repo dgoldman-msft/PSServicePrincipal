@@ -46,6 +46,12 @@
     .PARAMETER GetAppAndSPNPair
         This switch is used to retrieve an Application and Service Principal pair from the Azure active directory.
 
+    .PARAMETER RemoveAppOrSpn 
+        This switch is used to delete a single Azure Application or Service Principal from the Azure active directory.
+
+    .PARAMETER RemoveAppAndSPNPair 
+        This switch is used to delete an Application and Service Principal pair from the Azure active directory.
+
     .PARAMETER OpenAzurePortal
         This switch is used to when connecting to the online web Azure portal.
 
@@ -227,10 +233,10 @@
         $GetSPNSByName,
 
         [switch]
-        $RemoveAppOrSpn,
+        $GetAppAndSPNPair,
 
         [switch]
-        $GetAppAndSPNPair,
+        $RemoveAppOrSpn,
 
         [switch]
         $RemoveAppAndSPNPair,

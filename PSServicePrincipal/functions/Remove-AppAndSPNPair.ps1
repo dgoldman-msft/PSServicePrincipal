@@ -55,7 +55,7 @@
     }
     
     try
-    { 
+    {
         $userChoice = Get-PSFUserChoice -Options "1) Yes", "2) No" -Caption "Delete matching Azure application" -Message "Would you like to delete the matching Azure application?"
         
         switch ($userChoice)
