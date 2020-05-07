@@ -26,6 +26,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [OutputType('System.Collections.ArrayList')]
     [CmdletBinding()]
     param(
         [switch]
@@ -90,6 +91,6 @@
             Stop-PSFFunction -Message "WARNING" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
         }
 
-        return $false
+        return
     }
 }

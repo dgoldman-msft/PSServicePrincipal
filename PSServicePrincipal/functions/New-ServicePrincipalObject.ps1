@@ -36,6 +36,9 @@
     .PARAMETER CreateSPNsWithNameAndCert
         This switch is used when creating a Service Principal and a registered Azure application using a display name and certificate.
 
+    .PARAMETER GetAppByName
+        This switch is used to retrieve a Registered Application from the Azure active directory via display name.
+
     .PARAMETER GetSPNByName
         This switch is used to retrieve a Service Principal object from the Azure active directory via display name.
 
@@ -56,6 +59,9 @@
 
     .PARAMETER OpenAzurePortal
         This switch is used to when connecting to the online web Azure portal.
+
+    .PARAMETER RegisteredApp
+        This parameter is is used when working on Registered Azure Applications (not Enterprise Applications).
 
     .PARAMETER NameFile
         This parameter is the name of the file that contains the list of Service Principals being passed in for creation.
@@ -200,6 +206,8 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope='New-ServicePrincipalObject')]
+    [OutputType('System.Collections.ArrayList')]
     [CmdletBinding()]
     param(
         [switch]
@@ -224,6 +232,9 @@
         $CreateSPNsWithNameAndCert,
 
         [switch]
+        $GetAppByName,
+
+        [switch]
         $GetSPNByName,
 
         [switch]
@@ -231,9 +242,6 @@
 
         [switch]
         $GetSPNSByName,
-
-        [switch]
-        $GetAppByName,
 
         [switch]
         $GetAppAndSPNPair,
@@ -283,7 +291,7 @@
         $script:spnCounter = 0
         $script:appCounter = 0
         $script:runningOnCore = $false
-        $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
+        $script:roleListToProcess = New-Object -Type [System.Collections.ArrayList]
         Write-PSFMessage -Level Host -Message "Starting Script Run"
 
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
@@ -369,7 +377,7 @@
             catch
             {
                 Stop-PSFFunction -Message "ERROR: Creating a simple SPN failed" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                return $false
+                return
             }
         }
 
@@ -419,10 +427,7 @@
                     {
                         foreach($spn in $objectsToCreate)
                         {
-                            if($success =  New-SPNByAppID -DisplayName $spn)
-                            {
-                                $script:spnCounter ++
-                            }
+                            New-SPNByAppID -DisplayName $spn
                         }
 
                         if($roleListToProcess.Count -gt 0)
