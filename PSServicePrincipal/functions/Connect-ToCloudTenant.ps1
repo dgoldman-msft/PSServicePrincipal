@@ -32,44 +32,45 @@
         [switch]
         $Reconnect,
 
-        [string]
-        $TenantID,
-
-        [string]
-        $SubscriptionID,
-
         [switch]
         $EnableException
     )
 
-    $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include TenantID, SubscriptionID
-
     try
     {
-        Write-PSFMessage -Level Host -Message "Checking for an existing connection to Azure"
-        $context = Get-AzContext
-
         if($Reconnect)
         {
-            Write-PSFMessage -Level Host -Message "Forcing a reconnection to Azure"
-        }
-        elseif(-NOT $context)
-        {
-            Write-PSFMessage -Level Host -Message "No existing prior Azure connection. You must first connect to the Azure tenant you want to create the service principals in. Calling function: Connect-AzAccount"
-        }
-        else
-        {
-            Write-PSFMessage -Level Host -Message "Azure session found! Connected to {0} as {1} in tenant {2} wiht Environment as {3}" -StringValues $context.Subscription.Name, $context.Account.Id, $context.Tenant.Id, $context.Environment.Name
+            Write-PSFMessage -Level Host -Message "Forcing a reconnection to Azure" -Once "Forcing Connection" -FunctionName "Connect-ToCloudTenant"
+            Connect-ToAzureDefaultConnection
             return
         }
 
-        if($TenantID -and $SubscriptionID)
+        $script:AdSession = Get-AzureADCurrentSessionInfo -ErrorAction Stop
+        Write-PSFMessage -Level Host -Message "AzureAD session found! Connected as {0} - Tenant {1} with Environment as {2}" -StringValues $script:AdSession.Account.Id, $script:AdSession.Tenant.Id, $script:AdSession.Environment.Name -Once "AD Connection Found" -FunctionName "Connect-ToCloudTenant"
+        $script:adSessionFound = $true
+    }
+    catch
+    {
+        Write-PSFMessage -Level Verbose -Message "No existing prior AzureAD connection." -Once "No Prior Connection" -FunctionName "Connect-ToCloudTenant"
+        $script:adSessionFound = $false
+        Connect-ToAzureInteractively
+    }
+
+    try
+    {
+        Write-PSFMessage -Level Host -Message "Checking for an existing AzureAZ connection" -Once "No ADConnection" -FunctionName "Connect-ToCloudTenant"
+        $script:AzSession = Get-AzContext
+
+        if(-NOT $script:AzSession)
         {
-            Connect-ToAzureInteractively @parameters
+            Write-PSFMessage -Level Host -Message "No existing prior AzureAZ connection." -Once "No AZ Connection" -FunctionName "Connect-ToCloudTenant"
+            $script:azSessionFound = $false
+            Connect-ToAzureInteractively
         }
         else
         {
-            Connect-ToAzureDefaultConnection
+            Write-PSFMessage -Level Host -Message "AzureAZ session found! Connected to {0} as {1} - Tenant {2} - Environment as {3}" -StringValues $script:AzSession.Name, $script:AzSession.Account, $script:AzSession.Tenant, $script:AzSession.Environment.Name -Once "AZ Connection found" -FunctionName "Connect-ToCloudTenant"
+            $script:azSessionFound = $true
         }
     }
     catch

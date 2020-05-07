@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.4'
+	ModuleVersion = '1.0.5'
 
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -27,8 +27,10 @@
 	# this module
 	RequiredModules = @(
 		@{ ModuleName='PSFramework'; ModuleVersion='1.1.59' }
+		'AzureAD'
 		'Az.Accounts'
-    	'Az.Resources')
+		'Az.Resources'
+		)
 
 	# Assemblies that must be loaded prior to importing this module
 	# RequiredAssemblies = @('bin\PSServicePrincipal.dll')
@@ -42,6 +44,7 @@
 	# Functions to export from this module
 	FunctionsToExport = @(
 		'Connect-ToCloudTenant'
+		'Get-AppByName'
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
 		'Get-SpnByName'
