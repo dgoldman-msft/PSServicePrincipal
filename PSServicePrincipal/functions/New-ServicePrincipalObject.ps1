@@ -290,7 +290,11 @@
         $script:spnCounter = 0
         $script:appCounter = 0
         $script:runningOnCore = $false
-        $script:roleListToProcess = New-Object -Type [System.Collections.ArrayList]
+        $script:AzSessionFound = $false
+        $script:AdSessionFound = $false
+        $script:AzSessionInfo = $null
+        $script:AdSessionInfo = $null
+        $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
         Write-PSFMessage -Level Host -Message "Starting Script Run"
 
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect

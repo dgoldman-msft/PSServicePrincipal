@@ -10,18 +10,12 @@
         .PARAMETER Reconnect
             This parameter is used to force a new connection to an Azure tenant.
 
-        .PARAMETER TenantID
-            This parameter is the Azure TenantID you are connecting to.
-
-        .PARAMETER SubscriptionID
-            This parameter is that Azure SubscriptionID you are connecting to.
-
         .PARAMETER EnableException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
-            PS c:\> Connect-ToCloudTenant -Tenant $tenant -SubscriptionId $SubscriptionId -Reconnect
+            PS c:\> Connect-ToCloudTenant -Reconnect
 
             These parameters will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>
@@ -45,37 +39,36 @@
             return
         }
 
-        $script:AdSession = Get-AzureADCurrentSessionInfo -ErrorAction Stop
-        Write-PSFMessage -Level Host -Message "AzureAD session found! Connected as {0} - Tenant {1} with Environment as {2}" -StringValues $script:AdSession.Account.Id, $script:AdSession.Tenant.Id, $script:AdSession.Environment.Name -Once "AD Connection Found" -FunctionName "Connect-ToCloudTenant"
-        $script:adSessionFound = $true
+        $script:AdSessionInfo = Get-AzureADCurrentSessionInfo -ErrorAction Stop
+        Write-PSFMessage -Level Host -Message "AzureAD session found! Connected as {0} - Tenant {1} with Environment as {2}" -StringValues $script:AdSessionInfo.Account.Id, $script:AdSessionInfo.Tenant.Id, $script:AdSessionInfo.Environment.Name -Once "AD Connection Found" -FunctionName "Connect-ToCloudTenant"
+        $script:AdSessionFound = $true
     }
     catch
     {
         Write-PSFMessage -Level Verbose -Message "No existing prior AzureAD connection." -Once "No Prior Connection" -FunctionName "Connect-ToCloudTenant"
-        $script:adSessionFound = $false
+        $script:AdSessionFound = $false
         Connect-ToAzureInteractively
     }
 
     try
     {
         Write-PSFMessage -Level Host -Message "Checking for an existing AzureAZ connection" -Once "No ADConnection" -FunctionName "Connect-ToCloudTenant"
-        $script:AzSession = Get-AzContext
+        $script:AzSessionInfo = Get-AzContext
 
-        if(-NOT $script:AzSession)
+        if(-NOT $script:AzSessionInfo)
         {
             Write-PSFMessage -Level Host -Message "No existing prior AzureAZ connection." -Once "No AZ Connection" -FunctionName "Connect-ToCloudTenant"
-            $script:azSessionFound = $false
+            $script:AzSessionFound = $false
             Connect-ToAzureInteractively
         }
         else
         {
-            Write-PSFMessage -Level Host -Message "AzureAZ session found! Connected to {0} as {1} - Tenant {2} - Environment as {3}" -StringValues $script:AzSession.Name, $script:AzSession.Account, $script:AzSession.Tenant, $script:AzSession.Environment.Name -Once "AZ Connection found" -FunctionName "Connect-ToCloudTenant"
-            $script:azSessionFound = $true
+            Write-PSFMessage -Level Host -Message "AzureAZ session found! Connected to {0} as {1} - Tenant {2} - Environment as {3}" -StringValues $script:AzSessionInfo.Name, $script:AzSessionInfo.Account, $script:AzSessionInfo.Tenant, $script:AzSessionInfo.Environment.Name -Once "AZ Connection found" -FunctionName "Connect-ToCloudTenant"
+            $script:AzSessionFound = $true
         }
     }
     catch
     {
         Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
     }
 }

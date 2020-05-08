@@ -241,19 +241,19 @@ $installationScript = {
 if($IsMacOS)
 {
 	$script:loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "/Documents/PowerShell Script Logging"
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.FilePath' -Value "$($script:loggingFolder)/%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.FilePath' -Value "$($script:loggingFolder)/%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 }
 else
 {
 	$script:loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging"
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.FilePath' -Value "$($script:loggingFolder)\%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.FilePath' -Value "$($script:loggingFolder)\%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 }
 
 $configuration_Settings = {
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.IncludeHeader' -Value $true -Initialize -Validation bool -Handler { } -Description "Whether a written csv file will include headers"
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.Headers' -Value @('Timestamp', 'Level', 'FunctionName', 'Message') -Initialize -Validation stringarray -Handler { } -Description "The properties to export, in the order to select them."
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.FileType' -Value "CSV" -Initialize -Validation psframework.logfilefiletype -Handler { } -Description "In what format to write the logfile. Supported styles: CSV, XML, Html or Json. Html, XML and Json will be written as fragments."
-	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.CsvDelimiter' -Value "," -Initialize -Validation string -Handler { } -Description "The delimiter to use when writing to csv."
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.IncludeHeader' -Value $true -Initialize -Validation bool -Handler { } -Description "Whether a written csv file will include headers"
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.Headers' -Value @('Timestamp', 'Level', 'FunctionName', 'Message') -Initialize -Validation stringarray -Handler { } -Description "The properties to export, in the order to select them."
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.FileType' -Value "CSV" -Initialize -Validation psframework.logfilefiletype -Handler { } -Description "In what format to write the logfile. Supported styles: CSV, XML, Html or Json. Html, XML and Json will be written as fragments."
+	Set-PSFConfig -Module PSServicePrincipal -Name 'PSServicePrincipal.Logging.CsvDelimiter' -Value "," -Initialize -Validation string -Handler { } -Description "The delimiter to use when writing to csv."
 	Set-PSFConfig -Module LoggingProvider -Name 'PSServicePrincipal.Enabled' -Value $true -Initialize -Validation "bool" -Handler { if ([PSFramework.Logging.ProviderHost]::Providers['PSServicePrincipal']) { [PSFramework.Logging.ProviderHost]::Providers['PSServicePrincipal'].Enabled = $args[0] } } -Description "Whether the logging provider should be enabled on registration"
 	Set-PSFConfig -Module LoggingProvider -Name 'PSServicePrincipal.AutoInstall' -Value $false -Initialize -Validation "bool" -Handler { } -Description "Whether the logging provider should be installed on registration"
 	Set-PSFConfig -Module LoggingProvider -Name 'PSServicePrincipal.InstallOptional' -Value $true -Initialize -Validation "bool" -Handler { } -Description "Whether installing the logging provider is mandatory, in order for it to be enabled"

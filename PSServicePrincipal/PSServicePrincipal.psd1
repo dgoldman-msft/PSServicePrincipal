@@ -83,13 +83,13 @@
 				'ServicePrincipal'
 				'Configuration'
 				'Windows'
-				'MacOS')
+				)
 
 			# A URL to the license for this module.
 			# LicenseUri = ''
 
 			# A URL to the main website for this project.
-			# ProjectUri = ''
+			ProjectUri = 'https://github.com/dgoldman-msft/PSServicePrincipal'
 
 			# A URL to an icon representing this module.
 			# IconUri = ''
