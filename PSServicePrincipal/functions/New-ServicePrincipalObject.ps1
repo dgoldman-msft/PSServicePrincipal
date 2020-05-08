@@ -206,7 +206,6 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUserDeclaredVarsMoreThanAssignments', '', Scope='New-ServicePrincipalObject')]
     [OutputType('System.Collections.ArrayList')]
     [CmdletBinding()]
     param(
