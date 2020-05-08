@@ -34,20 +34,21 @@
             try
             {
                 Connect-AzureAD -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
-                Write-PSFMessage -Level Host -Message "Connected to AzureAD with interactive logon"  -Once "Interactively Connected to AzureAD" -FunctionName "Connect-ToAzureInteractively"
+                Write-PSFMessage -Level Host -Message "Connected to AzureAD with automatic logon"  -Once "Automatically connected to AzureAD" -FunctionName "Connect-ToAzureInteractively"
                 $script:AdSessionFound = $true
             }
             catch
             {
-                Write-PSFMessage -Level Host -Message "Interactive logon to AzureAD failed. Defaulting to default connection state" -Once "Interactive Logon Failed" -FunctionName "Connect-ToAzureInteractively"
+                Write-PSFMessage -Level Host -Message "Automatic logon to AzureAD failed. Defaulting to interactive connection" -Once "Interactive Logon Failed" -FunctionName "Connect-ToAzureInteractively"
                 $script:AdSessionFound = $false
 
                 try
                 {
                     $Credentials = Get-Credential
-                    $script:AzSessionInfo = Connect-AzAccount -Credential $Credentials -ErrorAction Stop
-                    $script:AzSessionFound = $true
-                    Write-PSFMessage -Level Host -Message "Interactive logon to AzureAD failed. Defaulting to default connection state" -Once "Interactive Logon Failed" -FunctionName "Connect-ToAzureInteractively"
+                    $Credentials.Password.MakeReadOnly()
+                    $script:AdSessionInfo = Connect-AzureAD -Credential $Credentials -ErrorAction Stop
+                    $script:AdSessionFound = $true
+                    Write-PSFMessage -Level Host -Message "Connected to AzureAD successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"
                 }
                 catch
                 {
@@ -62,19 +63,21 @@
         try
         {
             Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
-            Write-PSFMessage -Level Host -Message "Connected to AzureAZ with interactive logon" -Once "Interactively Connected to AzureAZ" -FunctionName "Connect-ToAzureInteractively"
+            Write-PSFMessage -Level Host -Message "Connected to AzureAZ with automatic logon" -Once "Automatically connected to AzureAZ" -FunctionName "Connect-ToAzureInteractively"
             $script:AzSessionFound = $true
         }
         catch
         {
-            Write-PSFMessage -Level Host -Message "Interactive logon to AzureAZ failed. Defaulting to default connection state" -Once "Interactive Connection Failed" -FunctionName "Connect-ToAzureInteractively"
+            Write-PSFMessage -Level Host -Message "Automatic logon to AzureAZ failed. Defaulting to interactive connection" -Once "Interactive Logon Failed" -FunctionName "Connect-ToAzureInteractively"
             $script:AzSessionFound = $false
 
             try
             {
                 $Credentials = Get-Credential
+                $Credentials.Password.MakeReadOnly()
                 $script:AzSessionInfo = Connect-AzAccount -Credential $Credentials -ErrorAction Stop
                 $script:AzSessionFound = $true
+                Write-PSFMessage -Level Host -Message "Connected to AzureAZ successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"
             }
             catch
             {
