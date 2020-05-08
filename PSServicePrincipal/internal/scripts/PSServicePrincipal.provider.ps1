@@ -13,8 +13,8 @@ $begin_event = {
 
 		)
 
-		$path = Get-PSFConfigValue -FullName 'PSServicePrincipal.Logging.PSServicePrincipal.FilePath'
-		$logname = Get-PSFConfigValue -FullName 'PSServicePrincipal.Logging.PSServicePrincipal.LogName'
+		$path = Get-PSFConfigValue -FullName 'PSServicePrincipal.Logging.FilePath'
+		$logname = Get-PSFConfigValue -FullName 'PSServicePrincipal.Logging.LogName'
 
 		$scriptBlock = {
 			param (
