@@ -7,19 +7,12 @@
     .DESCRIPTION
         This module will create a new Azure active directory enterprise application and Service Principal that can be used for application automation.
         Enterprise applications are Service Principal objects that mirror the applications.
-        Logging Provider: All messages are logged by default 'Documents\PowerShell Script Logs' on Windows and .'Documents/PowerShell Script Logs' on MacOS
+        Logging Provider: All messages are logged by default 'Documents\PowerShell Script Logs' on Windows and 'Documents/PowerShell Script Logs' on MacOS
         There are two logging folders for analysis: Get-LogFolder -LogFolder [OutputLoggingFolder] and [DebugLoggingFolder]
         For more information please visit: https://psframework.org/
         PSFramework Logging: https://psframework.org/documentation/quickstart/psframework/logging.html
         PSFramework Configuration: https://psframework.org/documentation/quickstart/psframework/configuration.html
         PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
-
-    .PARAMETER EnableException
-        This parameter disables user-friendly warnings and enables the throwing of exceptions.
-        This is less user friendly, but allows catching exceptions in calling scripts.
-
-    .PARAMETER Reconnect
-        This parameter switch is used when forcing a new connection to an Azure tenant subscription.
 
     .PARAMETER CreateSingleObject
         This switch is used when creating a single default Enterprise Application (Service Principal).
@@ -36,6 +29,16 @@
     .PARAMETER CreateSPNsWithNameAndCert
         This switch is used when creating a Service Principal and a registered Azure application using a display name and certificate.
 
+    .PARAMETER DeleteApp
+        This parameter is a switch used to delet3 an Azure application.
+
+    .PARAMETER DeleteSpn
+        This parameter is a switch used to delete a Service Principal.
+
+    .PARAMETER EnableException
+        This parameter disables user-friendly warnings and enables the throwing of exceptions.
+        This is less user friendly, but allows catching exceptions in calling scripts.
+
     .PARAMETER GetAppByName
         This switch is used to retrieve a Registered Application from the Azure active directory via display name.
 
@@ -51,127 +54,118 @@
     .PARAMETER GetAppAndSPNPair
         This switch is used to retrieve an Application and Service Principal pair from the Azure active directory.
 
+    .PARAMETER OpenAzurePortal
+        This switch is used to when connecting to the online web Azure portal.
+
+    .PARAMETER Reconnect
+        This parameter switch is used when forcing a new connection to an Azure tenant subscription.
+
     .PARAMETER RemoveAppOrSpn
         This switch is used to delete a single Azure Application or Service Principal from the Azure active directory.
 
-    .PARAMETER RemoveAppAndSPNPair
+    .PARAMETER RemoveAppAndSPNPairByID
         This switch is used to delete an Application and Service Principal pair from the Azure active directory.
-
-    .PARAMETER OpenAzurePortal
-        This switch is used to when connecting to the online web Azure portal.
 
     .PARAMETER RegisteredApp
         This parameter is is used when working on Registered Azure Applications (not Enterprise Applications).
 
-    .PARAMETER NameFile
-        This parameter is the name of the file that contains the list of Service Principals being passed in for creation.
-
     .PARAMETER ApplicationID
         This parameter is the unique ApplicationID for a Service Principal in a tenant. Once created this property cannot be changed.
-
-    .PARAMETER ObjectID
-        This parameter is the unique ObjectID for a Service Principal in a tenant. Once created this property cannot be changed.
-
-    .PARAMETER DeleteApp
-        This parameter is a switch used to delet3 an Azure application.
-
-    .PARAMETER DeleteSpn
-        This parameter is a switch used to delete a Service Principal.
-
-    .PARAMETER DisplayName
-        This parameter is the friendly name of the Service Principal you want to create.
 
     .PARAMETER Certificate
         This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
 
-    .PARAMETER TenantID
-        This parameter is the Azure TenantID you are connecting to.
+    .PARAMETER DisplayName
+        This parameter is the friendly name of the Service Principal you want to create.
 
-    .PARAMETER SubscriptionID
-        This parameter is that Azure SubscriptionID you are connecting to.
+    .PARAMETER NameFile
+        This parameter is the name of the file that contains the list of Service Principals being passed in for creation.
+
+    .PARAMETER ObjectID
+        This parameter is the unique ObjectID for a Service Principal in a tenant. Once created this property cannot be changed.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateSingleObject -Name CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject
 
         This example creates a new Service Principal with a display name of 'CompanySPN' and password (an autogenerated GUID) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateSingleObject -CreateSPNWithPassword -Name CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject -CreateSPNWithPassword
 
         This example creates a new Enterprise Application and Service Principal with a display name of 'CompanySPN' and a (user supplied password) and creates the Service Principal based on the application just created. The start date and end date are added to password credential.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateSPNWithAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -CreateSPNWithAppID
 
         This example creates a new Enterprise Application and Service Principal with the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateBatchObjects -NameFile c:\temp\YourFileContainingNames.txt
+        PS c:\> New-ServicePrincipalObject -NameFile c:\temp\YourFileContainingNames.txt -CreateBatchObjects
 
         This example connects to an Azure tenant and creates a batch of Enterprise Applications and Service Principal objects from a file passed in.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -CreateSPNsWithNameAndCert -Name CompanySPN -Certificate <public certificate as base64-encoded string>
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSPNsWithNameAndCert -Certificate <public certificate as base64-encoded string>
 
         This example creates a new Enterprise Application and Service Principal with a display name of 'CompanySPN' and certifcate and creates the Service Principal based on the application just created. The end date is added to key credential.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -Reconnect -TenantID 679fa186-5871-43a8-aje5-b20c66a3a6b4 -SubscriptionID a706cb6e-8eb1-4341-8055-f34bz3b511f8
+        PS c:\> New-ServicePrincipalObject -Reconnect
 
-        This example will force a reconnect to a specific Azure tenant using a TenantID and SubscriptionID. Useful when switching between Azure tenants. This will also make an interactive connection.
+        This example will force a reconnect to a specific Azure tenant.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetSpnByName -DisplayName CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetSpnByName
 
         This example will retrieve a Service Principal from the Azure active directory by display name.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetSpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -GetSpnByAppID
 
         This example will retrieve a Service Principal from the Azure active directory by ApplicationID.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetSPNSByName -DisplayName CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetSPNSByName
 
         This example will retrieve a batch of Service Principal objects from the Azure active directory by display name.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetAppByName -DisplayName CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppByName
 
         This example will retrieve a Enterprise Application from the Azure active directory.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -GetAppAndSPNPair -DisplayName CompanySPN
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppAndSPNPair
 
         This example will retrieve a Service Principal and Application pair from the Azure active directory.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppAndSPNPair -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -RemoveAppAndSPNPairByID
 
         This example will delete a Service Principal and Application pair from the Azure active directory using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppAndSPNPair -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+        PS c:\> New-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppAndSPNPairByID
 
         This example will delete a Service Principal and Application pair from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -RemoveAppOrSpn -DeleteSpn
 
         This example will delete a single Service Principal from the Azure active directory using the -ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteSpn -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+        PS c:\> New-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppOrSpn -DeleteSpn
 
         This example will delete a single Service Principal from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+        PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -RemoveAppOrSpn -DeleteApp
 
         This example will delete a singple application from the Azure Active directory using the -ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -RemoveAppOrSpn -DeleteApp -ObjectID -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+        PS c:\> New-ServicePrincipalObject -ObjectID -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppOrSpn -DeleteApp
 
         This example will delete a singple application from the Azure Active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
@@ -206,83 +200,111 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-    [OutputType('System.Collections.ArrayList')]
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName='Default')]
+    [OutputType([System.Boolean])]
+    [OutputType([System.String])]
+    [OutputType([Microsoft.Azure.Commands.ActiveDirectory.PSADServicePrincipal])]
+    [OutputType([Microsoft.Azure.Commands.ActiveDirectory.PSADApplication])]
+
     param(
-        [switch]
-        $EnableException,
-
-        [switch]
-        $Reconnect,
-
+        [parameter(ParameterSetName='DisplayNameSet', HelpMessage = "Switch used for single SPN creation")]
         [switch]
         $CreateSingleObject,
 
+        [parameter(Mandatory = 'True', ParameterSetName='NameFileSet', HelpMessage = "Switch used for creating batch SPN's")]
         [switch]
         $CreateBatchObjects,
 
+        [parameter(ParameterSetName='AppIDSet', HelpMessage = "Switch used to create SPN with an ApplicationID")]
         [switch]
         $CreateSPNWithAppID,
 
-        [switch]
-        $CreateSPNWithPassword,
-
+        [parameter(ParameterSetName='CertSet', HelpMessage = "Switch used to create SPN with an name and certificate")]
+        [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
         $CreateSPNsWithNameAndCert,
 
+        [parameter(ParameterSetName='CertSet', HelpMessage = "Switch used to create SPN with a user supplied password")]
+        [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
-        $GetAppByName,
+        $CreateSPNWithPassword,
 
-        [switch]
-        $GetSPNByName,
-
-        [switch]
-        $GetSPNByAppID,
-
-        [switch]
-        $GetSPNSByName,
-
-        [switch]
-        $GetAppAndSPNPair,
-
-        [switch]
-        $RemoveAppOrSpn,
-
-        [switch]
-        $RemoveAppAndSPNPair,
-
+        [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
         $DeleteApp,
 
+        [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
         $DeleteSpn,
 
         [switch]
+        $EnableException,
+
+        [parameter(ParameterSetName="AppIDSet")]
+        [switch]
+        $GetSPNByAppID,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [switch]
+        $GetAppByName,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [switch]
+        $GetSPNByName,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [switch]
+        $GetSPNSByName,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [switch]
+        $GetAppAndSPNPair,
+
+        [parameter(Mandatory = 'True', ParameterSetName='OpenAzurePortal',  Position = '0', HelpMessage = "A switch used to connect to the Azure web portal")]
+        [switch]
         $OpenAzurePortal,
 
+        [parameter(Mandatory = 'True', ParameterSetName='Reconnect', Position = '0', HelpMessage = "A switch used to connect force a new conncetion to an Azure tenant")]
+        [switch]
+        $Reconnect,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
         $RegisteredApp,
 
-        [string]
-        $NameFile,
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [switch]
+        $RemoveAppOrSpn,
 
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [parameter(ParameterSetName="ObjectIDSet")]
+        [switch]
+        $RemoveAppAndSPNPairByID,
+
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='AppIDSet', HelpMessage = "ApplicationID of a created spn")]
+        [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
-        [string]
-        $ObjectID,
-
-        [string]
-        $DisplayName,
-
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='CertSet', HelpMessage = "ApplicationID of a created spn")]
+        [ValidateNotNullOrEmpty()]
         [string]
         $Certificate,
 
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='DisplayNameSet', HelpMessage = "Display name of a created SPN ")]
+        [ValidateNotNullOrEmpty()]
         [string]
-        $TenantID,
+        $DisplayName,
 
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='NameFileSet', HelpMessage = "Name file used to create a batch of spn's")]
+        [ValidateNotNullOrEmpty()]
         [string]
-        $SubscriptionID
+        $NameFile,
+
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create an SPN ")]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $ObjectID
     )
 
     Process
@@ -295,10 +317,9 @@
         $script:AzSessionInfo = $null
         $script:AdSessionInfo = $null
         $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
-        Write-PSFMessage -Level Host -Message "Starting Script Run"
-
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
         $deleteParameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include ApplicationID, ObjectID
+        Write-PSFMessage -Level Host -Message "Starting Script Run"
 
         try
         {
@@ -588,7 +609,7 @@
             }
         }
 
-        if($RemoveAppAndSPNPair)
+        if($RemoveAppAndSPNPairByID)
         {
             try
             {
@@ -655,31 +676,6 @@
 
     end
     {
-        if(0 -eq $script:appCounter)
-        {
-            Write-PSFMessage -Level Host -Message "No application objects created!" -StringValues $script:appCounter
-        }
-        elseif(1 -eq $script:appCounter)
-        {
-            Write-PSFMessage -Level Host -Message "{0} application object created sucessfully!" -StringValues $script:appCounter
-        }
-        elseif(1 -gt $script:appCounter)
-        {
-            Write-PSFMessage -Level Host -Message "{0} SPN applications created sucessfully!" -StringValues $script:appCounter
-        }
-        if(0 -eq $script:spnCounter)
-        {
-            Write-PSFMessage -Level Host -Message "No SPN objects created!" -StringValues $script:spnCounter
-        }
-        elseif(1 -eq $script:spnCounter)
-        {
-            Write-PSFMessage -Level Host -Message "{0} SPN object created sucessfully!" -StringValues $script:spnCounter
-        }
-        elseif(1 -gt $script:spnCounter)
-        {
-            Write-PSFMessage -Level Host -Message "{0} SPN objects created sucessfully!" -StringValues $script:spnCounter
-        }
-
         Write-PSFMessage -Level Host -Message "Script run complete!"
         Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder #-Once 'LoggingDestination'
     }

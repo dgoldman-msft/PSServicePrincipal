@@ -33,7 +33,7 @@
         {
             try
             {
-                Connect-AzureAD -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
+                $script:AdSessionInfo = Connect-AzureAD -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
                 Write-PSFMessage -Level Host -Message "Connected to AzureAD with automatic logon"  -Once "Automatically connected to AzureAD" -FunctionName "Connect-ToAzureInteractively"
                 $script:AdSessionFound = $true
             }
@@ -62,7 +62,7 @@
     {
         try
         {
-            Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
+            $script:AzSessionInfo =Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Connected to AzureAZ with automatic logon" -Once "Automatically connected to AzureAZ" -FunctionName "Connect-ToAzureInteractively"
             $script:AzSessionFound = $true
         }
