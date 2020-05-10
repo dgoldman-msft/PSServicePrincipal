@@ -45,7 +45,6 @@
                 try
                 {
                     $Credentials = Get-Credential
-                    $Credentials.Password.MakeReadOnly()
                     $script:AdSessionInfo = Connect-AzureAD -Credential $Credentials -ErrorAction Stop
                     $script:AdSessionFound = $true
                     Write-PSFMessage -Level Host -Message "Connected to AzureAD successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"
@@ -62,7 +61,7 @@
     {
         try
         {
-            $script:AzSessionInfo =Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
+            $script:AzSessionInfo = Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Connected to AzureAZ with automatic logon" -Once "Automatically connected to AzureAZ" -FunctionName "Connect-ToAzureInteractively"
             $script:AzSessionFound = $true
         }
@@ -74,7 +73,6 @@
             try
             {
                 $Credentials = Get-Credential
-                $Credentials.Password.MakeReadOnly()
                 $script:AzSessionInfo = Connect-AzAccount -Credential $Credentials -ErrorAction Stop
                 $script:AzSessionFound = $true
                 Write-PSFMessage -Level Host -Message "Connected to AzureAZ successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"
