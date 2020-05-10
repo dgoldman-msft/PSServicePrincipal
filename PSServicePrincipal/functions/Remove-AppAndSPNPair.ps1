@@ -40,7 +40,7 @@
     {
         if($parameters.ContainsKey('ApplicationID'))
         {
-                Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop
+            Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop
         }
 
         if($parameters.ContainsKey('ObjectID'))
@@ -49,6 +49,7 @@
         }
 
         Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues @($parameters.Values[0])
+        $script:appDeletedCounter ++
     }
     catch
     {
@@ -74,6 +75,7 @@
                 }
 
                 Write-PSFMessage -Level Host "Azure application {0} deleted!" -StringValues @($parameters.Values[0])
+                $script:appDeletedCounter ++
             }
 
             1

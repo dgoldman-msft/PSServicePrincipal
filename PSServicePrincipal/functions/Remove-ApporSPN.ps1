@@ -73,6 +73,7 @@
             }
 
             Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues @($parameters.Values[0])
+            $script:appDeletedCounter ++
         }
     }
     catch
@@ -95,6 +96,7 @@
             }
 
             Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues @($parameters.Values[0])
+            $script:appDeletedCounter ++
         }
     }
     catch

@@ -44,7 +44,7 @@
 
                 try
                 {
-                    $Credentials = Get-Credential
+                    $Credentials = Get-Credential -Message "Please enter your credentials for Connect-AzureAD"
                     $script:AdSessionInfo = Connect-AzureAD -Credential $Credentials -ErrorAction Stop
                     $script:AdSessionFound = $true
                     Write-PSFMessage -Level Host -Message "Connected to AzureAD successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"
@@ -72,7 +72,7 @@
 
             try
             {
-                $Credentials = Get-Credential
+                $Credentials = Get-Credential -Message "Please enter your credentials for Connect-AzAccount"
                 $script:AzSessionInfo = Connect-AzAccount -Credential $Credentials -ErrorAction Stop
                 $script:AzSessionFound = $true
                 Write-PSFMessage -Level Host -Message "Connected to AzureAZ successful" -Once "Interactive Logon Successful" -FunctionName "Connect-ToAzureInteractively"

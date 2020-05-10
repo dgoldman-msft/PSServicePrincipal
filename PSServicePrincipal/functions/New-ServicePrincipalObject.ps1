@@ -201,10 +201,8 @@
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding(DefaultParameterSetName='Default')]
-    [OutputType([System.Boolean])]
-    [OutputType([System.String])]
-    [OutputType([Microsoft.Azure.Commands.ActiveDirectory.PSADServicePrincipal])]
-    [OutputType([Microsoft.Azure.Commands.ActiveDirectory.PSADApplication])]
+    [OutputType('System.Boolean')]
+    [OutputType('System.String')]
 
     param(
         [parameter(ParameterSetName='DisplayNameSet', HelpMessage = "Switch used for single SPN creation")]
@@ -311,6 +309,7 @@
     {
         $script:spnCounter = 0
         $script:appCounter = 0
+        $script:appDeletedCounter = 0
         $script:runningOnCore = $false
         $script:AzSessionFound = $false
         $script:AdSessionFound = $false
@@ -359,7 +358,7 @@
         {
             try
             {
-                if($DisplayName -and $RegisteredApp)
+                if($RegisteredApp)
                 {
                     if(-NOT $script:runningOnCore)
                     {
@@ -368,10 +367,10 @@
                         if($newApp)
                         {
                             Write-PSFMessage -Level Host -Message "Registered Application created: DisplayName: {0} - ApplicationID {1}" -Format $newApp.DisplayName, $newApp.AppId
+                            $script:appCounter ++
 
                             # Since we only create an AzureADapplicaiaton we need to create the matching service principal
-                            New-SPNByAppID -ApplicationID $newApp.AppID -RegisteredApp
-                            Add-RoleToSPN -spnToProcess $newApp
+                            New-SPNByAppID -ApplicationID $newApp.AppId -RegisteredApp
                         }
                         elseif($ProcessError)
                         {
@@ -383,12 +382,11 @@
                         Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6 to create Registered Applications."
                     }
                 }
-
-                if($DisplayName -and $CreateSPNWithPassword)
+                elseif($DisplayName -and $CreateSPNWithPassword)
                 {
                     New-SPNByAppID -DisplayName $DisplayName -CreateSPNWithPassword
                 }
-                elseif($DisplayName)
+                elseif(($DisplayName) -and (-NOT $RegisteredApp))
                 {
                     New-SPNByAppID -DisplayName $DisplayName
                 }
@@ -642,7 +640,7 @@
             {
                 if($DeleteApp)
                 {
-                Remove-AppOrSPN @deleteParameters -DeleteApp
+                    Remove-AppOrSPN @deleteParameters -DeleteApp
                 }
                 else
                 {
@@ -676,6 +674,44 @@
 
     end
     {
+
+        if(0 -eq $script:appDeletedCounter)
+        {
+            Write-PSFMessage -Level Host -Message "No applications deleted!"
+        }
+        elseif(1 -eq $script:appDeletedCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} application deleted sucessfully!" -StringValues $script:appDeletedCounter
+        }
+        elseif(1 -gt $script:appDeletedCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} applications deleted sucessfully!" -StringValues $script:appDeletedCounter
+        }
+        if(0 -eq $script:appCounter)
+        {
+            Write-PSFMessage -Level Host -Message "No application created!"
+        }
+        elseif(1 -eq $script:appCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} application created sucessfully!" -StringValues $script:appCounter
+        }
+        elseif(1 -gt $script:appCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} applications created sucessfully!" -StringValues $script:appCounter
+        }
+        if(0 -eq $script:spnCounter)
+        {
+            Write-PSFMessage -Level Host -Message "No service principal created!"
+        }
+        elseif(1 -eq $script:spnCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} service principals sucessfully!" -StringValues $script:spnCounter
+        }
+        elseif(1 -gt $script:spnCounter)
+        {
+            Write-PSFMessage -Level Host -Message "{0} service principals created sucessfully!" -StringValues $script:spnCounter
+        }
+
         Write-PSFMessage -Level Host -Message "Script run complete!"
         Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder #-Once 'LoggingDestination'
     }
