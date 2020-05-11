@@ -50,9 +50,10 @@
 		'Get-SpnByName'
 		'Get-SpnByAppID'
 		'Get-SpnsByName'
+		'New-SelfSignedCert'
 		'New-ServicePrincipalObject'
 		'Remove-AppOrSPN'
-		'Remove-AppAndSPNPair'
+		'Remove-EnterpriseAppAndSPNPair'
 		)
 
 	# Cmdlets to export from this module

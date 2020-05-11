@@ -7,27 +7,47 @@
         .DESCRIPTION
             This function will delete an Application or Service Principal pair from the Azure Active Directory.
 
+        .PARAMETER DisplayName
+            This parameter is the DisplayName of the object you are deleting.
+
         .PARAMETER ApplicationID
             This parameter is the ApplicationID of the object you are deleting.
 
         .PARAMETER ObjectID
             This parameter is the ObjectID of the objects you are deleting.
 
-        .PARAMETER DeleteApp
-            This parameter is switch specifiy you want to delete a Azure application.
+        .PARAMETER DeleteEnterpriseApp
+            This parameter is switch used to delete an Azure enterprise application.
+
+        .PARAMETER DeleteRegisteredApp
+            This parameter is switch used to delete an Azure registered application.
 
         .PARAMETER DeleteSpn
-            This parameter is switch specifiy you want to delete a Service Principal.
+            This parameter is switch used to delete a Service Principal.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+            PS c:\> Remove-AppOrSPN -DeleteRegisteredApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
-            This will delete a Service Principal using the ApplicationID.
+            This will delete a registerd application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -DisplayBane CompanyAPP
 
-            This will delete a Service Principal using the ObjectID.
+            This will delete a enterprise application using the DisplayBane 'CompanyAPP'.
+        .EXAMPLE
+            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            This will delete a enterprise application using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+
+        .EXAMPLE
+            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+
+            This will delete the enterprise application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'
+
+        .EXAMPLE
+            PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN
+
+            This will delete a Service Principal using the DisplayName.
 
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
@@ -35,14 +55,17 @@
             This will delete the Azure application using the ApplicationID.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteApp -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+            PS c:\> Remove-AppOrSPN -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            This will delete the Azure application using the ObjectID.
-    #>
+            This will delete a Service Principal using the ObjectID.
+     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     Param (
+        [string]
+        $DisplayName,
+
         [string]
         $ApplicationID,
 
@@ -50,57 +73,109 @@
         $ObjectID,
 
         [switch]
-        $DeleteApp,
+        $DeleteEnterpriseApp,
+
+        [switch]
+        $DeleteRegisteredApp,
 
         [switch]
         $DeleteSpn
     )
 
-    $parameters = $PSBoundParameters
-
     try
     {
-        if($DeleteApp)
+        if($DeleteEnterpriseApp)
         {
-            if($parameters.ContainsKey('ApplicationID'))
+            if($DisplayName)
             {
-                Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop
+                if(Remove-AzADApplication -DisplayName $DisplayName -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $DisplayName
+                    $wasDeleted = $True
+                }
             }
 
-            if($parameters.ContainsKey('ObjectID'))
+            if($ApplicationID)
             {
-                Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop
+                if(Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ApplicationID
+                    $wasDeleted = $True
+                }
             }
 
-            Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues @($parameters.Values[0])
-            $script:appDeletedCounter ++
+            if($ObjectID)
+            {
+                if(Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ObjectID
+                    $wasDeleted = $True
+                }
+            }
+
+            if($wasDeleted) {$script:appDeletedCounter ++}
         }
     }
     catch
     {
         Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        return
+    }
+
+    try
+    {
+        if($DeleteRegisteredApp)
+        {
+            if($ObjectID)
+            {
+                if(Remove-AzureADApplication -ObjectID $ObjectID -ErrorAction Stop)
+                {
+                     Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues $ObjectID
+                     $script:appDeletedCounter ++
+                }
+            }
+        }
+    }
+    catch
+    {
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        return
     }
 
     try
     {
         if($DeleteSpn)
         {
-            if($parameters.ContainsKey('ApplicationID'))
+            if($DisplayName)
             {
-                Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop
+                if(Remove-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $DisplayName
+                }
             }
 
-            if($parameters.ContainsKey('ObjectID'))
+            if($ApplicationID)
             {
-                Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop
+                if(Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ApplicationID
+                }
             }
 
-            Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues @($parameters.Values[0])
-            $script:appDeletedCounter ++
+            if($ObjectID)
+            {
+                if(Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop)
+                {
+                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ObjectID
+                }
+            }
+
+            if($wasDeleted) {$script:appDeletedCounter ++}
         }
     }
     catch
     {
         Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        return
     }
 }

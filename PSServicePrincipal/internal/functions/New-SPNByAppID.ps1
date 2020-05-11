@@ -44,12 +44,15 @@
 
     try
     {
+        # We can not create applications or service principals with special characters and spaces via Powershell but can in the azure portal
+        $DisplayName -replace '[\W]', ''
+
         if($RegisteredApp -and $ApplicationID)
         {
             # Registered Application needs ApplicationID
             $password = [guid]::NewGuid()
             $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
-            $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop -ErrorVariable ProcessError
+            $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -Format $newSpn.DisplayName -FunctionName "New-SPNByAppID"
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
@@ -59,7 +62,7 @@
         {
             $password = Read-Host "Enter Password" -AsSecureString
             $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
-            if($newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -PasswordCredential $securePassword -ErrorAction Stop -ErrorVariable ProcessError)
+            if($newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -PasswordCredential $securePassword -ErrorAction Stop)
             {
                 Write-PSFMessage -Level Host -Message "SPN created: DisplayName: {0} - Secure Password present {1}" -Format $newSPN.DisplayName, $newSPN.securePassword -FunctionName "New-SPNByAppID"
                 $script:roleListToProcess.Add($newSpn)
@@ -71,9 +74,12 @@
         elseif(($DisplayName) -and (-NOT $RegisteredApp))
         {
             # Enterprise Application (Service Principal) needs display name because it creates the pair
-            if($newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop -ErrorVariable ProcessError)
+            if($newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop)
             {
-                Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -Format $DisplayName -FunctionName "New-SPNByAppID"
+                $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newSpn.Secret)
+                $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0} and secret {1}" -Format $DisplayName, $UnsecureSecret -FunctionName "New-SPNByAppID"
+                Write-PSFMessage -Level Host -Message "WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN" -FunctionName "New-SPNByAppID"
                 $script:roleListToProcess.Add($newSpn)
                 $script:spnCounter ++
             }
@@ -83,15 +89,7 @@
     }
     catch
     {
-        if($ProcessError)
-        {
-            Write-PSFMessage -Level Warning "{0}" -StringValues $ProcessError.ErrorRecord.Exception -FunctionName "Internal"
-        }
-        else
-        {
-            Stop-PSFFunction -Message "WARNING" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-        }
-
+        Stop-PSFFunction -Message $_ -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
         return
     }
 }
