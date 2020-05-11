@@ -26,7 +26,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-    [OutputType('System.Collections.ArrayList')]
+    [OutputType('System.String')]
     [CmdletBinding()]
     param(
         [switch]

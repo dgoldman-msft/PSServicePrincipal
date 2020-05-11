@@ -16,6 +16,7 @@
             This will retrieve a batch of service principals objects by display name using a wildcard search.
     #>
 
+    [OutputType('System.String')]
     [CmdletBinding()]
     Param (
         [string]

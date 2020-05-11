@@ -14,6 +14,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [OutputType('System.String')]
     [CmdletBinding()]
     param()
 

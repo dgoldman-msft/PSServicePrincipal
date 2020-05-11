@@ -16,6 +16,7 @@
             This will retrieve a Service Principal by display name from the Azure active directory.
     #>
 
+    [OutputType('System.String')]
     [CmdletBinding()]
     Param (
         [string]

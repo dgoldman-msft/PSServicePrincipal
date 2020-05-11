@@ -14,6 +14,9 @@
         PSFramework Configuration: https://psframework.org/documentation/quickstart/psframework/configuration.html
         PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
 
+    .PARAMETER CreateSelfSignedCertificate
+        This switch is used when creating a single self-signed certificate to be used with registered and enterprise applications for certificate based connections.
+
     .PARAMETER CreateSingleObject
         This switch is used when creating a single default enterprise application (service principal).
 
@@ -87,6 +90,10 @@
     .PARAMETER ObjectID
         This parameter is the unique ObjectID for a service principal in a tenant. Once created this property cannot be changed.
 
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -CreateSelfSignedCertificate
+
+        This example calls the helper function to create a basic self-signed certificate to be used with registered and enterprise applications for certificate based connections.
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject
 
@@ -335,50 +342,53 @@
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
         Write-PSFMessage -Level Host -Message "Starting Script Run"
 
-        if($CreateSelfSignedCertificate)
+        if(-NOT $CreateSelfSignedCertificate)
+        {
+            # Try to obtain the list of names so we can batch create the SPNS
+            if($NameFile -and $CreateBatchObjects)
+            {
+                Write-PSFMessage -Level Host -Message "Testing access to {0}" -StringValues $NameFile
+
+                if(-NOT (Test-Path -Path $NameFile))
+                {
+                    Stop-PSFFunction -Message "ERROR: File problem. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                    return
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host -Message "{0} accessable. Reading in content" -StringValues $NameFile
+                    $objectsToCreate = Get-Content $NameFile
+
+                    # Validate that we have data and if we dont we exit out
+                    if(0 -eq $objectsToCreate.Length)
+                    {
+                        Stop-PSFFunction -Message "Error with imported content. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                        return
+                    }
+                }
+            }
+
+            try
+            {
+                Connect-ToCloudTenant @parameters -EnableException
+            }
+            catch
+            {
+                Stop-PSFFunction -Message $_ -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                return
+            }
+        }
+        elseif($CreateSelfSignedCertificate)
         {
             try
             {
                 New-SelfSignedCert
+                return
             }
             catch
             {
                 Stop-PSFFunction -Message "ERROR: Creating self-signed certificate" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return
-            }
-        }
-
-        try
-        {
-            Connect-ToCloudTenant @parameters -EnableException
-        }
-        catch
-        {
-            Stop-PSFFunction -Message $_ -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-            return
-        }
-
-        # Try to obtain the list of names so we can batch create the SPNS
-        if($NameFile -and $CreateBatchObjects)
-        {
-            Write-PSFMessage -Level Host -Message "Testing access to {0}" -StringValues $NameFile
-
-            if(-NOT (Test-Path -Path $NameFile))
-            {
-                Stop-PSFFunction -Message "ERROR: File problem. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                return
-            }
-            else
-            {
-                Write-PSFMessage -Level Host -Message "{0} accessable. Reading in content" -StringValues $NameFile
-                $objectsToCreate = Get-Content $NameFile
-
-                # Validate that we have data and if we dont we exit out
-                if(0 -eq $objectsToCreate.Length)
-                {
-                    Stop-PSFFunction -Message "Error with imported content. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
-                    return
-                }
             }
         }
 

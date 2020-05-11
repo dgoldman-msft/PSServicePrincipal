@@ -33,6 +33,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
+    [OutputType('System.String')]
     [CmdletBinding()]
     Param (
         [string]
@@ -74,7 +75,7 @@
             }
         }
 
-        if($wasDeleted = $True){$script:appDeletedCounter ++}
+        if($wasDeleted){$script:appDeletedCounter ++}
     }
     catch
     {
@@ -121,7 +122,7 @@
                     }
                 }
 
-                if($wasDeleted = $True){$script:appDeletedCounter ++}
+                if($wasDeleted){$script:appDeletedCounter ++}
             }
 
             1

@@ -16,6 +16,7 @@
             This is passing in an ArrayList of SPN objects to be processed. We will apply a new role assigment of Contriubtor to each object.
     #>
 
+    [OutputType('System.String')]
     [CmdletBinding()]
     param(
         [object]
