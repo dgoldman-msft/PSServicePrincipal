@@ -32,7 +32,7 @@
     .PARAMETER CreateSPNsWithNameAndCert
         This switch is used when creating a service principal and a registered Azure application using a display name and certificate.
 
-    .PARAMETER DeleteEnterprisedApp
+    .PARAMETER DeleteEnterpriseApp
         This parameter is a switch used to delete an enterprise application application.
 
     .PARAMETER DeleteRegisteredApp

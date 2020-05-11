@@ -19,6 +19,7 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName
     )

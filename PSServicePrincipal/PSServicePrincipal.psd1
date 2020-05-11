@@ -43,7 +43,6 @@
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Connect-ToCloudTenant'
 		'Get-AppByName'
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
