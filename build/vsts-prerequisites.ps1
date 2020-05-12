@@ -1,4 +1,4 @@
-﻿$modules = @("Pester", "PSFramework", "PSModuleDevelopment", "PSScriptAnalyzer", "Az.Accounts", "Az.Resources")
+﻿$modules = @("Pester", "PSFramework", "PSModuleDevelopment", "PSScriptAnalyzer", "Az.Accounts", "Az.Resources", "AzureAD")
 
 foreach ($module in $modules) {
     Write-Host "Installing $module" -ForegroundColor Cyan

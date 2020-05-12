@@ -16,6 +16,7 @@
             This will retrieve the Azure active directory application and Service Principal object.
     #>
 
+    [OutputType('System.String')]
     [CmdletBinding()]
     Param (
         [string]

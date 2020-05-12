@@ -16,8 +16,10 @@
             This will retrieve a Service Principal by application id from the Azure active directory.
     #>
 
+    [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID
     )
