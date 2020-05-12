@@ -36,12 +36,15 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName
     )

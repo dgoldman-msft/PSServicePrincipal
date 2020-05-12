@@ -51,8 +51,40 @@
         $newUserCertificate = New-SelfSignedCertificate -certstorelocation $userCertStore -dnsname $DnsName
         Write-PSFMessage -Level Host -Message "New self-signed certficate with DnsName: {0} created in the following location: {1}" -StringValues $DnsName, $userCertStore -FunctionName "New-SelfSignedCert"
         $path = $userCertStore + $newUserCertificate.thumbprint
-        $saveCertAsPFX = $FilePath, $CertificateName, ".pfx" -join ""
-        $saveCertAsCER = $FilePath, $CertificateName, ".cer" -join ""
+    }
+    catch
+    {
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        return
+    }
+
+    try
+    {
+        # Test the path to see if it exists
+        if(-NOT (Test-Path -Path $FilePath))
+        {
+            Write-PSFMessage -Level Host -Message "File path {0} does not exist." -StringValues $FilePath -FunctionName "New-SelfSignedCert"
+
+            $userChoice = Get-PSFUserChoice -Options "1) Create a new directory", "2) Exit" -Caption "User option menu" -Message
+            "What operation do you want to perform?"
+
+            switch($UserChoice)
+            {
+                0
+                {
+                    if(New-Item -Path $FilePath -ItemType Directory)
+                    {
+                        Write-PSFMessage -Level Host -Message "File path {0} created!" -StringValues $FilePath -FunctionName "New-SelfSignedCert"
+                    }
+                }
+
+                1
+                {exit}
+            }
+        }
+
+        $saveCertAsPFX = Join-Path $FilePath "$CertificateName.pfx"
+        $saveCertAsCER = Join-Path $FilePath "$CertificateName.cer"
 
         # This will export the pfx and cer files
         Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1}" -StringValues $saveCertAsPFX, $saveCertAsCER -FunctionName "New-SelfSignedCert"
