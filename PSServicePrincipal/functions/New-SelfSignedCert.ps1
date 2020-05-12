@@ -87,9 +87,9 @@
         $saveCertAsCER = Join-Path $FilePath "$CertificateName.cer"
 
         # This will export the pfx and cer files
-        Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1}" -StringValues $saveCertAsPFX, $saveCertAsCER -FunctionName "New-SelfSignedCert"
         Export-PfxCertificate -cert $path -FilePath $saveCertAsPFX -Password $securePassword
         $newUserCertificate.GetRawCertData() | set-content $saveCertAsCER -Encoding Byte
+        Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $saveCertAsPFX, $saveCertAsCER -FunctionName "New-SelfSignedCert"
     }
     catch
     {
