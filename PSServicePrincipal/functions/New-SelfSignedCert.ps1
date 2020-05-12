@@ -21,6 +21,9 @@
             PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -FilePath c:\temp\ -CertificateName MyNewCertificate
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant.
+
+        .NOTES
+            You must run PowerShell as an administrator to run this command in order to create the certificate in the LocalMachine certificate store
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -47,10 +50,10 @@
     try
     {
         $securePassword = Read-Host "Enter your self-signed certificate secure password" -AsSecureString
-        $userCertStore = 'cert:\CurrentUser\my\'
-        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $userCertStore -dnsname $DnsName
+        $certStore = 'cert:\LocalMachine\my\'
+        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $certStore -dnsname $DnsName
         Write-PSFMessage -Level Host -Message "New self-signed certficate with DnsName: {0} created in the following location: {1}" -StringValues $DnsName, $userCertStore -FunctionName "New-SelfSignedCert"
-        $path = $userCertStore + $newUserCertificate.thumbprint
+        $path = $certStore + $newUserCertificate.thumbprint
     }
     catch
     {
