@@ -63,12 +63,15 @@
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [CmdletBinding()]
     Param (
+        [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID,
 

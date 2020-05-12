@@ -35,9 +35,11 @@
         [switch]
         $CreateSPNWithPassword,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
+        [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName
     )

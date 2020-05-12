@@ -19,6 +19,7 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "ApplicationID used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID
@@ -29,13 +30,15 @@
         if($ApplicationId)
         {
             Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
-            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName
                 AppID = $spnOutput.ApplicationID
                 ObjectID = $spnOutput.ObjectID
-            }
+                ObjectType = $spnOutput.ObjectType
+                Type = $spnOutput.Type
+            } | Format-Table
         }
         else
         {

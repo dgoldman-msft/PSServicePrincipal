@@ -15,7 +15,7 @@
             This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
-            PS c:\> Connect-ToCloudTenant -Reconnect
+            PS c:\> Connect-ToCloudTenant -Reconnect -EnableException
 
             These parameters will be used to make a connection to an Azure tenant or reconnect to another specified tenant
     #>

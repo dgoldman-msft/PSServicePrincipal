@@ -19,6 +19,7 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve service principals")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName

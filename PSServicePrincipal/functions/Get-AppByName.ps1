@@ -19,6 +19,7 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName
@@ -26,14 +27,7 @@
 
     try
     {
-        $appOutput = Get-AzADApplication -DisplayName $DisplayName
-
-        [pscustomobject]@{
-            ObjectType = "Application"
-            DisplayName = $appOutput.DisplayName
-            AppID = $appOutput.ApplicationID
-            ObjectID = $appOutput.ObjectID
-        }
+       Get-AzADApplication -DisplayName $DisplayName
     }
     catch
     {

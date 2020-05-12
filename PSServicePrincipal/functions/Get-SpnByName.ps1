@@ -19,6 +19,7 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
+        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve a service principal")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName
@@ -29,13 +30,15 @@
         if(![string]::IsNullOrEmpty($DisplayName))
         {
             Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name"
-            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
 
             [pscustomobject]@{
                 DisplayName = $spnOutput.DisplayName
                 ApplicationID = $spnOutput.ApplicationID
                 ObjectID = $spnOutput.ObjectID
-            }
+                ObjectType = $spnOutput.ObjectType
+                Type = $spnOutput.Type
+            } | Format-Table
         }
         else
         {
