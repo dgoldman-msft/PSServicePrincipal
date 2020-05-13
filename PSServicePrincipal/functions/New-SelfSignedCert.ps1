@@ -83,7 +83,7 @@
                 {
                     if(New-Item -Path $FilePath -ItemType Directory)
                     {
-                        Write-PSFMessage -Level Host -Message "File path {0} created!" -StringValues $FilePath -FunctionName "New-SelfSignedCert"
+                        Write-PSFMessage -Level Host -Message "Directory {0} created!" -StringValues $FilePath -FunctionName "New-SelfSignedCert"
                     }
                 }
 
