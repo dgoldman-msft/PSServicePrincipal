@@ -11,6 +11,9 @@
         .PARAMETER DnsName
             This parameter is the DNS stamped on the certificate
 
+        .PARAMETER DnsName
+            This parameter is the Subject Alternative Name stamped on the certificate
+
         .PARAMETER CertificateName
             This parameter is a name of the certificate
 
@@ -28,13 +31,17 @@
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [OutputType('System.String')]
-    [OutputType('System.Management.Automation.CommandInfo')]
     [CmdletBinding()]
     param(
         [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DnsName,
+
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SubjectAlternativeName,
 
         [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
@@ -50,10 +57,9 @@
     try
     {
         $securePassword = Read-Host "Enter your self-signed certificate secure password" -AsSecureString
-        $certStore = 'cert:\LocalMachine\my\'
-        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $certStore -dnsname $DnsName
+        $certStore = 'cert:\CurrentUser\my\'
+        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $certStore -Subject "CN=$SubjectAlternativeName" -dnsname $DnsName -KeySpec KeyExchange
         Write-PSFMessage -Level Host -Message "New self-signed certficate with DnsName: {0} created in the following location: {1}" -StringValues $DnsName, $userCertStore -FunctionName "New-SelfSignedCert"
-        $path = $certStore + $newUserCertificate.thumbprint
     }
     catch
     {
@@ -86,10 +92,10 @@
             }
         }
 
+        # This will export the pfx and cer files
         $saveCertAsPFX = Join-Path $FilePath "$CertificateName.pfx"
         $saveCertAsCER = Join-Path $FilePath "$CertificateName.cer"
-
-        # This will export the pfx and cer files
+        $path = $certStore + $newUserCertificate.thumbprint
         Export-PfxCertificate -cert $path -FilePath $saveCertAsPFX -Password $securePassword
         $newUserCertificate.GetRawCertData() | set-content $saveCertAsCER -Encoding Byte
         Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $saveCertAsPFX, $saveCertAsCER -FunctionName "New-SelfSignedCert"
