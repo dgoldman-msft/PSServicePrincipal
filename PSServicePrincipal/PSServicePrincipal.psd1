@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.9'
+	ModuleVersion = '1.0.10'
 
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -18,7 +18,7 @@
 	Copyright = '(c) 2020 Dave Goldman. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description = 'PowerShell module for creating single and batch Service Principals for automation tasks'
+	Description = 'PowerShell module for creating, retrieving and deleting applications and Service Principals'
 
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.0'
@@ -76,17 +76,24 @@
 		#Support for PowerShellGet galleries.
 		PSData = @{
 
+			# Flag to indicate whether the module requires explicit user acceptance
+			RequireLicenseAcceptance = $true
+
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(
-				'Exchange'
+				'Application'
+				'Automation'
 				'Azure'
-				'ServicePrincipal'
 				'Configuration'
+				'Exchange'
+				'Module'
+				'O365'
+				'ServicePrincipal'
 				'Windows'
 				)
 
 			# A URL to the license for this module.
-			# LicenseUri = ''
+			LicenseUri = 'https://github.com/dgoldman-msft/PSServicePrincipal/blob/master/LICENSE'
 
 			# A URL to the main website for this project.
 			ProjectUri = 'https://github.com/dgoldman-msft/PSServicePrincipal'
@@ -95,7 +102,7 @@
 			# IconUri = ''
 
 			# ReleaseNotes of this module
-			# ReleaseNotes = ''
+			ReleaseNotes = 'https://github.com/dgoldman-msft/PSServicePrincipal/blob/master/PSServicePrincipal/changelog.md'
 
 		} # End of PSData hashtable
 

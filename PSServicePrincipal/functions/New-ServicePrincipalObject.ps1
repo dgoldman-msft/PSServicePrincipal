@@ -2,14 +2,17 @@
 {
     <#
     .SYNOPSIS
-        PowerShell module for creating, retrieving and removing Azure registered and enterprise applications (service principals) for automation tasks.
+        PowerShell module for creating, retrieving and removing Azure registered, enterprise applications and service principals.
 
     .DESCRIPTION
-        This module will create a new Azure active directory enterprise application and service principal that can be used for application automation.
-        Enterprise applications are service principal objects that mirror the applications.
-        Logging Provider: All messages are logged by default 'Documents\PowerShell Script Logs' on Windows and 'Documents/PowerShell Script Logs' on MacOS
-        There are two logging folders for analysis: Get-LogFolder -LogFolder [OutputLoggingFolder] and [DebugLoggingFolder]
-        For more information please visit: https://psframework.org/
+        This module will create a new Azure active directory enterprise and registered application as well as service principal objects
+        that can be used for application automation. Enterprise applications created will also have a mirror service principal objects created.
+
+        The PSServicePrincipal logging provider is based on PSFramework: All messages are logged by default 'Documents\PowerShell Script Logs' on
+        Windows and 'Documents/PowerShell Script Logs' on MacOS. There are two logging streams (output and debug). Both streams have respective
+        folders for analysis: You can run Get-LogFolder -LogFolder [OutputLoggingFolder] and [DebugLoggingFolder] to access either logging stream directory.
+
+        For more information on PSFramework please visit: https://psframework.org/
         PSFramework Logging: https://psframework.org/documentation/quickstart/psframework/logging.html
         PSFramework Configuration: https://psframework.org/documentation/quickstart/psframework/configuration.html
         PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
