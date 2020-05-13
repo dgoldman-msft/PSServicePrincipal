@@ -11,6 +11,9 @@
         .PARAMETER DnsName
             This parameter is the DNS stamped on the certificate
 
+        .PARAMETER SubjectAlternativeName
+            This parameter is the Subject Alternative Name stamped on the certificate
+
         .PARAMETER CertificateName
             This parameter is a name of the certificate
 
@@ -18,17 +21,16 @@
             This parameter is a path where the certificates are saved locally
 
         .EXAMPLE
-            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -FilePath c:\temp\ -CertificateName MyNewCertificate
+            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant.
 
         .NOTES
-            You must run PowerShell as an administrator to run this command in order to create the certificate in the LocalMachine certificate store
+            You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [OutputType('System.String')]
-    [OutputType('System.Management.Automation.CommandInfo')]
     [CmdletBinding()]
     param(
         [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
@@ -36,12 +38,17 @@
         [string]
         $DnsName,
 
-        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SubjectAlternativeName,
+
+        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $CertificateName,
 
-        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "File name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '3', ParameterSetName='SelfSignedCertSet', HelpMessage = "File name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $FilePath
@@ -50,10 +57,9 @@
     try
     {
         $securePassword = Read-Host "Enter your self-signed certificate secure password" -AsSecureString
-        $certStore = 'cert:\LocalMachine\my\'
-        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $certStore -dnsname $DnsName
+        $certStore = 'cert:\CurrentUser\my\'
+        $newUserCertificate = New-SelfSignedCertificate -certstorelocation $certStore -Subject "CN=$SubjectAlternativeName" -dnsname $DnsName -KeySpec KeyExchange
         Write-PSFMessage -Level Host -Message "New self-signed certficate with DnsName: {0} created in the following location: {1}" -StringValues $DnsName, $userCertStore -FunctionName "New-SelfSignedCert"
-        $path = $certStore + $newUserCertificate.thumbprint
     }
     catch
     {
@@ -86,10 +92,10 @@
             }
         }
 
+        # This will export the pfx and cer files
         $saveCertAsPFX = Join-Path $FilePath "$CertificateName.pfx"
         $saveCertAsCER = Join-Path $FilePath "$CertificateName.cer"
-
-        # This will export the pfx and cer files
+        $path = $certStore + $newUserCertificate.thumbprint
         Export-PfxCertificate -cert $path -FilePath $saveCertAsPFX -Password $securePassword
         $newUserCertificate.GetRawCertData() | set-content $saveCertAsCER -Encoding Byte
         Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $saveCertAsPFX, $saveCertAsCER -FunctionName "New-SelfSignedCert"

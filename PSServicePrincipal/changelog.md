@@ -3,4 +3,4 @@
  - New: Ability to create Enterprise and or tenant owned applications with service principals
  - New: Ability to create self-signed certificates to be used for (CBA) Certificate Based Authentication
  - Upd: Documentation, incremented module version. Added checks for PowerShell core as AzureAD will not work on PowerShell core.
- - Fix: File save for New-SelfSignedCert - Test for file path and ask to create it if path is not found
+ - Fix: File save for New-SelfSignedCert - Added switches for CBA login

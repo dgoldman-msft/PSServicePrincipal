@@ -18,10 +18,10 @@
     [CmdletBinding()]
     param()
 
-    # Can be modified by end user for interactive login to Azure
+    # Can be modified by end user for interactive login to AzureAD and AzureAZ
     # $TenantID = 'xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
     # $ApplicationID = 'xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-    # $CertificateThumbprint = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    # $CertThumbprint = (Get-ChildItem cert:\CurrentUser\My\ | Where-Object {$_.Subject -eq "CN=YourCertBoundToYourAppID" }).Thumbprint
 
     if(-NOT $script:AdSessionFound)
     {
@@ -34,7 +34,7 @@
         {
             try
             {
-                $script:AdSessionInfo = Connect-AzureAD -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
+                $script:AdSessionInfo = Connect-AzureAD -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertThumbprint -ErrorAction Stop
                 Write-PSFMessage -Level Host -Message "Connected to AzureAD with automatic logon"  -Once "Automatically connected to AzureAD" -FunctionName "Connect-ToAzureInteractively"
                 $script:AdSessionFound = $true
             }
@@ -62,7 +62,7 @@
     {
         try
         {
-            $script:AzSessionInfo = Connect-AzAccount -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertificateThumbprint -ErrorAction Stop
+            $script:AzSessionInfo = Connect-AzAccount -ServicePrincipal -TenantId $TenantID -ApplicationId $ApplicationID -CertificateThumbprint $CertThumbprint -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Connected to AzureAZ with automatic logon" -Once "Automatically connected to AzureAZ" -FunctionName "Connect-ToAzureInteractively"
             $script:AzSessionFound = $true
         }
