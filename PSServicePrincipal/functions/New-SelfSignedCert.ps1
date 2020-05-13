@@ -11,7 +11,7 @@
         .PARAMETER DnsName
             This parameter is the DNS stamped on the certificate
 
-        .PARAMETER DnsName
+        .PARAMETER SubjectAlternativeName
             This parameter is the Subject Alternative Name stamped on the certificate
 
         .PARAMETER CertificateName
@@ -21,12 +21,12 @@
             This parameter is a path where the certificates are saved locally
 
         .EXAMPLE
-            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -FilePath c:\temp\ -CertificateName MyNewCertificate
+            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
 
             These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant.
 
         .NOTES
-            You must run PowerShell as an administrator to run this command in order to create the certificate in the LocalMachine certificate store
+            You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -38,17 +38,17 @@
         [string]
         $DnsName,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $SubjectAlternativeName,
 
-        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $CertificateName,
 
-        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "File name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '3', ParameterSetName='SelfSignedCertSet', HelpMessage = "File name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $FilePath
