@@ -1,5 +1,5 @@
-﻿New-PSFLicense -Product 'PSServicePrincipal' -Manufacturer 'sifu128' -ProductVersion $script:ModuleVersion -ProductType Module -Name MIT -Version "1.0.0.0" -Date (Get-Date "2020-04-28") -Text @"
-Copyright (c) 2020 sifu128
+﻿New-PSFLicense -Product 'PSServicePrincipal' -Manufacturer 'Dave Goldman' -ProductVersion $script:ModuleVersion -ProductType Module -Name MIT -Version "1.0.0.0" -Date (Get-Date "2020-04-28") -Text @"
+Copyright (c) 2020 Dave Goldman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

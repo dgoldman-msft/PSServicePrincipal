@@ -1,8 +1,6 @@
 ﻿# Description
 
-This is a PowerShell module that will aid in the creation (single and batch) service principal and applications when used with Microsoft Exchange application development with use with Basic Authentication deprecation.
-
-Remember, it's the first thing a visitor will see.
+This is a PowerShell module that will aid in the creation (single and batch) entperise and registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation.
 
 # Project Setup Instructions
 ## Working with the layout
