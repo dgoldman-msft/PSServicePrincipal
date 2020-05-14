@@ -7,21 +7,21 @@
         .DESCRIPTION
             This function will retrieve an registered application from the Azure active directory.
 
-        .PARAMETER All
-            This parameter is a switch that indicated to get all objects
+        .PARAMETER DisplayName
+            This parameter is the display name of the object we are retrieving.
 
-        .PARAMETER Filter
-            This parameter is the display name of the objects you are retrieving.
+        .PARAMETER ObjectID
+            This parameter is the object id of the object you are retrieving.
 
         .EXAMPLE
             PS c:\> Get-RegisteredApp -SearchString CompanyApp
 
-            This will retrieve an Azure active directory registered application by DisplayName filter.
+            This will retrieve the registered application called CompanyApp by DisplayName.
 
         .EXAMPLE
             PS c:\> Get-RegisteredApp -Objectid 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
-            This will retrieve an Azure active directory registered by object id '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+            This will retrieve the registered by object id '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
     #>
 
     [OutputType('System.String')]
