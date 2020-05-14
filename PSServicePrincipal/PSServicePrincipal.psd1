@@ -43,7 +43,8 @@
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Get-AppByName'
+		'Get-EnterpriseApp'
+		'Get-RegisteredApp'
 		'Get-AppAndSPNPair'
 		'Get-LogFolder'
 		'Get-SpnByName'
