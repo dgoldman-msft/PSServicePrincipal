@@ -77,7 +77,9 @@
 		PSData = @{
 
 			# Flag to indicate whether the module requires explicit user acceptance
-			RequireLicenseAcceptance = $true
+			# A mark of utter evil that should never be enabled
+			# Prevents installation in default PowerShellGet
+			# RequireLicenseAcceptance = $true
 
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(
