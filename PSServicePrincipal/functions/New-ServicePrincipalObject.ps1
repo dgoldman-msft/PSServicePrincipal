@@ -2,11 +2,13 @@
 {
     <#
     .SYNOPSIS
-        PowerShell module for creating, retrieving and removing Azure registered, enterprise applications and service principals.
+        PowerShell module for creating, retrieving and removing Azure registered / enterprise applications and service principals.
 
     .DESCRIPTION
-        This module will create a new Azure active directory enterprise and registered application as well as service principal objects
-        that can be used for application automation. Enterprise applications created will also have a mirror service principal objects created.
+        This module will create creating, retrieving and remove Azure registered / enterprise applications and service principals objects
+        that can be used for automation tasks. Enterprise applications created will also have a mirror service principal objects created. Azure
+        registered applications will be linked to a new service principal which can then be use as an authentication mechanism for connecting applications
+        and PowerShell session to an Office 365 and Azure tenant.
 
         The PSServicePrincipal logging provider is based on PSFramework: All messages are logged by default 'Documents\PowerShell Script Logs' on
         Windows and 'Documents/PowerShell Script Logs' on MacOS. There are two logging streams (output and debug). Both streams have respective
@@ -96,7 +98,7 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSelfSignedCertificate
 
-        This example calls the helper function to create a basic self-signed certificate to be used with registered and enterprise applications for certificate based connections.
+        This example calls the helper function to create a basic self-signed certificate to be used with registered and enterprise applications for certificate-based connections.
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject
 
@@ -145,7 +147,7 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppByName
 
-        This example will retrieve a Enterprise Application from the Azure active directory.
+        This example will retrieve an Enterprise Application from the Azure active directory.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppAndSPNPair
@@ -197,17 +199,13 @@
         When passing in the application ID it is the Azure ApplicationID from your registered application.
 
         WARNING: If you do not connect to an Azure tenant when you run Import-Module Az.Resources you will be logged in interactively to your default Azure subscription.
-        After signing in, you will see information indicating which of your Azure subscriptions is active.
-        If you have multiple Azure subscriptions in your account and want to select a different one,
-        get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription id.
+        After signing in, you will see information indicating which of your Azure subscriptions is active. If you have multiple Azure subscriptions in your account and
+        want to select a different one, get your available subscriptions with Get-AzSubscription and use the Set-AzContext cmdlet with your subscription id.
 
         INFORMATION: The default parameter set uses default values for parameters if the user does not provide any.
         For more information on the default values used, please see the description for the given parameters below.
-        This cmdlet has the ability to assign a role to the service principal with the Role and Scope parameters;
-        if neither of these parameters are provided, no role will be assigned to the service principal.
-
-        The default values for the Role and Scope parameters are "Contributor" and the current subscription. These roles are applid at the end
-        of the service principal creation.
+        This cmdlet can assign a role to the service principal with the Role 'Contributor'. Roles are applid at the end of the service principal creation.
+        For more information on Azure RBAC roles please see: https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 
         Microsoft TechNet Documentation: https://docs.microsoft.com/en-us/powershell/module/az.resources/new-azadserviceprincipal?view=azps-3.8.0
     #>
@@ -343,7 +341,7 @@
         $requiredModules = @("AzureAD", "Az.Accounts", "Az.Resources")
         Foreach($module in $requiredModules){Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module -FunctionName "New-ServicePrincipalObject"}
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
-        Write-PSFMessage -Level Host -Message "Starting Script Run"
+        Write-PSFMessage -Level Host -Message "Starting script run: {0}" -StringValues (Get-Date)
 
         if(-NOT $CreateSelfSignedCertificate)
         {
@@ -411,7 +409,7 @@
                             $script:appCounter ++
 
                             # Since we only create an AzureADapplicaiaton we need to create the matching service principal
-                            New-SPNByAppID -ApplicationID $newApp.AppId -RegisteredApp
+                            New-ServicePrincipal -ApplicationID $newApp.AppId -RegisteredApp
                         }
                         elseif($ProcessError)
                         {
@@ -425,11 +423,11 @@
                 }
                 elseif($DisplayName -and $CreateSPNWithPassword)
                 {
-                    New-SPNByAppID -DisplayName $DisplayName -CreateSPNWithPassword
+                    New-ServicePrincipal -DisplayName $DisplayName -CreateSPNWithPassword
                 }
                 elseif(($DisplayName) -and (-NOT $RegisteredApp))
                 {
-                    New-SPNByAppID -DisplayName $DisplayName
+                    New-ServicePrincipal -DisplayName $DisplayName
                 }
 
                 if($script:roleListToProcess.Count -gt 0)
@@ -468,7 +466,7 @@
                                     $script:appCounter ++
 
                                     # Since we only create an AzureADapplicaiaton we need to create the matching service principal
-                                    New-SPNByAppID -ApplicationID $newApp.AppID
+                                    New-ServicePrincipal -ApplicationID $newApp.AppID
                                 }
                                 elseif($ProcessError)
                                 {
@@ -490,7 +488,7 @@
                     {
                         foreach($spn in $objectsToCreate)
                         {
-                            New-SPNByAppID -DisplayName $spn
+                            New-ServicePrincipal -DisplayName $spn
                         }
 
                         if($roleListToProcess.Count -gt 0)
@@ -515,7 +513,7 @@
         {
             try
             {
-                New-SPNByAppID -ApplicationID $ApplicationID
+                New-ServicePrincipal -ApplicationID $ApplicationID
             }
             catch
             {
@@ -750,7 +748,7 @@
             }
         }
 
-        Write-PSFMessage -Level Host -Message "Script run complete!"
-        Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder #-Once 'LoggingDestination'
+        Write-PSFMessage -Level Host -Message "End script run: {0}" -StringValues (Get-Date)
+        Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder
     }
 }

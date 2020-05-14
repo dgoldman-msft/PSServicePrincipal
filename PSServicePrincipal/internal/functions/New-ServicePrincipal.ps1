@@ -1,47 +1,58 @@
-﻿Function New-SPNByAppID
+﻿Function New-ServicePrincipal
 {
     <#
         .SYNOPSIS
-            Cmdlet for creating single object Service Principal objects
+            Cmdlet for creating a single object service principal objects
 
         .DESCRIPTION
-            This function will create a single object Service Principal object
+            This function will create a single object Service Principal object based on application id.
 
-        .PARAMETER RegisteredApp
-            This parameter is a switch used to create an Azure Registered Application.
+        .PARAMETER ApplicationID
+            This parameter is the application id of the Azure application you are working on.
 
         .PARAMETER CreateSPNWithPassword
             This parameter is a switch used when a user supplied password is passed in.
 
-        .PARAMETER ApplicationID
-            This parameter is the id of the Azure tenant you are working in.
-
         .PARAMETER DisplayName
             This parameter is the display name of the object we are working on.
 
-        .EXAMPLE
-            PS c:\> Connect-SPNByAppID
+        .PARAMETER RegisteredApp
+            This parameter is a switch used to create an Azure registered application.
 
-            These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
+        .EXAMPLE
+            PS c:\> New-ServicePrincipal -DisplayName 'CompanySPN'
+
+            These will create a new service principal with the display name of 'CompanySPN'
+
+        .EXAMPLE
+            PS c:\> New-ServicePrincipal -RegisteredApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            These will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e' from the newly created Azure registered application
+
+        .EXAMPLE
+            PS c:\> New-ServicePrincipal -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            These will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'
+
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [OutputType('System.String')]
     [CmdletBinding()]
     param(
-        [switch]
-        $RegisteredApp,
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $ApplicationID,
 
         [switch]
         $CreateSPNWithPassword,
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $ApplicationID,
+        $DisplayName,
 
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $DisplayName
+        [switch]
+        $RegisteredApp
     )
 
     try

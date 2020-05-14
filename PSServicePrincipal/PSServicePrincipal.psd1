@@ -78,7 +78,7 @@
 
 			# A mark of utter evil that should never be enabled
 			# Prevents installation in default PowerShellGet
-			# RequireLicenseAcceptance = $true
+			# RequireLicenseAcceptance = $false
 
 			# Tags applied to this module. These help with module discovery in online galleries.
 			Tags = @(

@@ -5,12 +5,12 @@
             Cmdlet for making an interactive connections to an Azure tenant and subscription
 
         .DESCRIPTION
-            This function will make an interactive connections to an Azure tenant and subscription
+            This function will make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
 
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively
 
-            These objects will be used to make a connection to an Azure tenant or reconnect to another specified tenant
+            Make a connection to an Azure tenant
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

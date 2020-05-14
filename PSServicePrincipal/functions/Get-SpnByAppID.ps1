@@ -11,7 +11,7 @@
             This parameter is the application id of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-SpnByAppID $ApplicationID
+            PS c:\> Get-SpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
             This will retrieve a Service Principal by application id from the Azure active directory.
     #>
