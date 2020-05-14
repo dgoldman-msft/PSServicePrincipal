@@ -12,7 +12,7 @@
 
         .PARAMETER EnableException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            This is less user friendly but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Connect-ToCloudTenant -Reconnect -EnableException
@@ -25,10 +25,10 @@
     [CmdletBinding()]
     param(
         [switch]
-        $Reconnect,
+        $EnableException,
 
         [switch]
-        $EnableException
+        $Reconnect
     )
 
     try

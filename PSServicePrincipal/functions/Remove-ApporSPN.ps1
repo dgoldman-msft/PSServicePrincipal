@@ -7,14 +7,8 @@
         .DESCRIPTION
             This function will delete an Application or Service Principal pair from the Azure Active Directory.
 
-        .PARAMETER DisplayName
-            This parameter is the DisplayName of the object you are deleting.
-
         .PARAMETER ApplicationID
             This parameter is the ApplicationID of the object you are deleting.
-
-        .PARAMETER ObjectID
-            This parameter is the ObjectID of the objects you are deleting.
 
         .PARAMETER DeleteEnterpriseApp
             This parameter is switch used to delete an Azure enterprise application.
@@ -25,6 +19,12 @@
         .PARAMETER DeleteSpn
             This parameter is switch used to delete a Service Principal.
 
+        .PARAMETER DisplayName
+            This parameter is the DisplayName of the object you are deleting.
+
+        .PARAMETER ObjectID
+            This parameter is the ObjectID of the objects you are deleting.
+
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteRegisteredApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
@@ -33,7 +33,7 @@
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -DisplayBane CompanyAPP
 
-            This will delete a enterprise application using the DisplayBane 'CompanyAPP'.
+            This will delete an enterprise application using the DisplayBane 'CompanyAPP'.
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
@@ -65,15 +65,7 @@
     Param (
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName,
-
-        [ValidateNotNullOrEmpty()]
-        [string]
         $ApplicationID,
-
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $ObjectID,
 
         [switch]
         $DeleteEnterpriseApp,
@@ -82,7 +74,15 @@
         $DeleteRegisteredApp,
 
         [switch]
-        $DeleteSpn
+        $DeleteSpn,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $DisplayName,
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $ObjectID
     )
 
     try

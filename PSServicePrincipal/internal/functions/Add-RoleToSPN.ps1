@@ -8,7 +8,7 @@
             This function just applies the Reader role to the newly created service principal object
 
         .PARAMETER SpnToProcess
-            This is the Service Principal object being passed in to process
+            This is the Service Principal object being passed into process
 
         .EXAMPLE
             PS c:\> Add-RoleToSPN -SpnToProcess $newSPN

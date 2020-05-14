@@ -5,7 +5,7 @@
             Function for retrieving azure active directory applications and service principal pair.
 
         .DESCRIPTION
-            This function will retrieve an Application and Service Principal pair from the Azure active Directory.
+            This function will retrieve an application and service principal pair from the Azure active Directory.
 
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.

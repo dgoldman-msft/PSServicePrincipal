@@ -2,8 +2,11 @@
 ## 1.0.10 (2020-05-12)
  - New: Added MIT license acceptance
  - Upd: Updated module manifest file and increment build number
- - Upd: Updated manifest RequireLicenseAcceptance = $true
+ - Upd: Updated manifest RequireLicenseAcceptance = $false - Breaking PowerShellGet - reverted change
  - Upd: Added tags to manifest file: 'Application', 'Automation' 'Module' 'O365'
+ - Upd: Updated documentation - Added links for Azure RBAC documentation
+ - Upd: Updated changelog.md
+ - Fix: Added KeyExchange for certificates
 
 ## 1.0.9 (2020-05-12)
  - New: Ability to create Enterprise and or tenant owned applications with service principals
