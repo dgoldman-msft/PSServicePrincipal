@@ -11,7 +11,7 @@
             This parameter is the display name of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-SpnsByName $DisplayName
+            PS c:\> Get-SpnsByName -DisplayName CompanySPN
 
             This will retrieve a batch of service principals objects by display name using a wildcard search.
     #>
