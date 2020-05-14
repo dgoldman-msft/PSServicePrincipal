@@ -1,19 +1,19 @@
-﻿Function Get-AppByName
+﻿Function Get-EnterpriseApp
 {
 	<#
         .SYNOPSIS
             Function for retrieving azure active directory enterprise application
 
         .DESCRIPTION
-            This function will retrieve an Enterprise Application (Service Principal) from the Azure active Directory.
+            This function will retrieve an enterprise application (Service Principal) from the Azure active directory.
 
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-AppByName -DisplayName CompanySPN
+            PS c:\> Get-EnterpriseApp -DisplayName CompanySPN
 
-            This will retrieve the Azure active directory Enterprise Application and Service Principal object.
+            This will retrieve an Azure active directory enterprise application object.
     #>
 
     [OutputType('System.String')]
