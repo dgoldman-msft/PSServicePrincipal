@@ -1,6 +1,20 @@
 ﻿# Description
 
-This is a PowerShell module that will aid in the creation (single and batch) entperise and registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation.
+This PowerShell module that will help aid in the creation and deletion of (single and batch) service principal and applications (enterprise and registered) when used with Microsoft Exchange application development with use with Basic Authentication deprecation. These can also be used with the use of regular 3rd party applications needing service principals and applications in Azure.
+
+Version 1.0.10 - Stable release build
+Version 1.0.9 - Stable release build
+Version 1.0.1 - 1.0.8 (Pre-Release)
+
+New functionality in version 1.0.10
+Added MIT license for Fincinal insitution use
+
+New functionality in version 1.0.9
+The ability to create single self-signed certificates for applications to be used with Certificate Based Authenticaion (CBA). Certificated are stored in the users personal cert store.
+The ability to create enterprise and registered Azure applications and service principals
+The ability to remove applications and service principals in pairs
+
+NOTE: When running New-ServicePrincipalObject -CreateSelfSignedCert you must be running PowerShell as an administrator to save certs to the local user cert store.
 
 # Project Setup Instructions
 ## Working with the layout
