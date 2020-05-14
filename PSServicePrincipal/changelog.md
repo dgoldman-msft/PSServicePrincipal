@@ -1,8 +1,8 @@
 ﻿# Changelog
 ## 1.0.10 (2020-05-12)
- - New: Added MIT license acceptance
+ - New: Added MIT license
  - Upd: Updated module manifest file and increment build number
- - Upd: Updated manifest RequireLicenseAcceptance = $true
+ - Upd: Updated manifest RequireLicenseAcceptance = $false
  - Upd: Added tags to manifest file: 'Application', 'Automation' 'Module' 'O365'
 
 ## 1.0.9 (2020-05-12)
