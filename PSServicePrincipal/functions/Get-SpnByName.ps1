@@ -11,9 +11,9 @@
             This parameter is the display name of the objects you are retrieving.
 
         .EXAMPLE
-            PS c:\> Get-SpnByName $DisplayName
+            PS c:\> Get-SpnByName -DisplayName CompanySPN
 
-            This will retrieve a Service Principal by display name from the Azure active directory.
+            This will retrieve a service principal by display name from the Azure active directory.
     #>
 
     [OutputType('System.String')]

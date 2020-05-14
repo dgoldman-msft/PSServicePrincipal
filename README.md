@@ -1,6 +1,6 @@
 ﻿# Description
 
-This is a PowerShell module that will aid in the creation (single and batch) entperise and registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation.
+This is a PowerShell module that will help in the creation (single and batch) entperise, registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation. All Azure applications can be used with all applications needed authentication against Office 365 and Azure tenants.
 
 # Project Setup Instructions
 ## Working with the layout
