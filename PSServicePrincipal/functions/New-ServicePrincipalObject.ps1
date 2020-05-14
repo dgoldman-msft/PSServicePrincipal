@@ -50,8 +50,11 @@
         This parameter disables user-friendly warnings and enables the throwing of exceptions.
         This is less user friendly, but allows catching exceptions in calling scripts.
 
-    .PARAMETER GetAppByName
-        This switch is used to retrieve a registered Application from the Azure active directory via display name.
+    .PARAMETER GetEnterpriseApp
+        This switch is used to retrieve a enterprise application from the Azure active directory via display name.
+
+    .PARAMETER GetRegisteredApp
+        This switch is used to retrieve a registered application from the Azure active directory via display name or object id.
 
     .PARAMETER GetSPNByName
         This switch is used to retrieve a service principal object from the Azure active directory via display name.
@@ -63,7 +66,7 @@
         This switch is used to retrieve a batch of service principal objects via wildcard search from the Azure active directory.
 
     .PARAMETER GetAppAndSPNPair
-        This switch is used to retrieve an Application and service principal pair from the Azure active directory.
+        This switch is used to retrieve an application and service principal pair from the Azure active directory.
 
     .PARAMETER OpenAzurePortal
         This switch is used to when connecting to the online web Azure portal.
@@ -145,9 +148,14 @@
         This example will retrieve a batch of service principal objects from the Azure active directory by display name 'CompanySPN'.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppByName
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetEnterpriseApp
 
-        This example will retrieve an Enterprise Application from the Azure active directory.
+        This example will retrieve an enterprise application from the Azure active directory.
+
+    .EXAMPLE
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetRegisteredApp
+
+        This example will retrieve a registered application from the Azure active directory.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppAndSPNPair
@@ -265,7 +273,12 @@
 
         [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
-        $GetAppByName,
+        $GetEnterpriseApp,
+
+        [parameter(ParameterSetName="DisplayNameSet")]
+        [parameter(ParameterSetName="ObjectIDSet")]
+        [switch]
+        $GetRegisteredApp,
 
         [parameter(ParameterSetName="DisplayNameSet")]
         [switch]
@@ -332,6 +345,8 @@
         $script:spnCounter = 0
         $script:appCounter = 0
         $script:appDeletedCounter = 0
+        $script:certCounter = 0
+        $script:certExportedCounter = 0
         $script:runningOnCore = $false
         $script:AzSessionFound = $false
         $script:AdSessionFound = $false
@@ -546,17 +561,41 @@
             }
         }
 
-        if($GetAppByName)
+        if($GetEnterpriseApp)
         {
             try
             {
                 if($DisplayName)
                 {
-                    Get-AppByName -DisplayName $DisplayName
+                    Get-EnterpriseApp -DisplayName $DisplayName
                 }
                 else
                 {
                     Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
+                }
+            }
+            catch
+            {
+                Stop-PSFFunction -Message "ERROR retrieving an application by name" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
+                return
+            }
+        }
+
+        if($GetRegisteredApp)
+        {
+            try
+            {
+                if($DisplayName)
+                {
+                    Get-RegisteredApp -DisplayName $DisplayName
+                }
+                if($ObjectID)
+                {
+                    Get-RegisteredApp -ObjectID $ObjectID
+                }
+                else
+                {
+                    Write-PSFMessage -Level Host "ERROR: You did not provide a display name or objectid. Search failed."
                 }
             }
             catch
@@ -708,20 +747,14 @@
     end
     {
 
-        if((-NOT $GetAppByName) -or (-NOT $GetAppAndSPNPair) -or (-NOT $GetSPNByName) -or (-NOT $GetSPNSByName) -or (-NOT $GetSPNByAppID))
+        if($CreateSelfSignedCertificate)
         {
-            if(0 -eq $script:appDeletedCounter)
-            {
-                Write-PSFMessage -Level Host -Message "No applications deleted!"
-            }
-            elseif(1 -eq $script:appDeletedCounter)
-            {
-                Write-PSFMessage -Level Host -Message "{0} application deleted sucessfully!" -StringValues $script:appDeletedCounter
-            }
-            elseif(1 -gt $script:appDeletedCounter)
-            {
-                Write-PSFMessage -Level Host -Message "{0} applications deleted sucessfully!" -StringValues $script:appDeletedCounter
-            }
+            Write-PSFMessage -Level Host -Message "{0} self-signed certificate created sucessfully!" -StringValues $script:certCounter
+            Write-PSFMessage -Level Host -Message "{0} self-signed certificates exported sucessfully!" -StringValues $script:certExportedCounter
+        }
+
+        if($CreateSingleObject -or $CreateBatchObjects -or $CreateSPNWithAppID -or $CreateSPNsWithNameAndCert -or $CreateSPNWithPassword)
+        {
             if(0 -eq $script:appCounter)
             {
                 Write-PSFMessage -Level Host -Message "No application created!"
@@ -745,6 +778,22 @@
             elseif(1 -gt $script:spnCounter)
             {
                 Write-PSFMessage -Level Host -Message "{0} service principals created sucessfully!" -StringValues $script:spnCounter
+            }
+        }
+
+        if($RemoveAppOrSpn -or $RemoveEnterpriseAppAndSPNPair)
+        {
+            if(0 -eq $script:appDeletedCounter)
+            {
+                Write-PSFMessage -Level Host -Message "No applications deleted!"
+            }
+            elseif(1 -eq $script:appDeletedCounter)
+            {
+                Write-PSFMessage -Level Host -Message "{0} application deleted sucessfully!" -StringValues $script:appDeletedCounter
+            }
+            elseif(1 -gt $script:appDeletedCounter)
+            {
+                Write-PSFMessage -Level Host -Message "{0} applications deleted sucessfully!" -StringValues $script:appDeletedCounter
             }
         }
 
