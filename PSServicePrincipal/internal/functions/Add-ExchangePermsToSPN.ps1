@@ -7,9 +7,6 @@
         .DESCRIPTION
             This function will apply the necessary application permissions needed for Exchange V2 CBA.
 
-        .PARAMETER ApplicationID
-            This parameter is the application id of the objects you are stamping.
-
         .PARAMETER DisplayName
              This parameter is the display name of the object we are stamping.
 
@@ -32,11 +29,6 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Position = '0', HelpMessage = "ApplicationID used to retrieve an application")]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $ApplicationID,
-
         [parameter(Position = '0', HelpMessage = "ApplicationID used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
