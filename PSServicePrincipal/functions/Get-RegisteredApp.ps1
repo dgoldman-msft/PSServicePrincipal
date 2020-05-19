@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory registered application
+            Function for retrieving azure active directory registered application.
 
         .DESCRIPTION
             This function will retrieve an registered application from the Azure active directory.
@@ -41,10 +41,12 @@
         if($DisplayName)
         {
             Get-AzureADApplication -SearchString $DisplayName
+            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-RegisteredApp"
         }
         if($ObjectID)
         {
             Get-AzureADApplication -ObjectId $ObjectID
+            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $ObjectID -FunctionName "Get-RegisteredApp"
         }
     }
     catch

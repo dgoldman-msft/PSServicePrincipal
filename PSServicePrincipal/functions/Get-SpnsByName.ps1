@@ -44,6 +44,8 @@
                     ObjectID = $item.ObjectID
                 }
             }
+
+            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-SpnsByName"
         }
         else
         {

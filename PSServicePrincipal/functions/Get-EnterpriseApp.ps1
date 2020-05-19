@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory enterprise application
+            Function for retrieving azure active directory enterprise application.
 
         .DESCRIPTION
             This function will retrieve an enterprise application (Service Principal) from the Azure active directory.
@@ -28,6 +28,7 @@
     try
     {
        Get-AzADApplication -DisplayName $DisplayName
+       Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-EnterpriseApp"
     }
     catch
     {

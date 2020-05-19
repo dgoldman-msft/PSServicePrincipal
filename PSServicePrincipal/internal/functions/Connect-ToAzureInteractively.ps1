@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for making an interactive connections to an Azure tenant and subscription
+            Cmdlet for making an interactive connections to an Azure tenant and subscription.
 
         .DESCRIPTION
             This function will make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
@@ -10,7 +10,7 @@
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively
 
-            Make a connection to an Azure tenant
+            Make a connection to an Azure tenant.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -19,9 +19,9 @@
     param()
 
     # Can be modified by end user for interactive login to AzureAD and AzureAZ
-    # $TenantID = 'xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-    # $ApplicationID = 'xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-    # $CertThumbprint = (Get-ChildItem cert:\CurrentUser\My\ | Where-Object {$_.Subject -eq "CN=YourCertBoundToYourAppID" }).Thumbprint
+    $TenantID = '919fa186-5471-47a8-afe5-a20c66a3a6b6'
+    $ApplicationID = '02fb7b4f-01c8-4241-a3f0-d8dbbdb54e70'
+    $CertThumbprint = (Get-ChildItem cert:\CurrentUser\My\ | Where-Object {$_.Subject -eq "CN=PSServicePrincipal" }).Thumbprint
 
     if(-NOT $script:AdSessionFound)
     {

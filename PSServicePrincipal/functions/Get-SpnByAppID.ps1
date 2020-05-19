@@ -39,6 +39,8 @@
                 ObjectType = $spnOutput.ObjectType
                 Type = $spnOutput.Type
             } | Format-Table
+
+            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $ApplicationID -FunctionName "Get-SpnByAppID"
         }
         else
         {

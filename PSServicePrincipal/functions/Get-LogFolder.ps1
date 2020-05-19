@@ -8,7 +8,7 @@
             This function will open your general output logging directory or the debug logging directory.
 
         .PARAMETER LogFolder
-            This parameter will tab complete allowing you to open the module debug logging folder which contains indepth debug logs for the logging provider
+            This parameter will tab complete allowing you to open the module debug logging folder which contains indepth debug logs for the logging provider.
 
         .EXAMPLE
             PS c:\> Get-LogFolder -LogFolder OutputLoggingFolder
@@ -31,8 +31,9 @@
     {
         "OutputLoggingFolder"
         {
-            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $script:loggingFolder
-            $script:loggingFolder | Invoke-Item
+            $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
+            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $loggingFolder
+            $loggingFolder | Invoke-Item
         }
 
         "DebugLoggingFolder" {
