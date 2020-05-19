@@ -42,6 +42,8 @@
             AppID = $appOutput.ApplicationID
             ObjectID = $appOutput.ObjectID
         }
+
+        Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-AppAndSPNPair"
     }
     catch
     {
