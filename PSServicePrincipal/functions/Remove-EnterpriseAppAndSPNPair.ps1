@@ -85,7 +85,7 @@
         if ($ProcessError)
         {
             Write-PSFMessage -Level Warning "WARNING: {0}" -StringValues $ProcessError.Exception.Message
-            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
             return
         }
     }
@@ -137,6 +137,6 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
     }
 }

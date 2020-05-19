@@ -13,7 +13,7 @@
         .EXAMPLE
             PS c:\> Get-LogFolder -LogFolder OutputLoggingFolder
 
-            This will open the output log folder for this module.
+            This will open the output log folder C:\Users\UserName\Documents\Self-Signed Certificates.
 
         .EXAMPLE
             PS c:\> Get-LogFolder -LogFolder DebugLoggingFolder
@@ -31,8 +31,9 @@
     {
         "OutputLoggingFolder"
         {
-            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $script:loggingFolder
-            $script:loggingFolder | Invoke-Item
+            $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
+            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $loggingFolder
+            $loggingFolder | Invoke-Item
         }
 
         "DebugLoggingFolder" {

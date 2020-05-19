@@ -2,13 +2,13 @@
 {
     <#
 		.SYNOPSIS
-            Cmdlet for applying Role Assignments to service principal
+            Cmdlet for applying Role Assignments to service principal.
 
 		.DESCRIPTION
-            This function just applies the Reader role to the newly created service principal object
+            This function just applies the Reader role to the newly created service principal object.
 
         .PARAMETER SpnToProcess
-            This is the Service Principal object being passed into process
+            This is the Service Principal object being passed into process.
 
         .EXAMPLE
             PS c:\> Add-RoleToSPN -SpnToProcess $newSPN

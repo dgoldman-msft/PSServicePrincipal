@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for creating a self-signed certificate
+            Cmdlet for creating a self-signed certificate.
 
         .DESCRIPTION
             This function will create a single self-signed certificate and place it in the local user and computer store locations. It will
@@ -36,48 +36,48 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     param(
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
+        [parameter(Position = 0, HelpMessage = "File path used to export the self-signed certificates")]
+        [PSFValidateScript({Resolve-PSFPath $_ -Provider FileSystem -SingleItem}, ErrorMessage = "{0} - is not a legit folder" )]
+        [string]
+        $FilePath = (Get-PSFConfigValue -FullName "PSServicePrincipal.Cert.CertFolder"),
+
+        [parameter(HelpMessage = "Certificate name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $CertificateName,
 
-        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = $true, Position = 1, HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DnsName,
 
-        [SecureString]
-        $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
-
-        [parameter(Mandatory = $true, Position = 3, HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = $true, Position = 2, ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $FilePath,
+        $SubjectAlternativeName,
+
+        [SecureString]
+        $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
 
         [switch]
         $Exo,
 
         [switch]
-        $EnableException,
-
-        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
-        [ValidateNotNullOrEmpty()]
-        [string]
-        $SubjectAlternativeName
+        $EnableException
     )
 
     try
     {
-        $certStore = 'cert:\CurrentUser\my\'
-        $currentDate = Get-Date
-        $endDate  = $currentDate.AddYears(1)
-        $newSelfSignedCert = New-SelfSignedCertificate -certstorelocation $certStore -Subject $SubjectAlternativeName -Dnsname $DnsName -Provider "Microsoft Enhanced RSA and AES Cryptographic Provider" -KeySpec KeyExchange -KeyExportPolicy Exportable -KeyUsage KeyEncipherment -KeyProtection None -NotBefore $currentDate -NotAfter $endDate
+        $CertStore = 'cert:\CurrentUser\my\'
+        $CurrentDate = Get-Date
+        $EndDate  = $currentDate.AddYears(1)
+        $newSelfSignedCert = New-SelfSignedCertificate -certstorelocation $CertStore -Subject $SubjectAlternativeName -Dnsname $DnsName -NotBefore $CurrentDate -NotAfter $EndDate -Provider "Microsoft Enhanced RSA and AES Cryptographic Provider" -KeySpec KeyExchange -KeyExportPolicy Exportable -KeyUsage KeyEncipherment -KeyProtection None
         Write-PSFMessage -Level Host -Message "New self-signed certficate with DnsName: {0} created in the following certificate store: {1}" -StringValues $DnsName, $certStore -FunctionName "New-SelfSignedCert"
         $script:certCounter ++
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
         return
     }
 
@@ -87,7 +87,6 @@
         if(-NOT (Test-Path -Path $FilePath))
         {
             Write-PSFMessage -Level Host -Message "File path {0} does not exist." -StringValues $FilePath -FunctionName "New-SelfSignedCert"
-
             $userChoice = Get-PSFUserChoice -Options "1) Create a new directory", "2) Exit" -Caption "User option menu" -Message "What operation do you want to perform?"
 
             switch($UserChoice)
@@ -103,7 +102,15 @@
                 1 {return}
             }
         }
+    }
+    catch
+    {
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+        return
+    }
 
+    try
+    {
         # Export the pfx and cer files
         $PFXCert = Join-Path $FilePath "$CertificateName.pfx"
         $CERCert = Join-Path $FilePath "$CertificateName.cer"

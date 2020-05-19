@@ -50,6 +50,12 @@
 
             This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
+        .EXAMPLE
+            PS c:\> New-ServicePrincipal -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -EnabledExceptions
+
+            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
+
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

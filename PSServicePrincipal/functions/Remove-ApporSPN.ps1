@@ -43,7 +43,7 @@
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
-            This will delete the enterprise application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'
+            This will delete the enterprise application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN
@@ -122,7 +122,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
         return
     }
 
@@ -142,7 +142,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
         return
     }
 
@@ -179,7 +179,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException
         return
     }
 }

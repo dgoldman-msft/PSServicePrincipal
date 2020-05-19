@@ -20,4 +20,3 @@ if(-NOT (Test-Path -Path $CertFolder)) { New-Item -Path $CertFolder -ItemType Di
 
 Set-PSFConfig -Module 'PSServicePrincipal' -Name 'Cert.CertFolder' -Value "$($CertFolder)" -Initialize -Validation string -Handler { } -Description "The default path where to save self-signed certificates. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 Set-PSFConfig -Module 'PSServicePrincipal' -Name 'Import.IndividualFiles' -Value $false -Initialize -Validation 'bool' -Description "Whether the module files should be imported individually. During the module build, all module code is compiled into few files, which are imported instead by default. Loading the compiled versions is faster, using the individual files is easier for debugging and testing out adjustments."
-

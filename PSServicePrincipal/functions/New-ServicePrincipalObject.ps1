@@ -466,6 +466,11 @@
                 if($script:roleListToProcess.Count -gt 0)
                 {
                     Add-RoleToSPN -spnToProcess $script:roleListToProcess
+
+                    if($exo)
+                    {
+                        Add-ExchangePermsToSPN.ps1 -DisplayName $DisplayName
+                    }
                 }
             }
             catch

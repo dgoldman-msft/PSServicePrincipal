@@ -17,7 +17,8 @@
         .EXAMPLE
             PS c:\> Connect-ToCloudTenant -Reconnect -EnableException
 
-            These parameters will be used to make a connection to an Azure tenant or reconnect to another specified tenant
+            This will be used to make a connection to an Azure tenant or reconnect to another specified tenant.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -25,10 +26,10 @@
     [CmdletBinding()]
     param(
         [switch]
-        $EnableException,
+        $Reconnect,
 
         [switch]
-        $Reconnect
+        $EnableException
     )
 
     try
