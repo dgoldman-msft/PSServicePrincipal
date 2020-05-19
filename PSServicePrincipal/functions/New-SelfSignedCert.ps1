@@ -24,6 +24,9 @@
         .PARAMETER FilePath
             This parameter is a path where the certificates are exported locally.
 
+        .PARAMETER Password
+            This parameter is a the secure password for the self-signed certificate.
+
         .PARAMETER SubjectAlternativeName
             This parameter is the subject alternative name stamped on the self-signed certificate.
 
@@ -67,13 +70,13 @@
         [string]
         $DnsName,
 
+        [SecureString]
+        $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
+
         [parameter(Mandatory = $true, Position = 3, HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $SubjectAlternativeName,
-
-        [SecureString]
-        $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
 
         [switch]
         $Exo,
@@ -119,18 +122,12 @@
                 1 {return}
             }
         }
-        else
-        {
-            # This is a backup location using PSFConfiguration (c:\Users\UserName\MyDocuments\Self-Signed Certificates)
-            # $FilePath = Get-PSFConfigValue -FullName PSServicePrincipal.Cert.PSServicePrincipal.CertFolder
-        }
 
-        # This will export the pfx and cer files
+        # Export the pfx and cer files
         $PFXCert = Join-Path $FilePath "$CertificateName.pfx"
         $CERCert = Join-Path $FilePath "$CertificateName.cer"
         $path = $certStore + $newSelfSignedCert.thumbprint
         $null = Export-PfxCertificate -cert $path -FilePath $PFXCert -Password $Password
-        #$newSelfSignedCert.GetRawCertData() | set-content $CERCert -Encoding Byte
         [System.IO.File]::WriteAllBytes((Resolve-PSFPath $CERCert -Provider FileSystem -SingleItem -NewChild ), $newSelfSignedCert.GetRawCertData())
         Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $PFXCert, $CERCert -FunctionName "New-SelfSignedCert"
         $script:certExportedCounter = 2
