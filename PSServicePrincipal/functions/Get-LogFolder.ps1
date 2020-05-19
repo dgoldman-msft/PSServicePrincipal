@@ -31,9 +31,8 @@
     {
         "OutputLoggingFolder"
         {
-            $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
-            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $loggingFolder
-            $loggingFolder | Invoke-Item
+            Write-PSFMessage -Level Host -Message "Opening default module logging folder: {0}" -StringValues $script:loggingFolder
+            $script:loggingFolder | Invoke-Item
         }
 
         "DebugLoggingFolder" {

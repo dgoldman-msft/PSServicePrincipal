@@ -28,7 +28,6 @@
     try
     {
        Get-AzADApplication -DisplayName $DisplayName
-       Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-EnterpriseApp"
     }
     catch
     {

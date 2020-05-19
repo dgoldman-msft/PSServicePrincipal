@@ -2,50 +2,31 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for creating a self-signed certificate.
+            Cmdlet for creating a self-signed certificate
 
         .DESCRIPTION
             This function will create a single self-signed certificate and place it in the local user and computer store locations. It will
             also export the .pfx and .cer files to a location of your choice.
 
         .PARAMETER CertificateName
-            This parameter is a name of the self-signed certificate.
+            This parameter is a name of the self-signed certificate
 
         .PARAMETER DnsName
-            This parameter is the DNS stamped on the self-signed certificate.
-
-        .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
-
-        .PARAMETER Exo
-            This parameter switch will force the creation of an Exchange Online registered application with necessary rights and self-signed certificate.
+            This parameter is the DNS stamped on the self-signed certificate
 
         .PARAMETER FilePath
-            This parameter is a path where the certificates are exported locally.
+            This parameter is a path where the certificates are exported locally
 
         .PARAMETER Password
             This parameter is a the secure password for the self-signed certificate.
 
         .PARAMETER SubjectAlternativeName
-            This parameter is the subject alternative name stamped on the self-signed certificate.
+            This parameter is the subject alternative name stamped on the self-signed certificate
 
         .EXAMPLE
             PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
 
-            This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location.
-
-        .EXAMPLE
-            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\ -EnabledExceptions
-
-            This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location and enable
-            detailed expcetion logging.
-
-        .EXAMPLE
-            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\ -Exo
-
-            This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location and uploaded
-            certificate to the Exo registered application.
+            This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location
 
         .NOTES
             You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
@@ -55,17 +36,12 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     param(
-        [parameter(Position = 0, HelpMessage = "File path used to create the self-signed certificate")]
-        [PSFValidateScript({Resolve-PSFPath $_ -Provider FileSystem -SingleItem}, ErrorMessage = "{0} - is not a legit folder" )]
-        [string]
-        $FilePath = (Get-PSFConfigValue -FullName "PSServicePrincipal.Cert.CertFolder"),
-
-        [parameter(Mandatory = $true, Position = 1, HelpMessage = "Certificate name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='SelfSignedCertSet', HelpMessage = "Certificate name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $CertificateName,
 
-        [parameter(Mandatory = $true, Position = 2, HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = 'True', Position = '1', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DnsName,
@@ -76,13 +52,18 @@
         [parameter(Mandatory = $true, Position = 3, HelpMessage = "DNS name used to create the self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $SubjectAlternativeName,
+        $FilePath,
 
         [switch]
         $Exo,
 
         [switch]
-        $EnableException
+        $EnableException,
+
+        [parameter(Mandatory = 'True', Position = '2', ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SubjectAlternativeName
     )
 
     try
@@ -96,7 +77,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_
         return
     }
 
@@ -141,5 +122,4 @@
     catch
     {
         Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-    }
 }

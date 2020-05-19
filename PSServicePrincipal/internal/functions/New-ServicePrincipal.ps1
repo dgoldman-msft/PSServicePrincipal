@@ -2,13 +2,10 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for creating a single object service principal objects.
+            Cmdlet for creating a single object service principal objects
 
         .DESCRIPTION
             This function will create a single object Service Principal object based on application id.
-
-        .PARAMETER RegisteredApp
-            This parameter is a switch used to create an Azure registered application.
 
         .PARAMETER ApplicationID
             This parameter is the application id of the Azure application you are working on.
@@ -35,20 +32,23 @@
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
 
+        .PARAMETER RegisteredApp
+            This parameter is a switch used to create an Azure registered application.
+
         .EXAMPLE
             PS c:\> New-ServicePrincipal -DisplayName 'CompanySPN'
 
-            These will create a new service principal with the display name of 'CompanySPN'.
+            This will create a new service principal with the display name of 'CompanySPN'.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipal -RegisteredApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            These will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e' from the newly created Azure registered application.
+            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e' from the newly created Azure registered application.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipal -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            These will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     #>
 
@@ -101,6 +101,7 @@
             $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
             $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -StringValues $newSpn.DisplayName -FunctionName "New-SPNByAppID"
+            Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -Format $newSpn.DisplayName -FunctionName "New-SPNByAppID"
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
             return

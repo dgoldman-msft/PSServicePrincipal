@@ -2,7 +2,7 @@
 {
     <#
         .SYNOPSIS
-            Cmdlet for making an interactive connections to an Azure tenant and subscription.
+            Cmdlet for making an interactive connections to an Azure tenant and subscription
 
         .DESCRIPTION
             This function will make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
@@ -10,7 +10,7 @@
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively
 
-            Make a connection to an Azure tenant.
+            Make a connection to an Azure tenant
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

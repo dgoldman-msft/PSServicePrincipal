@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory registered application.
+            Function for retrieving azure active directory registered application
 
         .DESCRIPTION
             This function will retrieve an registered application from the Azure active directory.
