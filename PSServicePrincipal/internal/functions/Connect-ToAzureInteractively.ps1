@@ -19,8 +19,8 @@
     param()
 
     # Can be modified by end user for interactive login to AzureAD and AzureAZ
-    $TenantID = '919fa186-5471-47a8-afe5-a20c66a3a6b6'
-    $ApplicationID = '02fb7b4f-01c8-4241-a3f0-d8dbbdb54e70'
+    #$TenantID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxx-xxxxxx'
+    #$ApplicationID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxx-xxxxxx'
     $CertThumbprint = (Get-ChildItem cert:\CurrentUser\My\ | Where-Object {$_.Subject -eq "CN=PSServicePrincipal" }).Thumbprint
 
     if(-NOT $script:AdSessionFound)
