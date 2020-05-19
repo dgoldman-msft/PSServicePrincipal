@@ -9,19 +9,26 @@
             also export the .pfx and .cer files to a location of your choice.
 
         .PARAMETER CertificateName
-            This parameter is a name of the self-signed certificate
+            This parameter is a name of the self-signed certificate.
 
         .PARAMETER DnsName
-            This parameter is the DNS stamped on the self-signed certificate
+            This parameter is the DNS stamped on the self-signed certificate.
 
         .PARAMETER FilePath
-            This parameter is a path where the certificates are exported locally
+            This parameter is a file path where the certificates are exported locally.
 
         .PARAMETER Password
             This parameter is a the secure password for the self-signed certificate.
 
         .PARAMETER SubjectAlternativeName
-            This parameter is the subject alternative name stamped on the self-signed certificate
+            This parameter is the subject alternative name stamped on the self-signed certificate.
+
+        .PARAMETER Exo
+            This parameter switch will force the creation of an Exchange Online registered application with necessary rights and self-signed certificate.
+
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
