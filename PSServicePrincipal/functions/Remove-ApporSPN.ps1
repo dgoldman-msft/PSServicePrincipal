@@ -34,6 +34,7 @@
             PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -DisplayBane CompanyAPP
 
             This will delete an enterprise application using the DisplayBane 'CompanyAPP'.
+
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 

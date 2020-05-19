@@ -10,7 +10,7 @@
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively
 
-            Make a connection to an Azure tenant
+            Make a connection to an Azure tenant.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
