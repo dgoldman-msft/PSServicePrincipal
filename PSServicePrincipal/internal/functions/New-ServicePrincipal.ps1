@@ -25,8 +25,8 @@
         .PARAMETER EndDate
             This parameter is the certificate NotAfter time stamp.
 
-        .PARAMETER Exo
-            This parameter switch will force the creation of an Exchange Online registered application with necessary rights and self-signed certificate.
+        .PARAMETER Cba
+            This example creates a registered application and a self-signed certificate which is uploaded to the application and applies the correct application roll assignments.
 
         .PARAMETER EnableException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
@@ -89,7 +89,7 @@
         $EndDate,
 
         [switch]
-        $Exo,
+        $Cba,
 
         [switch]
         $EnableException
@@ -107,7 +107,7 @@
             $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
             $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -StringValues $newSpn.DisplayName -FunctionName "New-SPNByAppID"
-            Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -Format $newSpn.DisplayName -FunctionName "New-SPNByAppID"
+            Write-PSFMessage -Level Host -Message "SPN created with DisplayName: {0}" -StringValues $newSpn.DisplayName -FunctionName "New-SPNByAppID"
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
             return
@@ -142,7 +142,7 @@
 
     try
     {
-        if(($DisplayName) -and (-NOT $RegisteredApp) -and (-NOT $Exo))
+        if(($DisplayName) -and (-NOT $RegisteredApp))
         {
             # Enterprise Application (Service Principal) needs display name because it creates the pair
             if($newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop)
@@ -165,7 +165,7 @@
 
     try
     {
-        if($Exo)
+        if($Cba)
         {
             $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Registered application and SPN created with DisplayName: {0}. Cert uploaded to Azure application" -StringValues $DisplayName -FunctionName "New-SPNByAppID"

@@ -40,14 +40,15 @@
 
     try
     {
-        $O365SvcPrincipal = Get-AzureADServicePrincipal | Where-object { $_.DisplayName -eq "Office 365 Exchange Online"}
+        $O365SvcPrincipal = Get-AzureADServicePrincipal -All $true | Where-object { $_.DisplayName -eq "Office 365 Exchange Online"}
         $reqExoAccess = New-Object -TypeName "Microsoft.Open.AzureAD.Model.RequiredResourceAccess"
         $reqExoAccess.ResourceAppId = $O365SvcPrincipal.AppId
-        $delegatedPermissions = New-Object -TypeName "Microsoft.Open.AzureAD.Model.ResourceAccess" -ArgumentList "ab4f2b77-0b06-4fc1-a9de-02113fc2ab7c", "Scope" # Manage Exchange As Application
+        $delegatedPermissions = New-Object -TypeName "Microsoft.Open.AzureAD.Model.ResourceAccess" -ArgumentList "dc50a0fb-09a3-484d-be87-e023b12c6440", "Role" # Manage Exchange As Application
+
         $reqExoAccess.ResourceAccess = $delegatedPermissions
         $ADApplication = get-AzureADApplication -SearchString $DisplayName
         Set-AzureADApplication -ObjectId $ADApplication.ObjectId -RequiredResourceAccess $reqExoAccess
-        Write-PSFMessage -Level Host -Message "Exchange.Manage permissions has been applied to application {0}. To complete setup access your application in the portal and Grant admin consent." -StringValues $DisplayName
+        Write-PSFMessage -Level Host -Message "Exchange.Manage permissions has been applied to application {0}. To complete setup access your application in the portal and Grant admin consent." -StringValues $DisplayName -FunctionName "Add-ExchangePermsToSPN"
     }
     catch
     {

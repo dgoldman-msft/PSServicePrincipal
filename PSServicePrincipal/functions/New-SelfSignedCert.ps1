@@ -23,8 +23,8 @@
         .PARAMETER SubjectAlternativeName
             This parameter is the subject alternative name stamped on the self-signed certificate.
 
-        .PARAMETER Exo
-            This parameter switch will force the creation of an Exchange Online registered application with necessary rights and self-signed certificate.
+        .PARAMETER Cba
+            This example creates a registered application and a self-signed certificate which is uploaded to the application and applies the correct application roll assignments.
 
         .PARAMETER EnableException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
@@ -67,7 +67,7 @@
         $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
 
         [switch]
-        $Exo,
+        $Cba,
 
         [switch]
         $EnableException
@@ -127,10 +127,10 @@
         Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $PFXCert, $CERCert -FunctionName "New-SelfSignedCert"
         $script:certExportedCounter = 2
 
-        if($Exo)
+        if($Cba)
         {
             $keyValue = [System.Convert]::ToBase64String($newSelfSignedCert.GetRawCertData())
-            New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Exo
+            New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Cba
         }
     }
     catch

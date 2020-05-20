@@ -46,8 +46,8 @@
     .PARAMETER DeleteSpn
         This parameter is a switch used to delete a service principal.
 
-    .PARAMETER Exo
-        This parameter switch will force the creation of an Exchange Online registered application with necessary rights and self-signed certificate.
+    .PARAMETER Cba
+        This parameter switch will force the creation of a registered application with necessary roles and uploads the self-signed certificate to the application in Azure.
 
     .PARAMETER EnableException
         This parameter disables user-friendly warnings and enables the throwing of exceptions.
@@ -116,9 +116,9 @@
         This example creates a new Enterprise Application and service principal with a display name of 'CompanySPN' and a (user supplied password) and creates the service principal based on the application just created. The start date and end date are added to password credential.
 
      .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject -RegisteredApp -Exo
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanyApp -CreateSingleObject -RegisteredApp -Cba
 
-        This example creates a new Exchange Online registered application with a display name of 'EXOV2Application' and self-signed certificate uploaded to the application as well as add the necessary right assignments.
+        This example creates a registered application with a display name of 'CompanyApp', a self-signed certificate which is uploaded to the application and applies the correct appRoll assignments.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -CreateSingleObject -CreateSPNWithAppID
@@ -239,7 +239,7 @@
         [switch]
         $CreateSingleObject,
 
-        [parameter(Mandatory = 'True', ParameterSetName='NameFileSet', HelpMessage = "Switch used for creating batch SPN's")]
+        [parameter(Mandatory = $true, ParameterSetName='NameFileSet', HelpMessage = "Switch used for creating batch SPN's")]
         [switch]
         $CreateBatchObjects,
 
@@ -276,7 +276,7 @@
         $EnableException,
 
         [switch]
-        $Exo,
+        $Cba,
 
         [parameter(ParameterSetName="AppIDSet")]
         [switch]
@@ -303,11 +303,11 @@
         [switch]
         $GetAppAndSPNPair,
 
-        [parameter(Mandatory = 'True', ParameterSetName='OpenAzurePortal',  Position = '0', HelpMessage = "A switch used to connect to the Azure web portal")]
+        [parameter(Mandatory = $true, ParameterSetName='OpenAzurePortal',  Position = '0', HelpMessage = "A switch used to connect to the Azure web portal")]
         [switch]
         $OpenAzurePortal,
 
-        [parameter(Mandatory = 'True', ParameterSetName='Reconnect', Position = '0', HelpMessage = "A switch used to connect force a new conncetion to an Azure tenant")]
+        [parameter(Mandatory = $true, ParameterSetName='Reconnect', Position = '0', HelpMessage = "A switch used to connect force a new conncetion to an Azure tenant")]
         [switch]
         $Reconnect,
 
@@ -325,27 +325,27 @@
         [switch]
         $RemoveEnterpriseAppAndSPNPair,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='AppIDSet', HelpMessage = "ApplicationID used to create or delete an SPN or application")]
+        [parameter(Mandatory = $true, ParameterSetName='AppIDSet', HelpMessage = "ApplicationID used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='CertSet', HelpMessage = "Certificate parameter for a created spn")]
+        [parameter(Mandatory = $true, ParameterSetName='CertSet', HelpMessage = "Certificate parameter for a created spn")]
         [ValidateNotNullOrEmpty()]
         [string]
         $Certificate,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
+        [parameter(Mandatory = $true, ParameterSetName='DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='NameFileSet', HelpMessage = "Name file used to create a batch of spn's")]
+        [parameter(Mandatory = $true, ParameterSetName='NameFileSet', HelpMessage = "Name file used to create a batch of spn's")]
         [ValidateNotNullOrEmpty()]
         [string]
         $NameFile,
 
-        [parameter(Mandatory = 'True', Position = '0', ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
+        [parameter(Mandatory = $true, ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID
@@ -427,9 +427,9 @@
                 {
                     if(-NOT $script:runningOnCore)
                     {
-                        if($Exo)
+                        if($Cba)
                         {
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Exo
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba
                         }
                         else
                         {
@@ -467,7 +467,7 @@
                 {
                     Add-RoleToSPN -spnToProcess $script:roleListToProcess
 
-                    if($exo)
+                    if($Cba)
                     {
                         Add-ExchangePermsToSPN.ps1 -DisplayName $DisplayName
                     }
