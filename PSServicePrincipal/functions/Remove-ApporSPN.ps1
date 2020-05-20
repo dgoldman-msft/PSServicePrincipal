@@ -22,10 +22,6 @@
         .PARAMETER DisplayName
             This parameter is the DisplayName of the object you are deleting.
 
-        .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
-
         .PARAMETER ObjectID
             This parameter is the ObjectID of the objects you are deleting.
 
@@ -63,12 +59,6 @@
             PS c:\> Remove-AppOrSPN -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
             This will delete a Service Principal using the ObjectID.
-
-        .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN -EnableException
-
-            This example removes a service principal in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
      #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -93,10 +83,7 @@
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $ObjectID,
-
-        [switch]
-        $EnableException
+        $ObjectID
     )
 
     try
@@ -124,7 +111,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException -Continue
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true -Continue
         return
     }
 
@@ -153,7 +140,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException -Continue
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true -Continue
         return
     }
 
@@ -182,7 +169,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException -Continue
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true -Continue
         return
     }
 }

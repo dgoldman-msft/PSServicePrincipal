@@ -29,20 +29,10 @@
         .PARAMETER Cba
             This example creates a registered application and a self-signed certificate which is uploaded to the application and applies the correct application roll assignments.
 
-        .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
-
         .EXAMPLE
             PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
 
             This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location
-
-        .EXAMPLE
-            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\ -EnableException
-
-            This example creates a new self-signed certificate, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
         .NOTES
             You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
@@ -79,10 +69,7 @@
         $RegisteredApp,
 
         [switch]
-        $Cba,
-
-        [switch]
-        $EnableException
+        $Cba
     )
 
     try
@@ -147,6 +134,6 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
     }
 }
