@@ -13,7 +13,7 @@
         .PARAMETER DisplayName
             This parameter is the DisplayName of the objects you are deleting.
 
-        .PARAMETER EnableException
+        .PARAMETER EnabledException
             This parameter disables user-friendly warnings and enables the throwing of exceptions.
             This is less user friendly, but allows catching exceptions in calling scripts.
 
@@ -36,7 +36,7 @@
             This will remove the Azure active directory application and service principal object using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
 
         .EXAMPLE
-            PS c:\> Remove-EnterpriseAppAndSPNPair -DisplayName CompanySPN -EnableException
+            PS c:\> Remove-EnterpriseAppAndSPNPair -DisplayName CompanySPN -EnabledException
 
             This example removes a new service principal in AAD, after prompting for user preferences.
             If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
@@ -59,7 +59,7 @@
         $ObjectID,
 
         [switch]
-        $EnableException
+        $EnabledException
     )
 
     try
@@ -68,7 +68,7 @@
         {
             if(Remove-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop -ErrorVariable ProcessError)
             {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $DisplayName
+                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-EnterpriseAppAndSPNPair"
                 $wasDeleted = $True
             }
         }
@@ -77,7 +77,7 @@
         {
             if(Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop -ErrorVariable ProcessError)
             {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ApplicationID
+                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-EnterpriseAppAndSPNPair"
                 $wasDeleted = $True
             }
         }
@@ -86,7 +86,7 @@
         {
             if(Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop -ErrorVariable ProcessError)
             {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ObjectID
+                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-EnterpriseAppAndSPNPair"
                 $wasDeleted = $True
             }
         }
@@ -115,7 +115,7 @@
                 {
                    if(Remove-AzADApplication -DisplayName $DisplayName -ErrorAction Stop)
                    {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $DisplayName
+                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-EnterpriseAppAndSPNPair"
                         $wasDeleted = $True
                    }
                 }
@@ -124,7 +124,7 @@
                 {
                     if(Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop)
                     {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ApplicationID
+                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-EnterpriseAppAndSPNPair"
                         $wasDeleted = $True
                     }
                 }
@@ -133,7 +133,7 @@
                 {
                     if(Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop)
                     {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ObjectID
+                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-EnterpriseAppAndSPNPair"
                         $wasDeleted = $True
                     }
                 }
@@ -143,13 +143,13 @@
 
             1
             {
-                Write-PSFMessage -Level Host "No Azure application deleted!"
+                Write-PSFMessage -Level Host "No Azure application deleted!" -FunctionName "Remove-EnterpriseAppAndSPNPair"
                 return
             }
         }
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
     }
 }

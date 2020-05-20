@@ -10,27 +10,17 @@
         .PARAMETER SpnToProcess
             This is the Service Principal object being passed into process.
 
-        .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
-
         .EXAMPLE
             PS c:\> Add-RoleToSPN -SpnToProcess $newSPN
 
             This is passing in an ArrayList of SPN objects to be processed. We will apply a new role assigment of Contriubtor to each object.
-
-        .EXAMPLE
-            Add-RoleToSPN -SpnToProcess $newSPN -EnabledExpcetion
-
-            This is passing in an ArrayList of SPN objects to be processed. We will apply a new role assigment of Contriubtor to each object.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding()]
     param(
         [object]
-        $SpnToProcess
+        $SpnToProcess,
     )
 
     foreach ($spn in $SpnToProcess) {

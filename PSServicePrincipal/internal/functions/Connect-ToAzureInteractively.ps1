@@ -7,29 +7,16 @@
         .DESCRIPTION
             This function will make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
 
-        .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
-
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively
 
             Make a connection to an Azure tenant.
-
-        .EXAMPLE
-            PS c:\>Connect-ToAzureInteractively -EnableException
-
-            Make a connection to an Azure tenant.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
     [OutputType('System.String')]
     [CmdletBinding()]
-    param(
-        [switch]
-        $EnabledException
-    )
+    param()
 
     # Can be modified by end user for interactive login to AzureAD and AzureAZ
     #$TenantID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxx-xxxxxx'
@@ -65,7 +52,7 @@
                 }
                 catch
                 {
-                    Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
+                    Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
                 }
             }
         }
@@ -93,7 +80,7 @@
             }
             catch
             {
-                Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
+                Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
             }
         }
     }
