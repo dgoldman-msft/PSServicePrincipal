@@ -206,9 +206,9 @@
         This example will open a web connection to the Microsoft Azure Portal.
 
     .EXAMPLE
-        PS c:\> New-ServicePrincipalObject -EnableException
+        PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -EnableException
 
-        Creates example a new service principal in AAD, after prompting for user preferences.
+        This creates a new service principal in AAD, after prompting for user preferences.
         If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
     .NOTES
@@ -232,6 +232,9 @@
     [OutputType('System.String')]
 
     param(
+        [switch]
+        $Cba,
+
         [switch]
         $CreateSelfSignedCertificate,
 
@@ -263,6 +266,7 @@
         [switch]
         $DeleteEnterpriseApp,
 
+        [parameter(ParameterSetName="DisplayNameSet")]
         [parameter(ParameterSetName="ObjectIDSet")]
         [switch]
         $DeleteRegisteredApp,
@@ -274,9 +278,6 @@
 
         [switch]
         $EnableException,
-
-        [switch]
-        $Cba,
 
         [parameter(ParameterSetName="AppIDSet")]
         [switch]
@@ -429,7 +430,7 @@
                     {
                         if($Cba)
                         {
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException
                         }
                         else
                         {
@@ -458,7 +459,7 @@
                 {
                     New-ServicePrincipal -DisplayName $DisplayName -CreateSPNWithPassword
                 }
-                elseif(($DisplayName) -and (-NOT $RegisteredApp))
+                elseif(($DisplayName) -and (-NOT $RegisteredApp) -and (-NOT $Cba))
                 {
                     New-ServicePrincipal -DisplayName $DisplayName
                 }
@@ -572,7 +573,9 @@
                 else
                 {
                     Write-PSFMessage -Level Host -Message "Creating new SPN DisplayName and certificate key - DisplayName: {0}" -StringValues $newSPN.DisplayName
-                    $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $Certificate -EndDate "2024-12-31"
+                    $endDate = Get-Date
+                    $endDate  = $currentDate.AddYears(1)
+                    $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $Certificate -EndDate $endDate
                     Add-RoleToSPN -spnToProcess $newSPN
                     $script:spnCounter ++
                 }
@@ -588,14 +591,7 @@
         {
             try
             {
-                if($DisplayName)
-                {
-                    Get-EnterpriseApp -DisplayName $DisplayName
-                }
-                else
-                {
-                    Write-PSFMessage -Level Host "ERROR: You did not provide a display name. Search failed."
-                }
+                Get-EnterpriseApp -DisplayName $DisplayName
             }
             catch
             {
@@ -714,7 +710,7 @@
             {
                 if((-NOT $DisplayName) -or (-NOT $ApplicationID) -or (-NOT $ObjectID))
                 {
-                    Remove-EnterpriseAppAndSPNPair -DisplayName $DisplayName -ApplicationID $ApplicationID -ObjectID $ObjectID
+                    Remove-EnterpriseAppAndSPNPair -DisplayName $DisplayName -ApplicationID $ApplicationID -ObjectID $ObjectID -EnableException
                     return
                 }
                 else
@@ -735,16 +731,33 @@
         {
             if($DeleteEnterpriseApp -or $DeleteRegisteredApp)
             {
-                Remove-AppOrSPN $DisplayName $ApplicationID $ObjectID -DeleteRegisteredApp -DeleteEnterpriseApp
+                if($DisplayName)
+                {
+                    Remove-AppOrSPN -DisplayName $DisplayName -DeleteRegisteredApp -DeleteEnterpriseApp
+                }
+                if($ApplicationID)
+                {
+                    Remove-AppOrSPN -ApplicationID $ApplicationID -DeleteRegisteredApp -DeleteEnterpriseApp
+                }
+                if($ObjectID)
+                {
+                    Remove-AppOrSPN -ObjectID $ObjectID -DeleteRegisteredApp -DeleteEnterpriseApp
+                }
             }
-            else
+            elseif($DeleteSpn)
             {
-                Write-PSFMessage -Level Host "ERROR. You did not provide a object value."
-            }
-
-            if($DeleteSpn)
-            {
-                Remove-AppOrSPN -DisplayName -ApplicationID -ObjectID -DeleteSpn
+                if($DisplayName)
+                {
+                    Remove-AppOrSPN -DisplayName $DisplayName -DeleteSpn $EnableException
+                }
+                if($ApplicationID)
+                {
+                    Remove-AppOrSPN -ApplicationID $ApplicationID -DeleteSpn
+                }
+                if($ObjectID)
+                {
+                    Remove-AppOrSPN -ObjectID $ObjectID -DeleteSpn
+                }
             }
             else
             {

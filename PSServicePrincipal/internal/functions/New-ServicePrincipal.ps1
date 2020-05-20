@@ -121,7 +121,7 @@
 
     try
     {
-        if($CreateSPNWithPassword -and $DisplayName)
+        if($DisplayName -and $CreateSPNWithPassword)
         {
             $password = Read-Host "Enter Password" -AsSecureString
             $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
@@ -165,12 +165,12 @@
 
     try
     {
-        if($Cba)
+        if($DisplayName -and $RegisteredApp -and $Cba)
         {
             $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
             Write-PSFMessage -Level Host -Message "Registered application and SPN created with DisplayName: {0}. Cert uploaded to Azure application" -StringValues $DisplayName -FunctionName "New-SPNByAppID"
             $script:roleListToProcess.Add($newSpn)
-            $script:spnCounter ++
+            $script:appCounter ++
             return
         }
     }

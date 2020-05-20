@@ -20,9 +20,9 @@
             This will stamp the permissions on a registerd application by application id from the Azure active directory.
 
         .EXAMPLE
-            PS c:\> Add-ExchangePermsToSPN -Reconnect -EnableException
+            PS c:\> Add-ExchangePermsToSPN -DisplayName 'CompanySPN' -EnableException
 
-            This will stamp the permissions on a registerd application by application id from the Azure active directory.
+            This example will stamp the rolls on a registerd application by the display name the Azure active directory.
             If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 

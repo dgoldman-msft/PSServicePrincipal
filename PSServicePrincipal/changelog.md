@@ -2,13 +2,14 @@
 ## 1.0.11 (2020-05-19)
  - Upd: in PSServicePrincipal.provider.ps1 - Added PSConfig variable for setting certstore location in configuration as a fall back
  - Upd: in New-ServicePrincipal.ps1 - Corrected -Format to -StringValues for PSFWriteMessage variable output
- - New: New code and functions for creating EXO application object (SP) and cert upload to the azure application
+ - New: New code and functions for creating registered application with matching service principal, create self-signed cert and upload to the azure application and apply Manmage.AsApp role to application for CBA ExchV2 cmdlets
  - New: Added code for stamping Exchange permissions for CBA Authentication for EXOv2 cmdlets
- - Upd: in New-ServicePrincipalObject.ps1 - Added new Exo switch, parameter and example as well as code to call in to create self-signed cert as new EXO application object. Aslo remove unneeded extra line spaces
- - Upd: to New-SelfSignedCert.ps1 - Added new Exo switch and EnableExceptions switch, updated code for exchange cert exports and code to create Exo object
+ - Upd: in New-ServicePrincipalObject.ps1 - Added new CBA switch, parameter and remove unneeded extra line spaces
+ - Upd: to New-SelfSignedCert.ps1 - Added new CBA switch and EnableExceptions switch, updated code for exchange cert exports and code to create CBA object
  - Upd: documentation in Get-EnterpriseApp.ps1, Get-RegisteredApp.ps1, New-ServicePrincipalObject.ps1,
  - Upd: in configuration.ps1- Added configuration code for Self-Signed Certificate save location
  - Upd: in Get-EnterpriseApp, Get-RegisteredApp, Get-SpnByname, Get-SpnsByName, Get-SpnByAppID, Get-AppAndSPNPair - Added PSF-WriteLog to indicate an item was obtained for log purposes
+ - Upd: Changed search logic for Get-EnterpriseApp and Get-RegisteredApp to show everything based on DisplayName = *
  - Fix in Connect-ToCloudTenant.ps1 - Added code for manual Reconnect
  - Fix in Get-LogFolder.ps1 - Removed $scriptlogging folder and get value from PSFConfig. We pull from PSFConfig local repository now
 

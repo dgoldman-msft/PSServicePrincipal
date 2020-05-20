@@ -7,11 +7,15 @@
         .DESCRIPTION
             This function will delete an enterprise application and service principal pair from the Azure Active Directory.
 
+        .PARAMETER ApplicationID
+            This parameter is the ApplicationID of the object you are deleting.
+
         .PARAMETER DisplayName
             This parameter is the DisplayName of the objects you are deleting.
 
-        .PARAMETER ApplicationID
-            This parameter is the ApplicationID of the object you are deleting.
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
 
         .PARAMETER ObjectID
             This parameter is the ObjectID of the objects you are deleting.
@@ -30,6 +34,12 @@
             PS c:\> Remove-EnterpriseAppAndSPNPair -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
             This will remove the Azure active directory application and service principal object using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+
+        .EXAMPLE
+            PS c:\> Remove-EnterpriseAppAndSPNPair -DisplayName CompanySPN -EnableException
+
+            This example removes a new service principal in AAD, after prompting for user preferences.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -42,11 +52,14 @@
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $ObjectID,
+        $DisplayName,
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName
+        $ObjectID,
+
+        [switch]
+        $EnableException
     )
 
     try

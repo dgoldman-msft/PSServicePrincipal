@@ -20,6 +20,9 @@
         .PARAMETER Password
             This parameter is a the secure password for the self-signed certificate.
 
+        .PARAMETER RegisteredApp
+            This parameter is a switch used to create an Azure registered application.
+
         .PARAMETER SubjectAlternativeName
             This parameter is the subject alternative name stamped on the self-signed certificate.
 
@@ -34,6 +37,12 @@
             PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\
 
             This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location
+
+        .EXAMPLE
+            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -FilePath c:\temp\ -EnableException
+
+            This example creates a new self-signed certificate, after prompting for user preferences.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
         .NOTES
             You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
@@ -65,6 +74,9 @@
 
         [SecureString]
         $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
+
+        [switch]
+        $RegisteredApp,
 
         [switch]
         $Cba,
@@ -130,7 +142,7 @@
         if($Cba)
         {
             $keyValue = [System.Convert]::ToBase64String($newSelfSignedCert.GetRawCertData())
-            New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Cba
+            New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Cba -RegisteredApp
         }
     }
     catch

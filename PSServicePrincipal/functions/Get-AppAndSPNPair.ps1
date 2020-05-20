@@ -10,17 +10,30 @@
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .EXAMPLE
             PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN
 
             This will retrieve the Azure active directory application and Service Principal object.
+
+        .EXAMPLE
+            PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN -EnableException
+
+            This example gets a new service principal / application pair in AAD, after prompting for user preferences.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
         [string]
-        $DisplayName
+        $DisplayName,
+
+        [switch]
+        $EnableException
     )
 
     try

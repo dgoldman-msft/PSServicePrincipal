@@ -22,6 +22,10 @@
         .PARAMETER DisplayName
             This parameter is the DisplayName of the object you are deleting.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .PARAMETER ObjectID
             This parameter is the ObjectID of the objects you are deleting.
 
@@ -48,7 +52,7 @@
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN
 
-            This will delete a Service Principal using the DisplayName.
+            This will delete a Service Principal using the DisplayName 'CompanySPN'.
 
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
@@ -59,6 +63,12 @@
             PS c:\> Remove-AppOrSPN -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
             This will delete a Service Principal using the ObjectID.
+
+        .EXAMPLE
+            PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN -EnableException
+
+            This example removes a service principal in AAD, after prompting for user preferences.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
      #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -83,7 +93,10 @@
 
         [ValidateNotNullOrEmpty()]
         [string]
-        $ObjectID
+        $ObjectID,
+
+        [switch]
+        $EnableException
     )
 
     try
@@ -92,37 +105,26 @@
         {
             if($DisplayName)
             {
-                if(Remove-AzADApplication -DisplayName $DisplayName -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $DisplayName
-                    $wasDeleted = $True
-                }
+                Remove-AzADApplication -DisplayName $DisplayName -ErrorAction Stop
+                Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-AppOrSPN"
             }
-
-            if($ApplicationID)
+            elseif($ApplicationID)
             {
-                if(Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ApplicationID
-                    $wasDeleted = $True
-                }
+                Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-AppOrSPN"
             }
-
-            if($ObjectID)
+            elseif($ObjectID)
             {
-                if(Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ObjectID
-                    $wasDeleted = $True
-                }
+                Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Enterprise Application {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-AppOrSPN"
             }
 
-            if($wasDeleted) {$script:appDeletedCounter ++}
+           $script:appDeletedCounter ++
         }
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException -Continue
         return
     }
 
@@ -130,19 +132,28 @@
     {
         if($DeleteRegisteredApp)
         {
+            if($DisplayName)
+            {
+                Remove-AzureADApplication -DisplayName $DisplayName -ErrorAction Stop
+                Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-AppOrSPN"
+            }
             if($ObjectID)
             {
-                if(Remove-AzureADApplication -ObjectID $ObjectID -ErrorAction Stop)
-                {
-                     Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues $ObjectID
-                     $script:appDeletedCounter ++
-                }
+                Remove-AzureADApplication -ObjectID $ObjectID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-AppOrSPN"
             }
+            if($ApplicationID)
+            {
+                Remove-AzureADApplication -ApplicationID $ApplicationID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Application {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-AppOrSPN"
+            }
+
+            $script:appDeletedCounter ++
         }
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
         return
     }
 
@@ -152,34 +163,26 @@
         {
             if($DisplayName)
             {
-                if(Remove-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $DisplayName
-                }
+                Remove-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop
+                Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-AppOrSPN"
             }
-
-            if($ApplicationID)
+            elseif($ApplicationID)
             {
-                if(Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ApplicationID
-                }
+                Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-AppOrSPN"
             }
-
-            if($ObjectID)
+            elseif($ObjectID)
             {
-                if(Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop)
-                {
-                    Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ObjectID
-                }
+                Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop
+                Write-PSFMessage -Level Host "Service Principal {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-AppOrSPN"
             }
 
-            if($wasDeleted) {$script:appDeletedCounter ++}
+            $script:appDeletedCounter ++
         }
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
         return
     }
 }

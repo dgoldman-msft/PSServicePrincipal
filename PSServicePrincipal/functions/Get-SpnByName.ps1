@@ -10,10 +10,20 @@
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .EXAMPLE
             PS c:\> Get-SpnByName -DisplayName CompanySPN
 
             This will retrieve a service principal by display name from the Azure active directory.
+
+        .EXAMPLE
+            PS c:\> Get-SpnByName -DisplayName CompanySPN -EnableException
+
+            This example gets a service principal in AAD, after prompting for user preferences.
+            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
@@ -22,7 +32,10 @@
         [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve a service principal")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName
+        $DisplayName,
+
+        [switch]
+        $EnableException
     )
 
     try
