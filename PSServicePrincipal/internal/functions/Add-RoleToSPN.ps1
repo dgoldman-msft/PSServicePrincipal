@@ -20,7 +20,7 @@
     [CmdletBinding()]
     param(
         [object]
-        $SpnToProcess,
+        $SpnToProcess
     )
 
     foreach ($spn in $SpnToProcess) {

@@ -430,7 +430,7 @@
                     {
                         if($Cba)
                         {
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp
                         }
                         else
                         {
