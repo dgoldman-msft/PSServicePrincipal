@@ -13,12 +13,6 @@
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
-        .PARAMETER Confirm
-            Stops processing before any changes are made  to an object.
-
-        .PARAMETER WhatIf
-            Only displays the objects that would be affected and what changes would be made to those objects (without the worry of modifying those objects)
-
         .EXAMPLE
             PS c:\> Get-EnterpriseApp -DisplayName CompanySPN
 

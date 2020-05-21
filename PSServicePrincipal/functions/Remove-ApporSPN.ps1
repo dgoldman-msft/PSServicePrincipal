@@ -10,6 +10,9 @@
         .PARAMETER ApplicationID
             ApplicationID of the object you are deleting.
 
+        .PARAMETER Confirm
+            Stops processing before any changes are made  to an object.
+
         .PARAMETER DeleteEnterpriseApp
             Used to delete an Azure enterprise application.
 
@@ -27,6 +30,9 @@
 
         .PARAMETER ObjectID
             ObjectID of the objects you are deleting.
+
+        .PARAMETER WhatIf
+            Only displays the objects that would be affected and what changes would be made to those objects (without the worry of modifying those objects)
 
         .EXAMPLE
             PS c:\> Remove-AppOrSPN -DeleteRegisteredApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h

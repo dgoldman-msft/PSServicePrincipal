@@ -52,7 +52,7 @@
         $ObjectID,
 
         [switch]
-        $EnabledException
+        $EnableException
     )
 
     $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ApplicationID, DisplayName, ObjectID
@@ -65,7 +65,7 @@
     }
     catch
     {
-        Stop-PSFFunction -Message "WARNING: $_" -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
+        Stop-PSFFunction -Message "WARNING: $_" -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
         return
     }
 
@@ -91,6 +91,6 @@
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
     }
 }
