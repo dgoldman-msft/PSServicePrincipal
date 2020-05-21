@@ -5,19 +5,18 @@
             Filters active directory service principals (batches via wildcard search).
 
         .DESCRIPTION
-            This function will retrieve a batch of Service Principal objects from the Azure Active Directory by display name.
+            Retrieve a batch of Service Principal objects from the Azure Active Directory by display name.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the objects you are retrieving.
+            Display name of the objects you are retrieving.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Get-SpnsByName -DisplayName CompanySPN
 
-            This will retrieve a batch of service principals objects by display name using a wildcard search.
+            Retrieve a batch of service principals objects by display name using a wildcard search.
     #>
 
     [OutputType('System.String')]
