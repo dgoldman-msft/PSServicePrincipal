@@ -5,19 +5,18 @@
             Filters active directory service principals by display name.
 
         .DESCRIPTION
-            This function will retrieve a Service Principal from the Azure Active Directory by display name.
+            Retrieve a service principal from the Azure Active Directory by display name.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the objects you are retrieving.
+            Display name of the objects you are retrieving.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Get-SpnByName -DisplayName CompanySPN
 
-            This will retrieve a service principal by display name from the Azure active directory.
+            Fetrieve a service principal by display name from the Azure active directory.
     #>
 
     [OutputType('System.String')]

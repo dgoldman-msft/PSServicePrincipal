@@ -5,57 +5,49 @@
             Cmdlet for creating a single object service principal objects
 
         .DESCRIPTION
-            This function will create a single object Service Principal object based on application id.
+            Create a single object Service Principal object based on application id.
 
         .PARAMETER ApplicationID
-            This parameter is the application id of the Azure application you are working on.
+            Application id of the Azure application you are working on.
 
         .PARAMETER CertValue
-            This parameter is a the certificate thumbprint being uploaded to the Azure registerd application.
+            Certificate thumbprint being uploaded to the Azure registerd application.
 
         .PARAMETER CreateSPNWithPassword
-            This parameter is a switch used when a user supplied password is passed in.
+            Used when a user supplied password is passed in.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the object we are working on.
+            Display name of the object we are working on.
 
         .PARAMETER StartDate
-            This parameter is the certificate NotBefore time stamp.
+            Certificate NotBefore time stamp.
 
         .PARAMETER EndDate
-            This parameter is the certificate NotAfter time stamp.
+            Certificate NotAfter time stamp.
 
         .PARAMETER Cba
-            This example creates a registered application and a self-signed certificate which is uploaded to the application and applies the correct application roll assignments.
+            Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .PARAMETER RegisteredApp
-            This parameter is a switch used to create an Azure registered application.
+            Used to create an Azure registered application.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipal -DisplayName 'CompanySPN'
 
-            This will create a new service principal with the display name of 'CompanySPN'.
+            Create a new service principal with the display name of 'CompanySPN'.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipal -RegisteredApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e' from the newly created Azure registered application.
+            Create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e' from the newly created Azure registered application.
 
         .EXAMPLE
             PS c:\> New-ServicePrincipal -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
-
-        .EXAMPLE
-            PS c:\> New-ServicePrincipal -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -EnabledExceptions
-
-            This will create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
-
+            Create a new service principal with the application id '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

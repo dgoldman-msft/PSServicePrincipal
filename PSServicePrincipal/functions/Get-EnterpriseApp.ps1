@@ -5,14 +5,19 @@
             Function for retrieving azure active directory enterprise application.
 
         .DESCRIPTION
-            This function will retrieve an enterprise application (Service Principal) from the Azure active directory.
+            Retrieve an enterprise application (Service Principal) from the Azure active directory.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the objects you are retrieving.
+            Display name of the objects you are retrieving.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
+
+        .PARAMETER Confirm
+            Stops processing before any changes are made  to an object.
+
+        .PARAMETER WhatIf
+            Only displays the objects that would be affected and what changes would be made to those objects (without the worry of modifying those objects)
 
         .EXAMPLE
             PS c:\> Get-EnterpriseApp -DisplayName CompanySPN

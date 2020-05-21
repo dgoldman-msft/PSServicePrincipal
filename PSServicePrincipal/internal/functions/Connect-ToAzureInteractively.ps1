@@ -5,11 +5,10 @@
             Cmdlet for making an interactive connections to an Azure tenant and subscription.
 
         .DESCRIPTION
-            This function will make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
+            Make an interactive connections to an Azure tenant and subscription. If interactive connection fails it will default to a manual connection.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Connect-ToAzureInteractively

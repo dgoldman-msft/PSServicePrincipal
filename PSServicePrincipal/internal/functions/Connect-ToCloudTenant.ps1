@@ -5,20 +5,19 @@
             Makes connections to an Azure tenant and subscription.
 
 		.DESCRIPTION
-            This cmdlet will connect to an Azure tenant and subscription.
+            Connect to an Azure tenant and subscription.
 
         .PARAMETER Reconnect
-            This parameter is used to force a new connection to an Azure tenant.
+            Used to force a new connection to an Azure tenant.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
-            PS c:\> Connect-ToCloudTenant -Reconnect -EnableException
+            PS c:\> Connect-ToCloudTenant -Reconnect
 
-            This example makes a connection to an Azure tenant or reconnect to another specified tenant.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
+            Makes a connection to an Azure tenant or reconnect to another specified tenant.
+
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

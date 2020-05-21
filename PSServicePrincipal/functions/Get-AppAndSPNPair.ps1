@@ -5,14 +5,13 @@
             Function for retrieving azure active directory applications and service principal pair.
 
         .DESCRIPTION
-            This function will retrieve an application and service principal pair from the Azure active Directory.
+            Retrieve an application and service principal pair from the Azure active Directory.
 
         .PARAMETER DisplayName
-            This parameter is the display name of the objects you are retrieving.
+            Display name of the objects you are retrieving.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN

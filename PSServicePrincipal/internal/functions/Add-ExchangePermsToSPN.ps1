@@ -8,16 +8,15 @@
             This function will apply the necessary application permissions needed for Exchange V2 CBA.
 
         .PARAMETER DisplayName
-             This parameter is the display name of the object we are stamping.
+            Display name of the objects you are retrieving.
 
         .PARAMETER EnableException
-            This parameter disables user-friendly warnings and enables the throwing of exceptions.
-            This is less user friendly, but allows catching exceptions in calling scripts.
+            Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
             PS c:\> Add-ExchangePermsToSPN -DisplayName 'CompanySPN'
 
-            This will stamp the permissions on a registerd application by application id from the Azure active directory.
+            Stamp the permissions on a registerd application by application id from the Azure active directory.
     #>
 
     [OutputType('System.String')]

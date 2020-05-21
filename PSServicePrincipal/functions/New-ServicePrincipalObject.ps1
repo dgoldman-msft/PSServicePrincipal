@@ -20,195 +20,195 @@
         PSGallery - PSFramework module - https://www.powershellgallery.com/packages/PSFramework/1.0.19
 
     .PARAMETER CreateSelfSignedCertificate
-        This switch is used when creating a single self-signed certificate to be used with registered and enterprise applications for certificate based connections.
+        Used when creating a single self-signed certificate to be used with registered and enterprise applications for certificate based connections.
 
     .PARAMETER CreateSingleObject
-        This switch is used when creating a single default enterprise application (service principal).
+        Used when creating a single default enterprise application (service principal).
 
     .PARAMETER CreateBatchObjects
-        This switch is used when creating a batch of service principals from a text file.
+        Used when creating a batch of service principals from a text file.
 
     .PARAMETER CreateSPNWithAppID
-        This switch is used when creating a service principal and a registered Azure ApplicationID.
+        Used when creating a service principal and a registered Azure ApplicationID.
 
     .PARAMETER CreateSPNWithPassword
-        This switch is used when creating a service principal and a registered Azure application with a user supplied password.
+        Used when creating a service principal and a registered Azure application with a user supplied password.
 
     .PARAMETER CreateSPNsWithNameAndCert
-        This switch is used when creating a service principal and a registered Azure application using a display name and certificate.
+        Used when creating a service principal and a registered Azure application using a display name and certificate.
 
     .PARAMETER DeleteEnterpriseApp
-        This parameter is a switch used to delete an enterprise application application.
+        Used to delete an enterprise application application.
 
     .PARAMETER DeleteRegisteredApp
-        This parameter is a switch used to delete an Azure registered application.
+        Used to delete an Azure registered application.
 
     .PARAMETER DeleteSpn
-        This parameter is a switch used to delete a service principal.
+        Used to delete a service principal.
 
     .PARAMETER Cba
-        This parameter switch will force the creation of a registered application with necessary roles and uploads the self-signed certificate to the application in Azure.
+        Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
     .PARAMETER EnableException
-        This parameter disables user-friendly warnings and enables the throwing of exceptions.
-        This is less user friendly, but allows catching exceptions in calling scripts.
+        Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
     .PARAMETER GetEnterpriseApp
-        This switch is used to retrieve a enterprise application from the Azure active directory via display name.
+        Used to retrieve a enterprise application from the Azure active directory via display name.
 
     .PARAMETER GetRegisteredApp
-        This switch is used to retrieve a registered application from the Azure active directory via display name or object id.
+        Used to retrieve a registered application from the Azure active directory via display name or object id.
 
     .PARAMETER GetSPNByName
-        This switch is used to retrieve a service principal object from the Azure active directory via display name.
+        Used to retrieve a service principal object from the Azure active directory via display name.
 
     .PARAMETER GetSPNByAppID
-        This switch is used to retrieve a service principal object from the Azure active directory via ApplicationID.
+        Used to retrieve a service principal object from the Azure active directory via ApplicationID.
 
     .PARAMETER GetSPNSByName
-        This switch is used to retrieve a batch of service principal objects via wildcard search from the Azure active directory.
+        Used to retrieve a batch of service principal objects via wildcard search from the Azure active directory.
 
     .PARAMETER GetAppAndSPNPair
-        This switch is used to retrieve an application and service principal pair from the Azure active directory.
+        Used to retrieve an application and service principal pair from the Azure active directory.
 
     .PARAMETER OpenAzurePortal
-        This switch is used to when connecting to the online web Azure portal.
+        Used to when connecting to the online web Azure portal.
 
     .PARAMETER Reconnect
-        This parameter switch is used when forcing a new connection to an Azure tenant subscription.
+        Used when forcing a new connection to an Azure tenant subscription.
 
     .PARAMETER RemoveAppOrSpn
-        This switch is used to delete a single Azure application or service srincipal from the Azure active directory.
+        Used to delete a single Azure application or service srincipal from the Azure active directory.
 
     .PARAMETER RemoveEnterpriseAppAndSPNPair
-        This switch is used to delete an enterprise application and service principal pair from the Azure active directory.
+        Used to delete an enterprise application and service principal pair from the Azure active directory.
 
     .PARAMETER RegisteredApp
-        This parameter is is used when working on registered Azure applications (not enterprise applications).
+        Used when working on registered Azure applications (not enterprise applications).
 
     .PARAMETER ApplicationID
-        This parameter is the unique ApplicationID for a service principal in a tenant. Once created this property cannot be changed.
+        Unique ApplicationID for a service principal in a tenant. Once created this property cannot be changed.
 
     .PARAMETER Certificate
         This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
 
-    .PARAMETER DisplayName
-        This parameter is the friendly name of the service principal you want to create.
+     .PARAMETER DisplayName
+        Display name of the objects you are retrieving.
 
     .PARAMETER NameFile
-        This parameter is the name of the file that contains the list of service principals being passed in for creation.
+        Name of the file that contains the list of service principals being passed in for creation.
 
     .PARAMETER ObjectID
-        This parameter is the unique ObjectID for a service principal in a tenant. Once created this property cannot be changed.
+        ObjectID for a service principal in a tenant. Once created this property cannot be changed.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -CreateSelfSignedCertificate
 
-        This example calls the helper function to create a basic self-signed certificate to be used with registered and enterprise applications for certificate-based connections.
+        Create a basic self-signed certificate to be used with registered and enterprise applications for certificate-based connections.
+
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject
 
-        This example creates a new service principal with a display name of 'CompanySPN' and password (an autogenerated GUID) and creates the service principal based on the application just created. The start date and end date are added to password credential.
+        Create a new service principal with a display name of 'CompanySPN' and password (an autogenerated GUID) and creates the service principal based on the application just created. The start date and end date are added to password credential.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSingleObject -CreateSPNWithPassword
 
-        This example creates a new Enterprise Application and service principal with a display name of 'CompanySPN' and a (user supplied password) and creates the service principal based on the application just created. The start date and end date are added to password credential.
+        Create a new Enterprise Application and service principal with a display name of 'CompanySPN' and a (user supplied password) and creates the service principal based on the application just created. The start date and end date are added to password credential.
 
      .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanyApp -CreateSingleObject -RegisteredApp -Cba
 
-        This example creates a registered application with a display name of 'CompanyApp', a self-signed certificate which is uploaded to the application and applies the correct appRoll assignments.
+        Create a registered application with a display name of 'CompanyApp', a self-signed certificate which is uploaded to the application and applies the correct appRoll assignments.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -CreateSingleObject -CreateSPNWithAppID
 
-        This example creates a new Enterprise Application and service principal with the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+        Create a new Enterprise Application and service principal with the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -NameFile c:\temp\YourFileContainingNames.txt -CreateBatchObjects
 
-        This example connects to an Azure tenant and creates a batch of enterprise applications and service principal objects from a file passed in.
+        Connect to an Azure tenant and creates a batch of enterprise applications and service principal objects from a file passed in.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSPNsWithNameAndCert -CreateSingleObject -Certificate <public certificate as base64-encoded string>
 
-        This example creates a new Enterprise Application and service principal with a display name of 'CompanySPN' and certifcate and creates the service principal based on the application just created. The end date is added to key credential.
+        Create a new Enterprise Application and service principal with a display name of 'CompanySPN' and certifcate and creates the service principal based on the application just created. The end date is added to key credential.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -Reconnect
 
-        This example will force a reconnect to a specific Azure tenant.
+        Force a reconnect to a specific Azure tenant.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetSpnByName
 
-        This example will retrieve a service principal from the Azure active directory by display name 'CompanySPN'.
+        Retrieve a service principal from the Azure active directory by display name 'CompanySPN'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -GetSpnByAppID
 
-        This example will retrieve a service principal from the Azure active directory by ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+        Retrieve a service principal from the Azure active directory by ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetSPNSByName
 
-        This example will retrieve a batch of service principal objects from the Azure active directory by display name 'CompanySPN'.
+        Retrieve a batch of service principal objects from the Azure active directory by display name 'CompanySPN'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetEnterpriseApp
 
-        This example will retrieve an enterprise application from the Azure active directory.
+        Retrieve an enterprise application from the Azure active directory.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetRegisteredApp
 
-        This example will retrieve a registered application from the Azure active directory.
+        Retrieve a registered application from the Azure active directory.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -GetAppAndSPNPair
 
-        This example will retrieve a service principal and Application pair from the Azure active directory.
+        Retrieve a service principal and Application pair from the Azure active directory.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -RemoveAppAndSPNPairBy
 
-        This example will delete a service principal and Application pair from the Azure active directory using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
+        Delete a service principal and Application pair from the Azure active directory using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppAndSPNPairBy
 
-        This example will delete a service principal and Application pair from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+        Delete a service principal and Application pair from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -RemoveAppOrSpn -DeleteEnterpriseApp
 
-        This example will delete a single service principal from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+        Delete a single service principal from the Azure active directory using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -RemoveAppOrSpn -DeleteEnterpriseApp
 
-        This example will delete a singple enterprise application using -ApplicaationID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+        Delete a singple enterprise application using -ApplicaationID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppOrSpn -DeleteEnterpriseApp
 
-        This example will delete a singple enterprise application using -ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+        Delete a singple enterprise application using -ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h -RemoveAppOrSpn -DeleteRegisteredApp
 
-        This example will delete a singple registered application using -ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+        Delete a singple registered application using -ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -OpenAzurePortal
 
-        This example will open a web connection to the Microsoft Azure Portal.
+        Open a web connection to the Microsoft Azure Portal.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -EnableException
 
-        This creates a new service principal in AAD, after prompting for user preferences.
+        Create a new service principal in AAD, after prompting for user preferences.
         If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
 
     .NOTES
