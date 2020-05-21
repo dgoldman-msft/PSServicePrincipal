@@ -18,38 +18,27 @@
             PS c:\> Get-EnterpriseApp -DisplayName CompanySPN
 
             This will retrieve an Azure active directory enterprise application object.
-
-        .EXAMPLE
-            PS c:\> Get-EnterpriseApp -DisplayName CompanySPN -EnableException
-
-            This example gets a enterprise application in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="DisplayNameSet")]
     Param (
-        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve an application")]
+        [parameter(ParameterSetName = 'DisplayNameSet', HelpMessage = "Display name used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName,
+        $DisplayName = '*',
 
         [switch]
         $EnableException
     )
 
+    $parameter = $PSBoundParameters
+    if($DisplayName -ne '*') { $parameter.SearchString = $DisplayName }
+
     try
     {
-       if($DisplayName -eq '*')
-       {
-            Get-AzADApplication
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-EnterpriseApp"
-       }
-       elseif($DisplayName -ne '*')
-       {
-           Get-AzADApplication -DisplayName $DisplayName
-           Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-EnterpriseApp"
-       }
+        Write-PSFMessage -Level Verbose -Message "Retrieving values for {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+        Get-AzADApplication @parameter -ErrorAction Stop
     }
     catch
     {

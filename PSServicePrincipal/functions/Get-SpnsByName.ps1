@@ -10,6 +10,10 @@
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .EXAMPLE
             PS c:\> Get-SpnsByName -DisplayName CompanySPN
 
@@ -19,41 +23,35 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve service principals")]
+        [parameter(Mandatory = $True, Position = 0, HelpMessage = "Display name used to retrieve service principals")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName
+        $DisplayName,
+
+        [switch]
+        $EnableException
     )
 
     try
     {
-        if($DisplayName)
-        {
-            Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
-            $DisplayNameWC = $DisplayName, "*" -join ""
-            $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
+        Write-PSFMessage -Level Verbose "Retrieving SPN's by Display Name"
+        $DisplayNameWC = $DisplayName, "*" -join ""
+        $spnOutput = Get-AzADServicePrincipal | Where-Object DisplayName -like $DisplayNameWC | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID"
 
-            $count = 0
-            foreach($item in $spnOutput)
-            {
-                $count++
-                [pscustomobject]@{
-                    Index = $count
-                    DisplayName = $item.DisplayName
-                    AppicationID = $item.ApplicationID
-                    ObjectID = $item.ObjectID
-                }
+        $count = 0
+        foreach($item in $spnOutput)
+        {
+            $count++
+            [pscustomobject]@{
+                Index = $count
+                DisplayName = $item.DisplayName
+                ApplicationID = $item.ApplicationID
+                ObjectID = $item.ObjectID
             }
-
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-SpnsByName"
-        }
-        else
-        {
-            Write-PSFMessage -Level Verbose "ERROR: You did not provide a display name. Search failed."
         }
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
     }
 }

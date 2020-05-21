@@ -10,6 +10,10 @@
         .PARAMETER DisplayName
             This parameter is the display name of the objects you are retrieving.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .EXAMPLE
             PS c:\> Get-SpnByName -DisplayName CompanySPN
 
@@ -19,36 +23,30 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "Display name used to retrieve a service principal")]
+        [parameter(Mandatory = $True, Position = 0, HelpMessage = "Display name used to retrieve a service principal")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName
+        $DisplayName,
+
+        [switch]
+        $EnableException
      )
 
     try
     {
-        if(![string]::IsNullOrEmpty($DisplayName))
-        {
-            Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name"
-            $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
+        Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name {0}" -StringValues $DisplayName
+        $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
 
-            [pscustomobject]@{
-                DisplayName = $spnOutput.DisplayName
-                ApplicationID = $spnOutput.ApplicationID
-                ObjectID = $spnOutput.ObjectID
-                ObjectType = $spnOutput.ObjectType
-                Type = $spnOutput.Type
-            } | Format-Table
-
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-SpnByName"
-        }
-        else
-        {
-            Write-PSFMessage -Level Verbose "ERROR: You did not provide a display name. Search failed."
-        }
+        [pscustomobject]@{
+            DisplayName = $spnOutput.DisplayName
+            ApplicationID = $spnOutput.ApplicationID
+            ObjectID = $spnOutput.ObjectID
+            ObjectType = $spnOutput.ObjectType
+            Type = $spnOutput.Type
+        } | Format-Table
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
     }
 }

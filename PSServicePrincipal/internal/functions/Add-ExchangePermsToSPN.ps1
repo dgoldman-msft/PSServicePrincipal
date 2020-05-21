@@ -18,18 +18,12 @@
             PS c:\> Add-ExchangePermsToSPN -DisplayName 'CompanySPN'
 
             This will stamp the permissions on a registerd application by application id from the Azure active directory.
-
-        .EXAMPLE
-            PS c:\> Add-ExchangePermsToSPN -DisplayName 'CompanySPN' -EnableException
-
-            This example will stamp the rolls on a registerd application by the display name the Azure active directory.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Position = '0', HelpMessage = "ApplicationID used to retrieve an application")]
+        [parameter(Position = 0, HelpMessage = "ApplicationID used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName,
@@ -40,15 +34,14 @@
 
     try
     {
-        $O365SvcPrincipal = Get-AzureADServicePrincipal -All $true | Where-object { $_.DisplayName -eq "Office 365 Exchange Online"}
+        Write-PSFMessage -Level Host -Message "Exchange.ManageAsApp roll applied to application {0}. To complete setup go to your application in the Azure portal and Grant Admin Consent." -StringValues $DisplayName
+        $O365SvcPrincipal = Get-AzureADServicePrincipal -All $true | Where-object {$_.DisplayName -eq "Office 365 Exchange Online"}
         $reqExoAccess = New-Object -TypeName "Microsoft.Open.AzureAD.Model.RequiredResourceAccess"
         $reqExoAccess.ResourceAppId = $O365SvcPrincipal.AppId
         $delegatedPermissions = New-Object -TypeName "Microsoft.Open.AzureAD.Model.ResourceAccess" -ArgumentList "dc50a0fb-09a3-484d-be87-e023b12c6440", "Role" # Manage Exchange As Application
-
         $reqExoAccess.ResourceAccess = $delegatedPermissions
         $ADApplication = get-AzureADApplication -SearchString $DisplayName
         Set-AzureADApplication -ObjectId $ADApplication.ObjectId -RequiredResourceAccess $reqExoAccess
-        Write-PSFMessage -Level Host -Message "Exchange.Manage permissions has been applied to application {0}. To complete setup access your application in the portal and Grant admin consent." -StringValues $DisplayName -FunctionName "Add-ExchangePermsToSPN"
     }
     catch
     {

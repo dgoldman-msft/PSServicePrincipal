@@ -242,7 +242,7 @@
         [switch]
         $CreateSingleObject,
 
-        [parameter(Mandatory = $true, ParameterSetName='NameFileSet', HelpMessage = "Switch used for creating batch SPN's")]
+        [parameter(Mandatory = $True, ParameterSetName='NameFileSet', HelpMessage = "Switch used for creating batch SPN's")]
         [switch]
         $CreateBatchObjects,
 
@@ -304,11 +304,11 @@
         [switch]
         $GetAppAndSPNPair,
 
-        [parameter(Mandatory = $true, ParameterSetName='OpenAzurePortal',  Position = '0', HelpMessage = "A switch used to connect to the Azure web portal")]
+        [parameter(Mandatory = $True, ParameterSetName='OpenAzurePortal', HelpMessage = "A switch used to connect to the Azure web portal")]
         [switch]
         $OpenAzurePortal,
 
-        [parameter(Mandatory = $true, ParameterSetName='Reconnect', Position = '0', HelpMessage = "A switch used to connect force a new conncetion to an Azure tenant")]
+        [parameter(Mandatory = $True, ParameterSetName='Reconnect', HelpMessage = "A switch used to connect force a new conncetion to an Azure tenant")]
         [switch]
         $Reconnect,
 
@@ -326,27 +326,27 @@
         [switch]
         $RemoveEnterpriseAppAndSPNPair,
 
-        [parameter(Mandatory = $true, ParameterSetName='AppIDSet', HelpMessage = "ApplicationID used to create or delete an SPN or application")]
+        [parameter(Mandatory = $True, ParameterSetName='AppIDSet', HelpMessage = "ApplicationID used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
-        [parameter(Mandatory = $true, ParameterSetName='CertSet', HelpMessage = "Certificate parameter for a created spn")]
+        [parameter(Mandatory = $True, ParameterSetName='CertSet', HelpMessage = "Certificate parameter for a created spn")]
         [ValidateNotNullOrEmpty()]
         [string]
         $Certificate,
 
-        [parameter(Mandatory = $true, ParameterSetName='DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
+        [parameter(Mandatory = $True, ParameterSetName='DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName,
 
-        [parameter(Mandatory = $true, ParameterSetName='NameFileSet', HelpMessage = "Name file used to create a batch of spn's")]
+        [parameter(Mandatory = $True, ParameterSetName='NameFileSet', HelpMessage = "Name file used to create a batch of spn's")]
         [ValidateNotNullOrEmpty()]
         [string]
         $NameFile,
 
-        [parameter(Mandatory = $true, ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
+        [parameter(Mandatory = $True, ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID
@@ -366,7 +366,7 @@
         $script:AdSessionInfo = $null
         $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
         $requiredModules = @("AzureAD", "Az.Accounts", "Az.Resources")
-        Foreach($module in $requiredModules){Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module -FunctionName "New-ServicePrincipalObject"}
+        Foreach($module in $requiredModules){Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module}
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
         Write-PSFMessage -Level Host -Message "Starting script run: {0}" -StringValues (Get-Date)
 
@@ -410,7 +410,7 @@
         {
             try
             {
-                New-SelfSignedCert
+                New-SelfSignedCert -EnableException
                 return
             }
             catch
@@ -430,7 +430,7 @@
                     {
                         if($Cba)
                         {
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException
                         }
                         else
                         {
@@ -729,37 +729,13 @@
 
         if($RemoveAppOrSpn)
         {
-            if($DeleteEnterpriseApp -or $DeleteRegisteredApp)
+            $removeParameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ApplicationID, ObjectID, DeleteRegisteredApp, DeleteEnterpriseApp, DeleteSpn
+
+            try
             {
-                if($DisplayName)
-                {
-                    Remove-AppOrSPN -DisplayName $DisplayName -DeleteRegisteredApp -DeleteEnterpriseApp
-                }
-                if($ApplicationID)
-                {
-                    Remove-AppOrSPN -ApplicationID $ApplicationID -DeleteRegisteredApp -DeleteEnterpriseApp
-                }
-                if($ObjectID)
-                {
-                    Remove-AppOrSPN -ObjectID $ObjectID -DeleteRegisteredApp -DeleteEnterpriseApp
-                }
+                Remove-AppOrSPN @removeParameters -EnableException
             }
-            elseif($DeleteSpn)
-            {
-                if($DisplayName)
-                {
-                    Remove-AppOrSPN -DisplayName $DisplayName -DeleteSpn $EnableException
-                }
-                if($ApplicationID)
-                {
-                    Remove-AppOrSPN -ApplicationID $ApplicationID -DeleteSpn
-                }
-                if($ObjectID)
-                {
-                    Remove-AppOrSPN -ObjectID $ObjectID -DeleteSpn
-                }
-            }
-            else
+            catch
             {
                 Stop-PSFFunction -Message "ERROR removing enterprise or registered application" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return

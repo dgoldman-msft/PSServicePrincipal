@@ -7,6 +7,10 @@
 		.DESCRIPTION
             This function just applies the Reader role to the newly created service principal object.
 
+        .PARAMETER EnableException
+            This parameter disables user-friendly warnings and enables the throwing of exceptions.
+            This is less user friendly, but allows catching exceptions in calling scripts.
+
         .PARAMETER SpnToProcess
             This is the Service Principal object being passed into process.
 
@@ -20,23 +24,26 @@
     [CmdletBinding()]
     param(
         [object]
-        $SpnToProcess
+        $SpnToProcess,
+
+        [switch]
+        $EnableException
     )
 
     foreach ($spn in $SpnToProcess) {
         Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to SPN" -Target $spn -ScriptBlock {
-            Write-PSFMessage -Level Host -Message "Checking current Role Assignment. Waiting for AD Replication" -FunctionName "Add-RoleToSPN" -ModuleName PSServicePrincipal
+            Write-PSFMessage -Level Host -Message "Checking current Role Assignment. Waiting for AD Replication"
             $checkRole = Get-AzRoleAssignment -ObjectId $spn.id
 
             if(-NOT $checkRole)
             {
                 $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
-                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0} to {1}" -StringValues $newRole.RoleDefinitionName, $newRole.DisplayName -FunctionName Internal -ModuleName PSServicePrincipal
+                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0} to {1}" -StringValues $newRole.RoleDefinitionName, $newRole.DisplayName
             }
             else
             {
-                Write-PSFMessage -Level Host -Message "{0} already has this role assignment" -StringValues $spn.DisplayName -FunctionName "Add-RoleToSPN" -ModuleName PSServicePrincipal
+                Write-PSFMessage -Level Host -Message "{0} already has this role assignment" -StringValues $spn.DisplayName
             }
-        } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 5 -RetryErrorType Microsoft.Rest.Azure.CloudException
+        } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 5 -RetryErrorType Microsoft.Rest.Azure.CloudException -EnableException $EnableException
     }
 }

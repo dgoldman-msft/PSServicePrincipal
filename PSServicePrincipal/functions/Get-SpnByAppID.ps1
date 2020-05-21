@@ -18,18 +18,12 @@
             PS c:\> Get-SpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
             This will retrieve a Service Principal by application id from the Azure active directory.
-
-        .EXAMPLE
-            PS c:\> Get-SpnByAppID -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e -EnableException
-
-            This example gets a service principal in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Mandatory = 'True', Position = '0', HelpMessage = "ApplicationID used to retrieve an application")]
+        [parameter(Mandatory = $True, Position = 0, HelpMessage = "ApplicationID used to retrieve an application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
@@ -40,28 +34,19 @@
 
     try
     {
-        if($ApplicationId)
-        {
-            Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID"
-            $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
+        Write-PSFMessage -Level Verbose "Retrieving SPN by Application ID {0}" -StringValues $ApplicationID
+        $spnOutput = Get-AzADServicePrincipal -ApplicationID $ApplicationID | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
 
-            [pscustomobject]@{
-                DisplayName = $spnOutput.DisplayName
-                AppID = $spnOutput.ApplicationID
-                ObjectID = $spnOutput.ObjectID
-                ObjectType = $spnOutput.ObjectType
-                Type = $spnOutput.Type
-            } | Format-Table
-
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $ApplicationID -FunctionName "Get-SpnByAppID"
-        }
-        else
-        {
-            Write-PSFMessage -Level Verbose "ERROR: You did not provide a application id. Search failed."
-        }
+        [pscustomobject]@{
+            DisplayName = $spnOutput.DisplayName
+            AppID = $spnOutput.ApplicationID
+            ObjectID = $spnOutput.ObjectID
+            ObjectType = $spnOutput.ObjectType
+            Type = $spnOutput.Type
+        } | Format-Table
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
     }
 }

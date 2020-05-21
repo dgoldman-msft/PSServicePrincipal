@@ -18,12 +18,6 @@
             PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN
 
             This will retrieve the Azure active directory application and Service Principal object.
-
-        .EXAMPLE
-            PS c:\> Get-AppAndSPNPair -DisplayName CompanySPN -EnableException
-
-            This example gets a new service principal / application pair in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
@@ -55,11 +49,9 @@
             AppID = $appOutput.ApplicationID
             ObjectID = $appOutput.ObjectID
         }
-
-        Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-AppAndSPNPair"
     }
     catch
     {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
+        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
     }
 }

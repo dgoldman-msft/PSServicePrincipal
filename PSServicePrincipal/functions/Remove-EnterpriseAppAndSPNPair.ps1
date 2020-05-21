@@ -34,12 +34,6 @@
             PS c:\> Remove-EnterpriseAppAndSPNPair -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
             This will remove the Azure active directory application and service principal object using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
-
-        .EXAMPLE
-            PS c:\> Remove-EnterpriseAppAndSPNPair -DisplayName CompanySPN -EnabledException
-
-            This example removes a new service principal in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -62,45 +56,18 @@
         $EnabledException
     )
 
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ApplicationID, DisplayName, ObjectID
+
     try
     {
-        if($DisplayName)
-        {
-            if(Remove-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop -ErrorVariable ProcessError)
-            {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                $wasDeleted = $True
-            }
-        }
-
-        if($ApplicationID)
-        {
-            if(Remove-AzADServicePrincipal -ApplicationID $ApplicationID -ErrorAction Stop -ErrorVariable ProcessError)
-            {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                $wasDeleted = $True
-            }
-        }
-
-        if($ObjectID)
-        {
-            if(Remove-AzADServicePrincipal -ObjectID $ObjectID -ErrorAction Stop -ErrorVariable ProcessError)
-            {
-                Write-PSFMessage -Level Host "SPN {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                $wasDeleted = $True
-            }
-        }
-
-        if($wasDeleted){$script:appDeletedCounter ++}
+        Write-PSFMessage -Level Host -Message "Removing service principal pair {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+        Remove-AzADServicePrincipal @parameter -ErrorAction Stop
+        $script:appDeletedCounter ++
     }
     catch
     {
-        if ($ProcessError)
-        {
-            Write-PSFMessage -Level Warning "WARNING: {0}" -StringValues $ProcessError.Exception.Message
-            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $true
-            return
-        }
+        Stop-PSFFunction -Message "WARNING: $_" -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnabledException
+        return
     }
 
     try
@@ -111,39 +78,14 @@
         {
             0
             {
-                if($DisplayName)
-                {
-                   if(Remove-AzADApplication -DisplayName $DisplayName -ErrorAction Stop)
-                   {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $DisplayName -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                        $wasDeleted = $True
-                   }
-                }
-
-                if($ApplicationID)
-                {
-                    if(Remove-AzADApplication -ApplicationID $ApplicationID -ErrorAction Stop)
-                    {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ApplicationID -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                        $wasDeleted = $True
-                    }
-                }
-
-                if($ObjectID)
-                {
-                    if(Remove-AzADApplication -ObjectID $ObjectID -ErrorAction Stop)
-                    {
-                        Write-PSFMessage -Level Host "Azure enterprise application {0} deleted!" -StringValues $ObjectID -FunctionName "Remove-EnterpriseAppAndSPNPair"
-                        $wasDeleted = $True
-                    }
-                }
-
-                if($wasDeleted){$script:appDeletedCounter ++}
+                Write-PSFMessage -Level Host -Message "Removing application {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+                Remove-AzADApplication @parameter -ErrorAction Stop
+                $script:appDeletedCounter ++
             }
 
             1
             {
-                Write-PSFMessage -Level Host "No Azure application deleted!" -FunctionName "Remove-EnterpriseAppAndSPNPair"
+                Write-PSFMessage -Level Host "No application deleted!"
                 return
             }
         }

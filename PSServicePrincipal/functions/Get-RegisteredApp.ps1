@@ -26,21 +26,17 @@
             PS c:\> Get-RegisteredApp -Objectid 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
             This will retrieve the registered by object id '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
-
-        .EXAMPLE
-            PS c:\> Get-RegisteredApp -SearchString CompanyApp -EnableException
-
-            This example gets a registered application in AAD, after prompting for user preferences.
-            If this execution fails for whatever reason (connection, bad input, ...) it will throw a terminating exception, rather than writing the default warnings.
     #>
 
     [OutputType('System.String')]
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="DisplayNameSet")]
     Param (
+        [parameter(ParameterSetName = 'DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName,
+        $DisplayName = '*',
 
+        [parameter(ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID,
@@ -49,23 +45,13 @@
         $EnableException
     )
 
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectID
+    if($DisplayName -ne '*') { $parameter.SearchString = $DisplayName }
+
     try
     {
-        if($DisplayName -eq '*')
-        {
-            Get-AzureADApplication
-            Write-PSFMessage -Level Host -Message "Values retrieved" -FunctionName "Get-RegisteredApp"
-        }
-        elseif($DisplayName -ne '*')
-        {
-            Get-AzureADApplication -SearchString $DisplayName
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $DisplayName -FunctionName "Get-RegisteredApp"
-        }
-        elseif($ObjectID)
-        {
-            Get-AzureADApplication -ObjectId $ObjectID
-            Write-PSFMessage -Level Host -Message "Values retrieved for: {0}" -StringValues $ObjectID -FunctionName "Get-RegisteredApp"
-        }
+        Write-PSFMessage -Level Verbose -Message "Retrieving values for {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+        Get-AzureADApplication @parameter -ErrorAction Stop
     }
     catch
     {
