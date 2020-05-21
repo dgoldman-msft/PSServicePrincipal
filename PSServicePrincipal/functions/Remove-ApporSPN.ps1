@@ -101,7 +101,7 @@
     $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -include DisplayName, ApplicationID, ObjectID
     if($DeleteEnterpriseApp)
     {
-        Invoke-PSFProtectedCommand -Action "Deleting enterprise application" -Target $parameter.Values -ScriptBlock {
+        Invoke-PSFProtectedCommand -Action "Enterprise application delete!" -Target $parameter.Values -ScriptBlock {
             Remove-AzADApplication @parameter -ErrorAction Stop
             $script:appDeletedCounter ++
         } -EnableException $EnableException -PSCmdlet $PSCmdlet
@@ -109,7 +109,7 @@
 
     if($DeleteRegisteredApp)
     {
-        Invoke-PSFProtectedCommand -Action "Deleting registered application" -Target $parameter.Values -ScriptBlock {
+        Invoke-PSFProtectedCommand -Action "Registered application deleted!" -Target $parameter.Values -ScriptBlock {
             Remove-AzureADApplication @parameter -ErrorAction Stop
             $script:appDeletedCounter ++
         } -EnableException $EnableException -PSCmdlet $PSCmdlet
@@ -117,7 +117,7 @@
 
     if($DeleteSpn)
     {
-        Invoke-PSFProtectedCommand -Action "Deleting Service Principal" -Target $parameter.Values -ScriptBlock {
+        Invoke-PSFProtectedCommand -Action "Service principal deleted!" -Target $parameter.Values -ScriptBlock {
             Remove-AzADServicePrincipal @parameter -ErrorAction Stop
             $script:appDeletedCounter ++
         } -EnableException $EnableException -PSCmdlet $PSCmdlet

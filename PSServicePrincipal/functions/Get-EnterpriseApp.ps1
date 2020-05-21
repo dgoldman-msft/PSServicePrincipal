@@ -31,13 +31,21 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include $DisplayName
     if($DisplayName -ne '*') { $parameter.SearchString = $DisplayName }
 
     try
     {
         Write-PSFMessage -Level Verbose -Message "Retrieving values for {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
-        Get-AzADApplication @parameter -ErrorAction Stop
+
+        if($DisplayName -eq '*')
+        {
+            Get-AzADApplication -ErrorAction Stop
+        }
+        else
+        {
+            Get-AzADApplication -DisplayName $DisplayName -ErrorAction Stop
+        }
     }
     catch
     {

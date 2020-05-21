@@ -366,7 +366,13 @@
         $script:AdSessionInfo = $null
         $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
         $requiredModules = @("AzureAD", "Az.Accounts", "Az.Resources")
-        Foreach($module in $requiredModules){Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module}
+        Foreach($module in $requiredModules)
+        {
+            if(-NOT (Get-Module -Name $module))
+            {
+                Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module
+            }
+        }
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
         Write-PSFMessage -Level Host -Message "Starting script run: {0}" -StringValues (Get-Date)
 
