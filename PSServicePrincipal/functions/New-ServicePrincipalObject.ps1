@@ -50,19 +50,19 @@
         Used when forcing a new connection to an Azure tenant subscription.
 
     .PARAMETER ApplicationID
-        Unique ApplicationID for a service principal in a tenant. Once created this property cannot be changed.
+        Unique ApplicationId for a service principal in a tenant. Once created this property cannot be changed.
 
     .PARAMETER Certificate
         This parameter is the value of the "asymmetric" credential type. It represents the base 64 encoded certificate.
 
     .PARAMETER DisplayName
-        Display name of the objects you are retrieving.
+        DisplayName of the objects you are retrieving.
 
     .PARAMETER NameFile
         Name of the file that contains the list of service principals being passed in for creation.
 
     .PARAMETER ObjectID
-        ObjectID for a service principal in a tenant. Once created this property cannot be changed.
+        ObjectId for a service principal in a tenant. Once created this property cannot be changed.
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -Reconnect

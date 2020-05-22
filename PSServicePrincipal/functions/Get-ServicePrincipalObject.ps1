@@ -8,13 +8,13 @@
             Retrieve a service principal from the Azure Active Directory by display name.
 
         .PARAMETER ApplicationID
-            Application id of the object(s) being returned.
+            ApplicationId of the object(s) being returned.
 
         .PARAMETER DisplayName
-            Display name of the object(s) being returned.
+            DisplayName of the object(s) being returned.
 
         .PARAMETER ObjectID
-            Object id of the object(s) being returned.
+            ObjectId of the object(s) being returned.
 
         .PARAMETER SearchString
             SearchString filter used on object(s) being returned.

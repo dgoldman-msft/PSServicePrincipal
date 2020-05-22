@@ -23,7 +23,10 @@
             Used to delete a Service Principal.
 
         .PARAMETER DisplayName
-            Display name of the objects you are retrieving.
+            DisplayName of the objects you are deleting.
+
+        .PARAMETER ServicePrincipalName
+            ServicePrincipalName of the objects you are deleting.
 
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.

@@ -8,13 +8,13 @@
             Retrieve an Azure active directory registered application.
 
         .PARAMETER DisplayName
-            Display name of the object(s) being returned.
+            DisplayName of the object(s) being returned.
 
         .PARAMETER ObjectID
-            Object id of the object being(s) returned.
+            ObjectId of the object being(s) returned.
 
         .PARAMETER SearchString
-            Search string filter of the object being(s) returned.
+            SearchString filter of the object being(s) returned.
 
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.

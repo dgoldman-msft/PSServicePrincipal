@@ -2,19 +2,19 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory enterprise application.
+            Function for retrieving Azure active directory enterprise application.
 
         .DESCRIPTION
             Retrieve a single or group of enterprise applications from the Azure active directory.
 
         .PARAMETER ApplicationID
-            Application id of the object(s) being returned.
+            ApplicationId of the object(s) being returned.
 
         .PARAMETER DisplayName
-            Display name of the object(s) being returned.
+            DisplayName of the object(s) being returned.
 
         .PARAMETER ObjectID
-            Object id of the object being(s) returned.
+            ObjectId of the object being(s) returned.
 
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
