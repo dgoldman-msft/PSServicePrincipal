@@ -7,45 +7,77 @@
         .DESCRIPTION
             Retrieve a service principal from the Azure Active Directory by display name.
 
+        .PARAMETER ApplicationID
+            Application id of the object(s) being returned.
+
         .PARAMETER DisplayName
-            Display name of the objects you are retrieving.
+            Display name of the object(s) being returned.
+
+        .PARAMETER ObjectID
+            Object id of the object being(s) returned.
 
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
         .EXAMPLE
-            PS c:\> Get-SpnByName -DisplayName CompanySPN
+            PS c:\> Get-ServicePrincipalObject -DisplayName CompanySPN
 
-            Fetrieve a service principal by display name from the Azure active directory.
+            Get an Azure active directory enterprise application by DisplayName.
+
+        .EXAMPLE
+            PS c:\> Get-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+
+            Get an Azure active directory enterprise application by ObjectID.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(Mandatory = $True, Position = 0, HelpMessage = "Display name used to retrieve a service principal")]
-        [ValidateNotNullOrEmpty()]
+        [parameter(HelpMessage = "DisplayName used to return enterprise application objects")]
         [string]
         $DisplayName,
 
+        [parameter(HelpMessage = "ApplicationId used to return enterprise application objects")]
+        [guid]
+        $ApplicationId,
+
+        [parameter(HelpMessage = "ObjectId used to return enterprise application objects")]
+        [String]
+        $ObjectId,
+
+        [parameter(HelpMessage = "SearchString used to return enterprise application objects")]
+        [String]
+        $SearchString,
+
         [switch]
         $EnableException
-     )
+    )
+
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId, SearchString
+    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
+    Write-PSFMessage -Level Host "Retrieving SPN by Object(s)"
 
     try
     {
-        Write-PSFMessage -Level Verbose "Retrieving SPN by Display Name {0}" -StringValues $DisplayName
-        $spnOutput = Get-AzADServicePrincipal -DisplayName $DisplayName | Select-PSFObject DisplayName, ApplicationID, "ID as ObjectID", ObjectType, Type
-
-        [pscustomobject]@{
-            DisplayName = $spnOutput.DisplayName
-            ApplicationID = $spnOutput.ApplicationID
-            ObjectID = $spnOutput.ObjectID
-            ObjectType = $spnOutput.ObjectType
-            Type = $spnOutput.Type
-        } | Format-Table
+        $spnOutput = Get-AzADServicePrincipal @parameter | Select-PSFObject DisplayName, "ServicePrincipalNames as SPN", ApplicationId, "ID as ObjectID", ObjectType, Type
     }
     catch
     {
         Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+    }
+
+    $count = 0
+    foreach($item in $spnOutput)
+    {
+        $count++
+        [pscustomobject]@{
+            PSTypeName = 'PSServicePrincipal.Principal'
+            ItemNumber = $count
+            DisplayName = $item.DisplayName
+            ApplicationID = $item.ApplicationID
+            ObjectID = $item.ObjectID
+            ObjectType = $item.ObjectType
+            Type = $item.Type
+        }
     }
 }

@@ -38,36 +38,26 @@
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (
-        [parameter(HelpMessage = "Display name used to return enterprise application objects")]
+        [parameter(HelpMessage = "DisplayName used to return enterprise application objects")]
         [string]
         $DisplayName,
 
-        [parameter(HelpMessage = "Application id used to return enterprise application objects")]
+        [parameter(HelpMessage = "ApplicationId used to return enterprise application objects")]
         [guid]
-        $ApplicationID,
+        $ApplicationId,
 
-        [parameter(HelpMessage = "Object id used to return enterprise application objects")]
+        [parameter(HelpMessage = "ObjectId used to return enterprise application objects")]
         [String]
-        $ObjectID,
+        $ObjectId,
 
         [switch]
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ApplicationID, ObjectID
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId
+    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
 
-    if(-NOT $script:AzsessionFound)
-    {
-        Connect-ToAzureInteractively
-    }
-
-    try
-    {
-        Write-PSFMessage -Level Verbose -Message "Retrieving values for {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+    Invoke-PSFProtectedCommand -Action "Enterprise application retrieved!" -Target $parameter.Values -ScriptBlock {
         Get-AzADApplication @parameter -ErrorAction Stop
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-    }
+    } -EnableException $EnableException -PSCmdlet $PSCmdlet
 }

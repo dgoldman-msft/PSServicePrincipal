@@ -32,14 +32,19 @@
         "OutputLoggingFolder"
         {
             $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
-            Write-PSFMessage -Level Verbose -Message "Opening default module logging folder: {0}" -StringValues $loggingFolder
-            $loggingFolder | Invoke-Item
+            Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values  -ScriptBlock {
+                Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $loggingFolder
+                $loggingFolder | Invoke-Item
+            } -EnableException $EnableException -PSCmdlet $PSCmdlet
         }
 
-        "DebugLoggingFolder" {
+        "DebugLoggingFolder"
+        {
             $debugFolder = Get-PSFConfigValue -FullName "PSFramework.Logging.FileSystem.LogPath"
-            Write-PSFMessage -Level Verbose -Message "Opening debug logging folder: {0}" -StringValues $debugFolder
-            $debugFolder | Invoke-Item
+            Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values -ScriptBlock {
+                Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $debugFolder
+                $debugFolder | Invoke-Item
+            } -EnableException $EnableException -PSCmdlet $PSCmdlet
         }
     }
 }

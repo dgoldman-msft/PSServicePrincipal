@@ -39,7 +39,7 @@
 	# TypesToProcess = @('xml\PSServicePrincipal.Types.ps1xml')
 
 	# Format files (.ps1xml) to be loaded when importing this module
-	# FormatsToProcess = @('xml\PSServicePrincipal.Format.ps1xml')
+	FormatsToProcess = @('xml\PSServicePrincipal.Format.ps1xml')
 
 	# Functions to export from this module
 	FunctionsToExport = @(
@@ -51,7 +51,6 @@
 		'Get-ServicePrincipalObject'
 		'New-SelfSignedCert'
 		'New-ServicePrincipalObject'
-		'Remove-EnterpriseAppAndSPNPair'
 		'Remove-ServicePrincipalObject'
 		)
 

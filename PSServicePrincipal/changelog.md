@@ -9,6 +9,9 @@
  - Upd: in Get-EnterpriseApp, Get-RegisteredApp, Get-SpnByname, Get-SpnsByName, Get-SpnByAppID, Get-AppAndSPNPair - Added PSF-WriteLog to indicate an item was obtained for log purposes
  - Upd: Changed search logic for Get-EnterpriseApp and Get-RegisteredApp to show everything based on DisplayName = *
  - New: New code and functions for creating registered application with matching service principal, create self-signed cert and upload to the azure application and apply  manmage.AsApp role to application for CBA ExchV2 cmdlets
+ - New Removed Get-SpnByAppID.ps1, Get-SpnsByName.ps1, Remove-EnterpriseAppAndSPNPair.ps1
+ - New Rewrote Get-RegisteredApplication.ps1, Get-ServicePrincipalObject.ps1, Remove-ServicePrincipalObject.ps1
+ - New Created default custom XML table for outputting objects. Table is overridden when a user selects Format-Table (FT)
  - New: Added code for stamping Exchange permissions for CBA Authentication for EXOv2 cmdlets
  - Fix in Connect-ToCloudTenant.ps1 - Added code for manual Reconnect
  - Fix in Get-LogFolder.ps1 - Removed $scriptlogging folder and get value from PSFConfig. We pull from PSFConfig local repository now

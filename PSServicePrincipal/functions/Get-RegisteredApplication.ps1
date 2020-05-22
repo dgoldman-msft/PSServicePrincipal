@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory registered application
+            Function for retrieving azure active directory registered application.
 
         .DESCRIPTION
             Retrieve an registered application from the Azure active directory.
@@ -45,7 +45,7 @@
         [parameter(HelpMessage = "ObjectID  used to return registered application objects")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $ObjectID,
+        $ObjectId,
 
         [parameter(HelpMessage = "Search filter used to return registered application objects")]
         [ValidateNotNullOrEmpty()]
@@ -56,21 +56,10 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectID
-    if($DisplayName -ne '*') { $parameter.SearchString = $DisplayName }
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectId, SearchString
+    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
 
-    if(-NOT $script:AdsessionFound)
-    {
-        Connect-ToAzureInteractively
-    }
-
-    try
-    {
-        Write-PSFMessage -Level Verbose -Message "Retrieving values for {0}" -StringValues ($PSBoundParameters.Values | Where-Object {$_ -is [string]})
+    Invoke-PSFProtectedCommand -Action "Registered application retrieved!" -Target $parameter.Values -ScriptBlock {
         Get-AzureADApplication @parameter -ErrorAction Stop
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-    }
+    } -EnableException $EnableException -PSCmdlet $PSCmdlet
 }

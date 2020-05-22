@@ -12,10 +12,10 @@
             Name of the self-signed certificate.
 
         .PARAMETER DnsName
-            DNS stamped on the self-signed certificate.
+            DNS name on the self-signed certificate.
 
         .PARAMETER FilePath
-            File path where the certificates are exported locally.
+            File path certificates are exported.
 
         .PARAMETER Password
             Secure password for the self-signed certificate.
@@ -24,7 +24,7 @@
             Switch used to create an Azure registered application.
 
         .PARAMETER SubjectAlternativeName
-            Subject alternative name stamped on the self-signed certificate.
+            SubjectAlternativeName on the self-signed certificate.
 
         .PARAMETER Cba
             Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
@@ -50,17 +50,17 @@
         [string]
         $FilePath = (Get-PSFConfigValue -FullName "PSServicePrincipal.Cert.CertFolder"),
 
-        [parameter(Mandatory = $True, ParameterSetName ="SelfSignedCertSet", HelpMessage = "Certificate name used to create the self-signed certificate")]
+        [parameter(Mandatory = $True, ParameterSetName ="SelfSignedCertSet", HelpMessage = "Certificate name for self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $CertificateName,
 
-        [parameter(Mandatory = $True, Position = 1, ParameterSetName ="SelfSignedCertSet", HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = $True, Position = 1, ParameterSetName ="SelfSignedCertSet", HelpMessage = "DNS name for self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DnsName,
 
-        [parameter(Mandatory = $True, Position = 2, ParameterSetName='SelfSignedCertSet', HelpMessage = "DNS name used to create the self-signed certificate")]
+        [parameter(Mandatory = $True, Position = 2, ParameterSetName='SelfSignedCertSet', HelpMessage = "SubjectAlternativeName for self-signed certificate")]
         [ValidateNotNullOrEmpty()]
         [string]
         $SubjectAlternativeName,
@@ -83,8 +83,7 @@
     try
     {
         $CertStore = 'cert:\CurrentUser\my\'
-        $CurrentDate = Get-Date
-        $EndDate  = $currentDate.AddYears(1)
+        $CurrentDate = Get-Date; $EndDate = $currentDate.AddYears(1)
         Write-PSFMessage -Level Host -Message "Creating new self-signed certficate with DnsName {0} in the following certificate store {1}" -StringValues $DnsName, $certStore
         $newSelfSignedCert = New-SelfSignedCertificate -certstorelocation $CertStore -Subject $SubjectAlternativeName -Dnsname $DnsName -NotBefore $CurrentDate -NotAfter $EndDate -Provider "Microsoft Enhanced RSA and AES Cryptographic Provider" -KeySpec KeyExchange -KeyExportPolicy Exportable -KeyUsage KeyEncipherment -KeyProtection None
         $script:certCounter ++
@@ -104,14 +103,7 @@
 
             switch($UserChoice)
             {
-                0
-                {
-                    if(New-Item -Path $FilePath -ItemType Directory)
-                    {
-                        Write-PSFMessage -Level Host -Message "Directory {0} created!" -StringValues $FilePath
-                    }
-                }
-
+                0 {if(New-Item -Path $FilePath -ItemType Directory){Write-PSFMessage -Level Host -Message "Directory {0} created!" -StringValues $FilePath}}
                 1 {return}
             }
         }
