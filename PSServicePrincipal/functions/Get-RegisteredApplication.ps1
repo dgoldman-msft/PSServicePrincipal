@@ -1,4 +1,4 @@
-﻿Function Get-RegisteredApp
+﻿Function Get-RegisteredApplication
 {
 	<#
         .SYNOPSIS
@@ -8,37 +8,49 @@
             Retrieve an registered application from the Azure active directory.
 
         .PARAMETER DisplayName
-            Display name of the objects you are retrieving.
+            Display name of the object(s) being returned.
+
+        .PARAMETER ObjectID
+            Object id of the object being(s) returned.
+
+        .PARAMETER SearchString
+            Search string filter of the object being(s) returned.
 
         .PARAMETER EnableException
             Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
-        .PARAMETER ObjectID
-            Object id of the object you are retrieving.
+        .EXAMPLE
+            PS c:\> Get-EnterpriseApp -DisplayName CompanySPN
+
+            Return an registered Azure active directory application by DisplayName.
 
         .EXAMPLE
             PS c:\> Get-RegisteredApp -SearchString CompanyApp
 
-            Retrieve the registered application called 'CompanyApp' by DisplayName.
+            Return an registered Azure active directory application by SearchString.
 
         .EXAMPLE
-            PS c:\> Get-RegisteredApp -Objectid 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+            PS c:\> Get-EnterpriseApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
-            Retrieve the registered by object id '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h'.
+            Return an registered Azure active directory application by ObjectID.
     #>
 
     [OutputType('System.String')]
     [CmdletBinding(DefaultParameterSetName="DisplayNameSet")]
     Param (
-        [parameter(ParameterSetName = 'DisplayNameSet', HelpMessage = "Display name used to create or delete an SPN or application")]
-        [ValidateNotNullOrEmpty()]
+        [parameter(HelpMessage = "Display name  used to return registered application objects")]
         [string]
-        $DisplayName = '*',
+        $DisplayName,
 
-        [parameter(ParameterSetName='ObjectIDSet', HelpMessage = "ObjectID used to create or delete an SPN or application")]
+        [parameter(HelpMessage = "ObjectID  used to return registered application objects")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID,
+
+        [parameter(HelpMessage = "Search filter used to return registered application objects")]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SearchString,
 
         [switch]
         $EnableException
@@ -46,6 +58,11 @@
 
     $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectID
     if($DisplayName -ne '*') { $parameter.SearchString = $DisplayName }
+
+    if(-NOT $script:AdsessionFound)
+    {
+        Connect-ToAzureInteractively
+    }
 
     try
     {

@@ -43,17 +43,16 @@
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Get-EnterpriseApp'
-		'Get-RegisteredApp'
-		'Get-AppAndSPNPair'
+		'Connect-ToAzureInteractively'
+		'Connect-ToCloudTenant'
 		'Get-LogFolder'
-		'Get-SpnByName'
-		'Get-SpnByAppID'
-		'Get-SpnsByName'
+		'Get-EnterpriseApplication'
+		'Get-RegisteredApplication'
+		'Get-ServicePrincipalObject'
 		'New-SelfSignedCert'
 		'New-ServicePrincipalObject'
-		'Remove-AppOrSPN'
 		'Remove-EnterpriseAppAndSPNPair'
+		'Remove-ServicePrincipalObject'
 		)
 
 	# Cmdlets to export from this module

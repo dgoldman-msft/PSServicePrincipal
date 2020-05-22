@@ -1,4 +1,4 @@
-﻿Function Get-SpnByName
+﻿Function Get-ServicePrincipalObject
 {
     <#
         .SYNOPSIS

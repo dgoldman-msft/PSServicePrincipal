@@ -103,7 +103,6 @@
             $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
-            return
         }
     }
     catch
@@ -117,12 +116,11 @@
         if($DisplayName -and $CreateSPNWithPassword)
         {
             $password = Read-Host "Enter Password" -AsSecureString
-            $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = $StartDate; EndDate = $EndDate; Password = $password}
+            $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
             Write-PSFMessage -Level Host -Message "Creating SPN {0} - Secure Password {1}" -StringValues $newSPN.DisplayName, $newSPN.securePassword
             $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -PasswordCredential $securePassword -ErrorAction Stop
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
-            return
         }
     }
     catch
@@ -136,14 +134,13 @@
         if(($DisplayName) -and (-NOT $RegisteredApp))
         {
             # Enterprise Application (Service Principal) needs display name because it creates the pair
-            Write-PSFMessage -Level Host -Message "Creating SPN DisplayName {0} and secret {1}" -StringValues $DisplayName, $UnsecureSecret
             $newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop
             $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newSpn.Secret)
             $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+            Write-PSFMessage -Level Host -Message "Creating SPN DisplayName {0} and secret {1}" -StringValues $DisplayName, $UnsecureSecret
             Write-PSFMessage -Level Host -Message "WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN"
             $script:roleListToProcess.Add($newSpn)
             $script:spnCounter ++
-            return
         }
     }
     catch
@@ -154,13 +151,13 @@
 
     try
     {
+        # We enter here from new-selfsigned certificate so we need to accept the data stamps passed in from the certificate
         if($DisplayName -and $RegisteredApp -and $Cba)
         {
             Write-PSFMessage -Level Host -Message "Creating registered application and SPN {0}. Certificate uploaded to Azure application" -StringValues $DisplayName
             $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
             $script:roleListToProcess.Add($newSpn)
             $script:appCounter ++
-            return
         }
     }
     catch

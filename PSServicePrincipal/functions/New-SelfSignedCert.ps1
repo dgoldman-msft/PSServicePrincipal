@@ -68,9 +68,11 @@
         [SecureString]
         $Password = (Read-Host "Enter your self-signed certificate secure password" -AsSecureString),
 
+        [parameter(HelpMessage = "Passed in from New-ServicePrincipalObject for registered application and cba cert upload bind")]
         [switch]
         $RegisteredApp,
 
+        [parameter(HelpMessage = "Passed in from New-ServicePrincipalObject for auto cba cert upload to Azure application")]
         [switch]
         $Cba,
 
@@ -95,7 +97,6 @@
 
     try
     {
-        # Test the path to see if it exists
         if(-NOT (Test-Path -Path $FilePath))
         {
             Write-PSFMessage -Level Host -Message "File path {0} does not exist." -StringValues $FilePath

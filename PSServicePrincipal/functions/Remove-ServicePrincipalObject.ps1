@@ -1,4 +1,4 @@
-﻿Function Remove-AppOrSPN
+﻿Function Remove-ServicePrincipalObject
 {
 	<#
         .SYNOPSIS
@@ -35,61 +35,77 @@
             Only displays the objects that would be affected and what changes would be made to those objects (without the worry of modifying those objects)
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteRegisteredApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
+            PS c:\> Remove-ServicePrincipalObject -DeleteRegisteredApp -DisplayName CompanySPN
 
-            Delete a registerd application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
-
-        .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -DisplayBane CompanyAPP
-
-            Delete an enterprise application using the DisplayBane 'CompanyAPP'.
+            Delete a registered Azure application using the DisplayName 'CompanySPN'.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+            PS c:\> Remove-ServicePrincipalObject -DeleteRegisteredApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            Delete a enterprise application using the ApplicationID '34a23ad2-dac4-4a41-bc3b-d12ddf90230e'.
-
-        .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteEnterpriseApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
-
-            Delete the enterprise application using the ObjectID '94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3'.
+            Delete a registered Azure application using the ApplicationID.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteSpn -DisplayName CompanySPN
+            PS c:\> Remove-ServicePrincipalObject -DeleteRegisteredApp -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            Delete a Service Principal using the DisplayName 'CompanySPN'.
-
-        .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
-
-            Delete the Azure application using the ApplicationID.
+             Delete a registered Azure application using the ObjectID.
 
         .EXAMPLE
-            PS c:\> Remove-AppOrSPN -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+            PS c:\> Remove-ServicePrincipalObject -DeleteEnterpriseApp -DisplayName CompanySPN
 
-            Delete a Service Principal using the ObjectID.
+            Delete an enterprise Azure application using the DisplayName 'CompanySPN'.
+
+        .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -DeleteEnterpriseApp -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            Delete an enterprise Azure application using the ApplicationID.
+
+        .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -DeleteEnterpriseApp -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+             Delete an enterprise Azure application using the ObjectID.
+
+        .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -DeleteSpn -DisplayName CompanySPN
+
+            Delete a Azure service principal by the DisplayName.
+
+        .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            Delete the Azure service principal by the ApplicationID.
+
+        .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+            Delete the Azure service principal by the ObjectID.
      #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-    [CmdletBinding(SupportsShouldProcess = $true)]
+    [CmdletBinding(SupportsShouldProcess = $True)]
     Param (
+        [parameter(HelpMessage = "Application id used to delete an application object")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ApplicationID,
 
+        [parameter(HelpMessage = "Switch used to delete an enterprise object")]
         [switch]
         $DeleteEnterpriseApp,
 
+        [parameter(HelpMessage = "Switch used to delete an registered object")]
         [switch]
         $DeleteRegisteredApp,
 
+        [parameter(HelpMessage = "Switch used to delete a service principal object")]
         [switch]
         $DeleteSpn,
 
+        [parameter(HelpMessage = "Display name used to delete an application object")]
         [ValidateNotNullOrEmpty()]
         [string]
         $DisplayName,
 
+        [parameter(HelpMessage = "Display name used to delete an application object")]
         [ValidateNotNullOrEmpty()]
         [string]
         $ObjectID,
@@ -98,7 +114,8 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -include DisplayName, ApplicationID, ObjectID
+    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -include DisplayName, ApplicationID, ObjectID, DeleteEnterpriseApp, DeleteRegisteredApp, DeleteSpn
+
     if($DeleteEnterpriseApp)
     {
         Invoke-PSFProtectedCommand -Action "Enterprise application delete!" -Target $parameter.Values -ScriptBlock {
@@ -119,7 +136,7 @@
     {
         Invoke-PSFProtectedCommand -Action "Service principal deleted!" -Target $parameter.Values -ScriptBlock {
             Remove-AzADServicePrincipal @parameter -ErrorAction Stop
-            $script:appDeletedCounter ++
+            $script:spnDeletedCounter ++
         } -EnableException $EnableException -PSCmdlet $PSCmdlet
     }
 }
