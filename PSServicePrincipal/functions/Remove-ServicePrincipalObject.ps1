@@ -70,6 +70,11 @@
             Delete a Azure service principal by the DisplayName.
 
         .EXAMPLE
+            PS c:\> Remove-ServicePrincipalObject -ServicePrincipalName http://CompanySPN
+
+            Delete a Azure service principal by the ServicePrincipalName.
+
+        .EXAMPLE
             PS c:\> Remove-ServicePrincipalObject -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
             Delete the Azure service principal by the ApplicationID.
