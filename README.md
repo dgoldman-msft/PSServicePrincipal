@@ -1,6 +1,6 @@
 ﻿# Description
 
-This is a PowerShell module that will help in the creation (single and batch) entperise, registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation. All Azure applications can be used with all applications needed authentication against Office 365 and Azure tenants.
+This is a PowerShell module that will help in the creation (single and batch) entperise, registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation. All Azure applications can be used with all applications needed authentication against Office 365 and Azure tenants. For applications that require CBA you can also create an exchange application that will also add the necessary roles and upload the certificate directly to the application in the Azure tenant.
 
 # Project Setup Instructions
 ## Working with the layout
