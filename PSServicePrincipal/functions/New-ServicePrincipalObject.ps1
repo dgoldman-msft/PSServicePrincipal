@@ -43,6 +43,9 @@
     .PARAMETER EnableException
         Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
+    .PARAMETER RegisteredApp
+        Switch used to create an Azure registered application.
+
     .PARAMETER Reconnect
         Used when forcing a new connection to an Azure tenant subscription.
 
