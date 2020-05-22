@@ -2,10 +2,10 @@
 {
 	<#
         .SYNOPSIS
-            Function for retrieving azure active directory registered application.
+            Function for retrieving Azure active directory registered application.
 
         .DESCRIPTION
-            Retrieve an registered application from the Azure active directory.
+            Retrieve an Azure active directory registered application.
 
         .PARAMETER DisplayName
             Display name of the object(s) being returned.
@@ -22,17 +22,17 @@
         .EXAMPLE
             PS c:\> Get-EnterpriseApp -DisplayName CompanySPN
 
-            Return an registered Azure active directory application by DisplayName.
+            Return an Azure active directory registered application by DisplayName.
 
         .EXAMPLE
             PS c:\> Get-RegisteredApp -SearchString CompanyApp
 
-            Return an registered Azure active directory application by SearchString.
+            Return an Azure active directory registered application by SearchString.
 
         .EXAMPLE
             PS c:\> Get-EnterpriseApp -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
 
-            Return an registered Azure active directory application by ObjectID.
+            Return an Azure active directory registered application by ObjectID.
     #>
 
     [OutputType('System.String')]

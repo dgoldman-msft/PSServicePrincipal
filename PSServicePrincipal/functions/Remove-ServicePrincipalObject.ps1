@@ -2,7 +2,7 @@
 {
 	<#
         .SYNOPSIS
-            Deletes an single azure active directory application or service principal.
+            Deletes an single Azure active directory application or service principal.
 
         .DESCRIPTION
             Delete an Application or Service Principal pair from the Azure Active Directory.
@@ -67,22 +67,22 @@
         .EXAMPLE
             PS c:\> Remove-ServicePrincipalObject -DeleteSpn -DisplayName CompanySPN
 
-            Delete a Azure service principal by the DisplayName.
+            Delete a service principal by the DisplayName.
 
         .EXAMPLE
             PS c:\> Remove-ServicePrincipalObject -ServicePrincipalName http://CompanySPN
 
-            Delete a Azure service principal by the ServicePrincipalName.
+            Delete a service principal by the ServicePrincipalName.
 
         .EXAMPLE
             PS c:\> Remove-ServicePrincipalObject -DeleteSpn -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            Delete the Azure service principal by the ApplicationID.
+            Delete the service principal by the ApplicationID.
 
         .EXAMPLE
             PS c:\> Remove-ServicePrincipalObject -DeleteSpn -ObjectID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
 
-            Delete the Azure service principal by the ObjectID.
+            Delete the service principal by the ObjectID.
      #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

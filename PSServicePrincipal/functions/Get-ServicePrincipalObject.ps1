@@ -16,7 +16,7 @@
         .PARAMETER ObjectID
             Object id of the object(s) being returned.
 
-        .PARAMETER $SearchString
+        .PARAMETER SearchString
             SearchString filter used on object(s) being returned.
 
         .PARAMETER EnableException
@@ -26,6 +26,16 @@
             PS c:\> Get-ServicePrincipalObject -DisplayName CompanySPN
 
             Get an Azure active directory enterprise application by DisplayName.
+
+        .EXAMPLE
+            PS c:\> Get-ServicePrincipalObject -SearchString "Company"
+
+            Get an Azure active directory enterprise application by using a filter.
+
+        .EXAMPLE
+            PS c:\> Get-ServicePrincipalObject -ApplicationID 34a23ad2-dac4-4a41-bc3b-d12ddf90230e
+
+             Return an Azure active directory enterprise application by ApplicationID.
 
         .EXAMPLE
             PS c:\> Get-ServicePrincipalObject -ObjectID 94b26zd1-fah2-1a25-bsc5-7h3d6j3s5g3h
