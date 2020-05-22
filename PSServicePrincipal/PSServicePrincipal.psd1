@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.10'
+	ModuleVersion = '1.0.11'
 
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -18,7 +18,7 @@
 	Copyright = '(c) 2020 Dave Goldman. All rights reserved.'
 
 	# Description of the functionality provided by this module
-	Description = 'PowerShell module for creating, retrieving and deleting applications and Service Principals'
+	Description = 'PowerShell module for creating, retrieving and deleting enterprise and registered applications and service principals'
 
 	# Minimum version of the Windows PowerShell engine required by this module
 	PowerShellVersion = '5.0'
@@ -39,21 +39,19 @@
 	# TypesToProcess = @('xml\PSServicePrincipal.Types.ps1xml')
 
 	# Format files (.ps1xml) to be loaded when importing this module
-	# FormatsToProcess = @('xml\PSServicePrincipal.Format.ps1xml')
+	FormatsToProcess = @('xml\PSServicePrincipal.Format.ps1xml')
 
 	# Functions to export from this module
 	FunctionsToExport = @(
-		'Get-EnterpriseApp'
-		'Get-RegisteredApp'
-		'Get-AppAndSPNPair'
+		'Connect-ToAzureInteractively'
+		'Connect-ToCloudTenant'
 		'Get-LogFolder'
-		'Get-SpnByName'
-		'Get-SpnByAppID'
-		'Get-SpnsByName'
+		'Get-EnterpriseApplication'
+		'Get-RegisteredApplication'
+		'Get-ServicePrincipalObject'
 		'New-SelfSignedCert'
 		'New-ServicePrincipalObject'
-		'Remove-AppOrSPN'
-		'Remove-EnterpriseAppAndSPNPair'
+		'Remove-ServicePrincipalObject'
 		)
 
 	# Cmdlets to export from this module
@@ -88,8 +86,8 @@
 				'Azure'
 				'Configuration'
 				'Exchange'
-				'Module'
-				'O365'
+				'ExchangeOnline'
+				'EXO'
 				'ServicePrincipal'
 				'Windows'
 				)
