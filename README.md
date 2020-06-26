@@ -1,53 +1,51 @@
 ﻿# Description
 
-This is a PowerShell module that will help in the creation (single and batch) entperise, registered applications and service principals to be used with Microsoft Exchange application development with use with Basic Authentication deprecation. All Azure applications can be used with all applications needed authentication against Office 365 and Azure tenants. For applications that require CBA you can also create an exchange application that will also add the necessary roles and upload the certificate directly to the application in the Azure tenant.
+This is a PowerShell module that will help in the creation (single and batch) enterpise, registered applications / service principals to be used with Microsoft application development. Application that connect to Office 365 will no longer be able to use Basic Authentication because it is being deprecated. This means that PowerShell will need a secure way to connect (interactively and automated) to Azure applications. For application workloads that require CBA (Certifiate Based Authentication) (I.E Microsoft Exchange PowerShell) you can use this module to automation the onboarding of the necessary requirements that will allow you to connect with using certificates. This method cuts down the 10-15 minutes of manual creation to just under a minute for single application creation.
 
-One of the biggest highlights of this module is the ability to prepare your tenant application for Certificate Based Authentication for Exchange PowerShell and automation access. 
+### Getting Started with PSServicePrincipal
+1. First open a new PowerShell console as 'Administrator' and run the following command:
+```powershell
+Install-Module -Name PSServicePrincipal
+```
+> This will install the PSServicePrincipal module into your local PowerShell module path.
 
-With regards to the Exchange workload you can run the following command in PowerShell to set your application up for unattended exchange administration using certificate based authentication. One the module is installed from the PowerShell Gallery and imported to your PowerShell session you can do the following:
+2. Run the following command:
 
-New-ServicePrincipalObject -DisplayName ‘YourApp’ -RegisteredApp -Cba -CreateSingleObjectCreate 
+```powershell
+Import-Module PSServicePrincipal
+```
 
-1.	This will start the process and create a registered Azure application in your tenant.
-2.	Create a self-signed certificate. You just supply a DNS name and password for the certificate.
-3.	Export the certificate (.pfx and .cer) files to your drive.
-4.	Import the certificate to your local user store. 
+> This will import the PSServicePrincipal module into your local PowerShell session. If you have any problems you can download the nupkg file directly from the PowerShell Gallery: https://www.powershellgallery.com/packages/PSServicePrincipal/1.0.11
 
-NOTE: You will need to move the cert to the localMachine store for unattended automation. 
+At this point you have installed and loaded the PSServicePrincipal module and you are ready to create new service principals.
 
-5.	Import the certificate information (most importantly the certificate thumbprint) to your newly created registered Azure tenant application.
-6.	Apply the necessary rights (Exchange.ManageAsApp) permissions to your application.
+### Example
+```powershell
+New-ServicePrincipalObject -DisplayName 'ExchangeCBAApp' -RegisteredApp -Cba -CreateSingleObject
+```
 
-All you need to do is manually log in to your Azure portal and do the following:
+In the above example we will create a new service principal object in the Azure tenant with a display name of 'ExchangeCBAApp', and we are passing in three argeument switches. These three switches instuct the PSServicePrincipal module to do the following:
 
-7.	‘Grant Consent’ to allow for the permissions to be applied. 
-8.	Add your application to the Azure based roll that you want your application to have rights for. (Based on your security model).
+1. -RegisteredApp will create a registered Azure application (different from an Azure enterprise application).
+2. -Cba will perform the following steps:
+  a. Create a Self-Signed certificate (which will be stored locally as uploaded to the newly created Azure application. You just supply a DNS name and password for the certificate. 
+  b. Export the certificate (.pfx and .cer) files to your drive.
+  c. Import the certificate to your local user certificate store. 
+  d. Import the certificate thumbprint to your newly created registered Azure tenant application.
+  e. Apply the necessary api rights (Exchange.ManageAsApp) permissions to your application. (This is needed for unattended automation)
+3. -CreateSingleObjectCreate will make sure we create a single service princiapl object (different from batch creation).
+	
+> This will allow for a local interactive PowerShell session to connect to Exchange Online via CBA. If you intent is to use unattended automation you will need to copy the certificate from the local user certificate store to the computer's localMachine certificate store. 
 
+The last step you need to do is manually verify the settings and grant consent to the application to allow access.
 
-# Project Setup Instructions
-## Working with the layout
+1. Select the 'Azure Active Directory' option
+2. Select 'App Registrations' 
+3. Select your application from the application list
+4. Select Certificates & secrets and verify the certificate thumbprint has been added successfully.
+5. Select 'API Permissions' to verify that 'Exchange.ManageAsApp' has been added successfully.
+6. Select 'Grant Admin Consent for 'YourDomain' (Default Directory). 
 
- - Don't touch the psm1 file
- - Place functions you export in `functions/` (can have subfolders)
- - Place private/internal functions invisible to the user in `internal/functions` (can have subfolders)
- - Don't add code directly to the `postimport.ps1` or `preimport.ps1`.
-   Those files are designed to import other files only.
- - When adding files you load during `preimport.ps1`, be sure to add corresponding entries to `filesBefore.txt`.
-   The text files are used as reference when compiling the module during the build script.
- - When adding files you load during `postimport.ps1`, be sure to add corresponding entries to `filesAfter.txt`.
-   The text files are used as reference when compiling the module during the build script.
+> This will apply the permissions to the application in the tenant. Please allow up to 2 hours for Azure AD replication to take effect.
 
-## Setting up CI/CD
-
-> To create a PR validation pipeline, set up tasks like this:
-
- - Install Prerequisites (PowerShell Task; VSTS-Prerequisites.ps1)
- - Validate (PowerShell Task; VSTS-Validate.ps1)
- - Publish Test Results (Publish Test Results; NUnit format; Run no matter what)
-
-> To create a build/publish pipeline, set up tasks like this:
-
- - Install Prerequisites (PowerShell Task; VSTS-Prerequisites.ps1)
- - Validate (PowerShell Task; VSTS-Validate.ps1)
- - Build (PowerShell Task; VSTS-Build.ps1)
- - Publish Test Results (Publish Test Results; NUnit format; Run no matter what).
+7. Add your application to an Azure security RBAC role that you want your application to have rights for. (This is based on your security model).
