@@ -1,4 +1,8 @@
 ﻿# Changelog
+
+## 1.0.11 (2020-07-15)
+ - Upd: Updated help file in module and Github
+
 ## 1.0.11 (2020-05-19)
  - Upd: in PSServicePrincipal.provider.ps1 - Added PSConfig variable for setting certstore location in configuration as a fall back
  - Upd: in New-ServicePrincipal.ps1 - Corrected -Format to -StringValues for PSFWriteMessage variable output
