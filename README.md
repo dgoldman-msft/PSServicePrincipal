@@ -23,7 +23,8 @@ At this point you have installed and loaded the PSServicePrincipal module and yo
 
 ### Example
 ```powershell
-New-ServicePrincipalObject -DisplayName 'ExchangeCBAApp' -RegisteredApp -Cba -CreateSingleObject
+1. Open PowerShell as an administrator
+2. New-ServicePrincipalObject -DisplayName 'ExchangeCBAApp' -RegisteredApp -Cba -CreateSingleObject
 ```
 
 In the above example we will create a new service principal object in the Azure tenant with a display name of 'ExchangeCBAApp', and we are passing in three argument switches. These three switches instuct the PSServicePrincipal module to do the following:

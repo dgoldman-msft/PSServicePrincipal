@@ -1,5 +1,4 @@
-﻿Function New-ServicePrincipalObject
-{
+﻿Function New-ServicePrincipalObject {
     <#
     .SYNOPSIS
         PowerShell module for creating, retrieving and removing Azure registered / enterprise applications and service principals.
@@ -120,7 +119,7 @@
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
-    [CmdletBinding(DefaultParameterSetName='Default')]
+    [CmdletBinding(DefaultParameterSetName = 'Default')]
     [OutputType('System.Boolean')]
     [OutputType('System.String')]
 
@@ -150,11 +149,11 @@
         [switch]
         $CreateSelfSignedCertificate,
 
-        [parameter(Mandatory = $True, ParameterSetName='CreateBatchObjects', HelpMessage = "Switch used to create batch objects")]
+        [parameter(Mandatory = $True, ParameterSetName = 'CreateBatchObjects', HelpMessage = "Switch used to create batch objects")]
         [switch]
         $CreateBatchObjects,
 
-        [parameter(Mandatory = $True, ParameterSetName='CreateBatchObjects', HelpMessage = "Name file used to create a batch of spn's")]
+        [parameter(Mandatory = $True, ParameterSetName = 'CreateBatchObjects', HelpMessage = "Name file used to create a batch of spn's")]
         [ValidateNotNullOrEmpty()]
         [string]
         $NameFile,
@@ -186,8 +185,15 @@
         $EnableException
     )
 
-    Process
-    {
+    process {
+
+        # Adding admin check for Windows Version 2004 which needs admin access due to UAC
+        if(-NOT (Test-PSFPowerShell -Elevated))
+        {
+            Write-PSFMessage -Level Host -Message "PSServicePrincipal security components need PowerShell to run as an administrator. Please restart PowerShell as Admin" -StringValues $module
+            return
+        }
+
         $script:certCounter = 0
         $script:certExportedCounter = 0
         $script:runningOnCore = $false
@@ -198,10 +204,8 @@
         $script:roleListToProcess = New-Object -Type System.Collections.ArrayList
         $requiredModules = @("AzureAD", "Az.Accounts", "Az.Resources")
 
-        Foreach($module in $requiredModules)
-        {
-            if(-NOT (Get-Module -Name $module))
-            {
+        Foreach ($module in $requiredModules) {
+            if (-NOT (Get-Module -Name $module)) {
                 Import-Module $module; Write-PSFMessage -Level Verbose -Message "Importing required modules {0}" -StringValues $module
             }
         }
@@ -209,16 +213,14 @@
         $parameters = $PSBoundParameters | ConvertTo-PSFHashtable -Include Reconnect
         Write-PSFMessage -Level Host -Message "Starting script run: {0}" -StringValues (Get-Date)
 
-        if($DumpCerts)
-        {
+        if ($DumpCerts) {
             Write-PSFMessage -Level Host -Message "Opening CurenntUser and LocalMachine Certificate Stores"
             Get-ChildItem Cert:\CurrentUser\My | Sort-Object
             Get-ChildItem Cert:\LocalMachine\My | Sort-Object
             return
         }
 
-        if($CreateSelfSignedCertificate)
-        {
+        if ($CreateSelfSignedCertificate) {
             Invoke-PSFProtectedCommand -Action "Attempting to create self-signed certificate!" -Target $parameter.Values -ScriptBlock {
                 New-SelfSignedCert @parameter -EnableException -ErrorAction Stop
             } -EnableException $EnableException -PSCmdlet $PSCmdlet
@@ -229,171 +231,134 @@
             return
         } -EnableException $EnableException -PSCmdlet $PSCmdlet
 
-        if($CreateBatchObjects)
-        {
+        if ($CreateBatchObjects) {
             Write-PSFMessage -Level Host -Message "Testing access to {0}" -StringValues $NameFile
 
-            if(-NOT (Test-Path -Path $NameFile))
-            {
+            if (-NOT (Test-Path -Path $NameFile)) {
                 Stop-PSFFunction -Message "ERROR: File problem. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return
             }
-            else
-            {
+            else {
                 Write-PSFMessage -Level Host -Message "{0} accessable. Reading file contents" -StringValues $NameFile
-                $objectsToCreate = Get-Content $NameFile | Where-Object {$_ -ne ""}
+                $objectsToCreate = Get-Content $NameFile | Where-Object { $_ -ne "" }
 
                 # Validate that we have data and if we dont we exit out
-                if(0 -eq $objectsToCreate.Length)
-                {
+                if (0 -eq $objectsToCreate.Length) {
                     Stop-PSFFunction -Message "Error with imported content. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                     return
                 }
             }
 
             # Check to make sure we have the list of objects to process
-            if(-NOT $objectsToCreate)
-            {
+            if (-NOT $objectsToCreate) {
                 Write-PSFMessage -Level Warning "ERROR: No list of objects found!"
                 return
             }
 
             Write-PSFMessage -Level Host -Message "Object list DETECTED! Staring batch creation of SPN's"
 
-            if($RegisteredApp)
-            {
+            if ($RegisteredApp) {
                 Write-PSFMessage -Level Host -Message "Creating batch registered Applications"
-                if(-NOT $script:runningOnCore)
-                {
-                    foreach($DisplayName in $objectsToCreate)
-                    {
-                        try
-                        {
+                if (-NOT $script:runningOnCore) {
+                    foreach ($DisplayName in $objectsToCreate) {
+                        try {
                             $newApp = New-AzureADApplication -DisplayName $DisplayName -ErrorAction SilentlyContinue -ErrorVariable ProcessError
                         }
-                        catch
-                        {
+                        catch {
                             Stop-PSFFunction -Message "ERROR creating batch spn's" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                             return
                         }
 
-                        if($newApp)
-                        {
+                        if ($newApp) {
                             Write-PSFMessage -Level Host -Message "Registered Application created: DisplayName: {0} - ApplicationID {1}" -StringValues $newApp.DisplayName, $newApp.AppId
                             $script:roleListToProcess.Add($newApp)
 
                             # Since we only create an AzureADapplicaiaton we need to create the matching service principal
-                            try
-                            {
+                            try {
                                 New-ServicePrincipal -ApplicationID $newApp.AppID
                             }
-                            catch
-                            {
+                            catch {
                                 Stop-PSFFunction -Message "ERROR creating batch spn's" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                                 return
                             }
                         }
-                        elseif($ProcessError){Write-PSFMessage -Level Warning "WARNING: {0}" -StringValues $ProcessError.Exception.Message}
+                        elseif ($ProcessError) { Write-PSFMessage -Level Warning "WARNING: {0}" -StringValues $ProcessError.Exception.Message }
                     }
 
-                    if($script:roleListToProcess.Count -gt 0){Add-RoleToSPN -spnToProcess $script:roleListToProcess}
+                    if ($script:roleListToProcess.Count -gt 0) { Add-RoleToSPN -spnToProcess $script:roleListToProcess }
                 }
-                else
-                {
+                else {
                     Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6 to create Registered Applications."
                 }
             }
-            else
-            {
+            else {
                 Write-PSFMessage -Level Host -Message "Creating batch entperise service principal and applications"
-                foreach($spn in $objectsToCreate){New-ServicePrincipal -DisplayName $spn}
+                foreach ($spn in $objectsToCreate) { New-ServicePrincipal -DisplayName $spn }
 
-                if($roleListToProcess.Count -gt 0){Add-RoleToSPN -spnToProcess $script:roleListToProcess}
+                if ($roleListToProcess.Count -gt 0) { Add-RoleToSPN -spnToProcess $script:roleListToProcess }
             }
         }
 
-        if($CreateSingleObject)
-        {
-            try
-            {
-                if($RegisteredApp)
-                {
+        if ($CreateSingleObject) {
+            try {
+                if ($RegisteredApp) {
                     Write-PSFMessage -Level Host -Message "Creating registered applications"
-                    if(-NOT $script:runningOnCore)
-                    {
-                        if($Cba){New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException}
-                        else{$newApp = New-AzureADApplication -DisplayName $DisplayName -ErrorAction SilentlyContinue -ErrorVariable ProcessError}
+                    if (-NOT $script:runningOnCore) {
+                        if ($Cba) { New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException }
+                        else { $newApp = New-AzureADApplication -DisplayName $DisplayName -ErrorAction SilentlyContinue -ErrorVariable ProcessError }
 
-                        if($newApp)
-                        {
+                        if ($newApp) {
                             Write-PSFMessage -Level Host -Message "Registered Application created: DisplayName: {0} - ApplicationID {1}" -StringValues $newApp.DisplayName, $newApp.AppId
                             New-ServicePrincipal -ApplicationID $newApp.AppId -RegisteredApp # Since we only create an AzureADapplicaiaton we need to create the matching service principal
                         }
-                        elseif($ProcessError){Write-PSFMessage -Level Warning "WARNING: $($ProcessError[0].Exception.Message)"}
+                        elseif ($ProcessError) { Write-PSFMessage -Level Warning "WARNING: $($ProcessError[0].Exception.Message)" }
                     }
-                    else
-                    {
+                    else {
                         Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6 to create Registered Applications."
                     }
                 }
-                elseif($DisplayName -and $CreateSPNWithPassword){New-ServicePrincipal -DisplayName $DisplayName -CreateSPNWithPassword}
-                elseif(($DisplayName) -and (-NOT $RegisteredApp) -and (-NOT $Cba) -and (-NOT $CreateSPNsWithNameAndCert)){New-ServicePrincipal -DisplayName $DisplayName}
+                elseif ($DisplayName -and $CreateSPNWithPassword) { New-ServicePrincipal -DisplayName $DisplayName -CreateSPNWithPassword }
+                elseif (($DisplayName) -and (-NOT $RegisteredApp) -and (-NOT $Cba) -and (-NOT $CreateSPNsWithNameAndCert)) { New-ServicePrincipal -DisplayName $DisplayName }
 
-                if($script:roleListToProcess.Count -gt 0)
-                {
+                if ($script:roleListToProcess.Count -gt 0) {
                     Add-RoleToSPN -spnToProcess $script:roleListToProcess
-                    if($Cba){Add-ExchangePermsToSPN.ps1 -DisplayName $DisplayName}
+                    if ($Cba) { Add-ExchangePermsToSPN.ps1 -DisplayName $DisplayName }
                 }
             }
-            catch {Stop-PSFFunction -Message "ERROR: Creating a simple SPN failed" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_}
+            catch { Stop-PSFFunction -Message "ERROR: Creating a simple SPN failed" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_ }
         }
 
-        if($CreateSPNWithAppID)
-        {
-            try
-            {
+        if ($CreateSPNWithAppID) {
+            try {
                 New-ServicePrincipal -ApplicationID $ApplicationID
             }
-            catch
-            {
+            catch {
                 Stop-PSFFunction -Message "ERROR creating an spn by application id" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return
             }
         }
 
-        if($CreateSPNsWithNameAndCert)
-        {
-            try
-            {
-                if((-NOT $Certificate))
-                {
+        if ($CreateSPNsWithNameAndCert) {
+            try {
+                if ((-NOT $Certificate)) {
                     Stop-PSFFunction -Message "ERROR: No service principal specified. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet
                     return
                 }
-                else
-                {
+                else {
                     Write-PSFMessage -Level Host -Message "Creating new SPN {0} and with auto generated certificate key" -StringValues $DisplayName
-                    $endDate = Get-Date; $endDate  = $currentDate.AddYears(1)
+                    $endDate = Get-Date; $endDate = $currentDate.AddYears(1)
                     $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $Certificate -EndDate $endDate -ErrorAction Stop
                     Add-RoleToSPN -spnToProcess $newSPN
                 }
             }
-            catch
-            {
+            catch {
                 Stop-PSFFunction -Message "ERROR: No certificate as base64-encoded string specified. Exiting" -EnableException $EnableException -Cmdlet $PSCmdlet -ErrorRecord $_
                 return
             }
         }
     }
 
-    end
-    {
-        if($CreateSelfSignedCertificate)
-        {
-            Write-PSFMessage -Level Host -Message "{0} self-signed certificate created sucessfully!" -StringValues $script:certCounter
-            Write-PSFMessage -Level Host -Message "{0} self-signed certificates exported sucessfully!" -StringValues $script:certExportedCounter
-        }
-
+    end {
         Write-PSFMessage -Level Host -Message "End script run: {0}" -StringValues (Get-Date)
         Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder
     }

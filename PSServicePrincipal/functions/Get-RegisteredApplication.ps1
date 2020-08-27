@@ -1,6 +1,5 @@
-﻿Function Get-RegisteredApplication
-{
-	<#
+﻿Function Get-RegisteredApplication {
+    <#
         .SYNOPSIS
             Function for retrieving Azure active directory registered application.
 
@@ -36,7 +35,7 @@
     #>
 
     [OutputType('System.String')]
-    [CmdletBinding(DefaultParameterSetName="DisplayNameSet")]
+    [CmdletBinding(DefaultParameterSetName = "DisplayNameSet")]
     Param (
         [parameter(HelpMessage = "Display name  used to return registered application objects")]
         [string]
@@ -56,10 +55,12 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectId, SearchString
-    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
+    process {
+        $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include ObjectId, SearchString
+        if ((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)) { Connect-ToAzureInteractively }
 
-    Invoke-PSFProtectedCommand -Action "Registered application retrieved!" -Target $parameter.Values -ScriptBlock {
-        Get-AzureADApplication @parameter -ErrorAction Stop
-    } -EnableException $EnableException -PSCmdlet $PSCmdlet
+        Invoke-PSFProtectedCommand -Action "Registered application retrieved!" -Target $parameter.Values -ScriptBlock {
+            Get-AzureADApplication @parameter -ErrorAction Stop
+        } -EnableException $EnableException -PSCmdlet $PSCmdlet
+    }
 }

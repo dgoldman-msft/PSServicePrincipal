@@ -1,5 +1,4 @@
-﻿Function Get-ServicePrincipalObject
-{
+﻿Function Get-ServicePrincipalObject {
     <#
         .SYNOPSIS
             Filters active directory service principals by display name.
@@ -66,31 +65,30 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId, SearchString
-    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
-    Write-PSFMessage -Level Host "Retrieving SPN by Object(s)"
+    prcess {
+        $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId, SearchString
+        if ((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)) { Connect-ToAzureInteractively }
+        Write-PSFMessage -Level Host "Retrieving SPN by Object(s)"
 
-    try
-    {
-        $spnOutput = Get-AzADServicePrincipal @parameter | Select-PSFObject DisplayName, "ServicePrincipalNames as SPN", ApplicationId, "ID as ObjectID", ObjectType, Type
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-    }
+        try {
+            $spnOutput = Get-AzADServicePrincipal @parameter | Select-PSFObject DisplayName, "ServicePrincipalNames as SPN", ApplicationId, "ID as ObjectID", ObjectType, Type
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+        }
 
-    $count = 0
-    foreach($item in $spnOutput)
-    {
-        $count++
-        [pscustomobject]@{
-            PSTypeName = 'PSServicePrincipal.Principal'
-            ItemNumber = $count
-            DisplayName = $item.DisplayName
-            ApplicationID = $item.ApplicationID
-            ObjectID = $item.ObjectID
-            ObjectType = $item.ObjectType
-            Type = $item.Type
+        $count = 0
+        foreach ($item in $spnOutput) {
+            $count++
+            [pscustomobject]@{
+                PSTypeName    = 'PSServicePrincipal.Principal'
+                ItemNumber    = $count
+                DisplayName   = $item.DisplayName
+                ApplicationID = $item.ApplicationID
+                ObjectID      = $item.ObjectID
+                ObjectType    = $item.ObjectType
+                Type          = $item.Type
+            }
         }
     }
 }
