@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.11'
+	ModuleVersion = '1.0.13'
 
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -85,6 +85,7 @@
 				'Automation'
 				'Azure'
 				'Configuration'
+				'CertBasedAuth'
 				'Exchange'
 				'ExchangeOnline'
 				'EXO'

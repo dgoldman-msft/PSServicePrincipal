@@ -1,6 +1,5 @@
-﻿Function Add-ExchangePermsToSPN.ps1
-{
-     <#
+﻿Function Add-ExchangePermsToSPN.ps1 {
+    <#
         .SYNOPSIS
             Applies the Manage.Exchange permissions to a registered application.
 
@@ -31,20 +30,20 @@
         $EnableException
     )
 
-    try
-    {
-        Write-PSFMessage -Level Host -Message "Exchange.ManageAsApp roll applied to application {0}. To complete setup go to your application in the Azure portal and Grant Admin Consent." -StringValues $DisplayName
-        $O365SvcPrincipal = Get-AzureADServicePrincipal -All $true | Where-object {$_.DisplayName -eq "Office 365 Exchange Online"}
-        $reqExoAccess = New-Object -TypeName "Microsoft.Open.AzureAD.Model.RequiredResourceAccess"
-        $reqExoAccess.ResourceAppId = $O365SvcPrincipal.AppId
-        $delegatedPermissions = New-Object -TypeName "Microsoft.Open.AzureAD.Model.ResourceAccess" -ArgumentList "dc50a0fb-09a3-484d-be87-e023b12c6440", "Role" # Manage Exchange As Application
-        $reqExoAccess.ResourceAccess = $delegatedPermissions
-        $ADApplication = get-AzureADApplication -SearchString $DisplayName
-        Set-AzureADApplication -ObjectId $ADApplication.ObjectId -RequiredResourceAccess $reqExoAccess
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
+    process {
+        try {
+            Write-PSFMessage -Level Host -Message "Exchange.ManageAsApp roll applied to application {0}. To complete setup go to your application in the Azure portal and Grant Admin Consent." -StringValues $DisplayName
+            $O365SvcPrincipal = Get-AzureADServicePrincipal -All $true | Where-object { $_.DisplayName -eq "Office 365 Exchange Online" }
+            $reqExoAccess = New-Object -TypeName "Microsoft.Open.AzureAD.Model.RequiredResourceAccess"
+            $reqExoAccess.ResourceAppId = $O365SvcPrincipal.AppId
+            $delegatedPermissions = New-Object -TypeName "Microsoft.Open.AzureAD.Model.ResourceAccess" -ArgumentList "dc50a0fb-09a3-484d-be87-e023b12c6440", "Role" # Manage Exchange As Application
+            $reqExoAccess.ResourceAccess = $delegatedPermissions
+            $ADApplication = get-AzureADApplication -SearchString $DisplayName
+            Set-AzureADApplication -ObjectId $ADApplication.ObjectId -RequiredResourceAccess $reqExoAccess
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+            return
+        }
     }
 }

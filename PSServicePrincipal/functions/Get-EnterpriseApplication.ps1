@@ -1,6 +1,5 @@
-﻿Function Get-EnterpriseApplication
-{
-	<#
+﻿Function Get-EnterpriseApplication {
+    <#
         .SYNOPSIS
             Function for retrieving Azure active directory enterprise application.
 
@@ -54,10 +53,12 @@
         $EnableException
     )
 
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId
-    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
+    process {
+        $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -Include DisplayName, ObjectId, ApplicationId
+        if ((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)) { Connect-ToAzureInteractively }
 
-    Invoke-PSFProtectedCommand -Action "Enterprise application retrieved!" -Target $parameter.Values -ScriptBlock {
-        Get-AzADApplication @parameter -ErrorAction Stop
-    } -EnableException $EnableException -PSCmdlet $PSCmdlet
+        Invoke-PSFProtectedCommand -Action "Enterprise application retrieved!" -Target $parameter.Values -ScriptBlock {
+            Get-AzADApplication @parameter -ErrorAction Stop
+        } -EnableException $EnableException -PSCmdlet $PSCmdlet
+    }
 }
