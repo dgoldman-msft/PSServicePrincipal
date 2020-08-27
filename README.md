@@ -5,10 +5,13 @@ This is a PowerShell module that will help in the creation (single and batch) en
 > NOTE: Due to incompatibility issues with the AzureAD module and PowerShell core at this time this module will only run on Windows PowerShell 5.X. If you try to run this on Module on PowerShell core it will partial run but you will not be able to create service principals and applications and will receive the following error: At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6 to create Registered Applications. Once the AzureAD module is PowerShell compatible this module will be updated accordingly.
 
 ### Getting Started with PSServicePrincipal
+
 1. First open a new PowerShell console as 'Administrator' and run the following command:
+
 ```powershell
 Install-Module -Name PSServicePrincipal
 ```
+
 > This will install the PSServicePrincipal module into your local PowerShell module path.
 
 2. Run the following command:
@@ -22,6 +25,7 @@ Import-Module PSServicePrincipal
 At this point you have installed and loaded the PSServicePrincipal module and you are ready to create new service principals.
 
 ### Example
+
 ```powershell
 1. Open PowerShell as an administrator
 2. New-ServicePrincipalObject -DisplayName 'ExchangeCBAApp' -RegisteredApp -Cba -CreateSingleObject
