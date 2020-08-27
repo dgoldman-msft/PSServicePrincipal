@@ -1,5 +1,4 @@
-﻿Function Get-LogFolder
-{
+﻿Function Get-LogFolder {
     <#
         .SYNOPSIS
             Logs module information to output and debug logging folders.
@@ -27,24 +26,23 @@
         $LogFolder
     )
 
-    switch ($LogFolder)
-    {
-        "OutputLoggingFolder"
-        {
-            $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
-            Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values  -ScriptBlock {
-                Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $loggingFolder
-                $loggingFolder | Invoke-Item
-            } -EnableException $EnableException -PSCmdlet $PSCmdlet
-        }
+    process {
+        switch ($LogFolder) {
+            "OutputLoggingFolder" {
+                $loggingFolder = Get-PSFConfigValue -FullName "PSServicePrincipal.Logging.PSServicePrincipal.LoggingFolderPath"
+                Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values  -ScriptBlock {
+                    Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $loggingFolder
+                    $loggingFolder | Invoke-Item
+                } -EnableException $EnableException -PSCmdlet $PSCmdlet
+            }
 
-        "DebugLoggingFolder"
-        {
-            $debugFolder = Get-PSFConfigValue -FullName "PSFramework.Logging.FileSystem.LogPath"
-            Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values -ScriptBlock {
-                Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $debugFolder
-                $debugFolder | Invoke-Item
-            } -EnableException $EnableException -PSCmdlet $PSCmdlet
+            "DebugLoggingFolder" {
+                $debugFolder = Get-PSFConfigValue -FullName "PSFramework.Logging.FileSystem.LogPath"
+                Invoke-PSFProtectedCommand -Action "Invoking folder item" -Target $parameter.Values -ScriptBlock {
+                    Write-PSFMessage -Level Host -Message "Openning default logging foider {0}" -StringValues $debugFolder
+                    $debugFolder | Invoke-Item
+                } -EnableException $EnableException -PSCmdlet $PSCmdlet
+            }
         }
     }
 }

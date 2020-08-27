@@ -1,5 +1,4 @@
-﻿Function New-ServicePrincipal
-{
+﻿Function New-ServicePrincipal {
     <#
         .SYNOPSIS
             Cmdlet for creating a single object service principal objects
@@ -87,83 +86,73 @@
         $EnableException
     )
 
-    try
-    {
-        # We can not create applications or service principals with special characters and spaces via Powershell but can in the azure portal
-        $DisplayName -replace '[\W]', ''
+    process {
+        try {
+            # We can not create applications or service principals with special characters and spaces via Powershell but can in the azure portal
+            $DisplayName -replace '[\W]', ''
 
-        if($RegisteredApp -and $ApplicationID)
-        {
-            # Registered Application needs ApplicationID
-            Write-PSFMessage -Level Host -Message "Creating SPN with ApplicationID {0}" -StringValues $newSpn.ApplicationID
-            $password = [guid]::NewGuid()
-            $currentDate = Get-Date # Date here has to be different that cert date passed in
-            $endCurrentDate = ($currentDate.AddYears(1))
-            $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = $currentDate; EndDate = $endCurrentDate; Password = $password}
-            $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
-            $script:roleListToProcess.Add($newSpn)
+            if ($RegisteredApp -and $ApplicationID) {
+                # Registered Application needs ApplicationID
+                Write-PSFMessage -Level Host -Message "Creating SPN with ApplicationID {0}" -StringValues $newSpn.ApplicationID
+                $password = [guid]::NewGuid()
+                $currentDate = Get-Date # Date here has to be different that cert date passed in
+                $endCurrentDate = ($currentDate.AddYears(1))
+                $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = $currentDate; EndDate = $endCurrentDate; Password = $password }
+                $newSpn = New-AzADServicePrincipal -ApplicationID $ApplicationID -PasswordCredential $securePassword -ErrorAction Stop
+                $script:roleListToProcess.Add($newSpn)
+                return
+            }
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
             return
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
-    }
 
-    try
-    {
-        if($DisplayName -and $CreateSPNWithPassword)
-        {
-            $password = Read-Host "Enter Password" -AsSecureString
-            $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password}
-            $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -PasswordCredential $securePassword -ErrorAction Stop
-            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password)
-            $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-            Write-PSFMessage -Level Host -Message "Creating SPN {0} - Secure Password {1}. WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN!" -StringValues $newSPN.DisplayName, $UnsecureSecret
-            $script:roleListToProcess.Add($newSpn)
+        try {
+            if ($DisplayName -and $CreateSPNWithPassword) {
+                $password = Read-Host "Enter Password" -AsSecureString
+                $securePassword = New-Object Microsoft.Azure.Commands.ActiveDirectory.PSADPasswordCredential -Property @{ StartDate = Get-Date; EndDate = Get-Date -Year 2024; Password = $password }
+                $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -PasswordCredential $securePassword -ErrorAction Stop
+                $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password)
+                $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                Write-PSFMessage -Level Host -Message "Creating SPN {0} - Secure Password {1}. WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN!" -StringValues $newSPN.DisplayName, $UnsecureSecret
+                $script:roleListToProcess.Add($newSpn)
+                return
+            }
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
             return
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
-    }
 
-    try
-    {
-        if(($DisplayName) -and (-NOT $RegisteredApp))
-        {
-            # Enterprise Application (Service Principal) needs display name because it creates the pair
-            $newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop
-            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newSpn.Secret)
-            $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
-            Write-PSFMessage -Level Host -Message "Creating SPN DisplayName {0} and secret {1}. WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN!" -StringValues $DisplayName, $UnsecureSecret
-            $script:roleListToProcess.Add($newSpn)
+        try {
+            if (($DisplayName) -and (-NOT $RegisteredApp)) {
+                # Enterprise Application (Service Principal) needs display name because it creates the pair
+                $newSpn = New-AzADServicePrincipal -DisplayName $DisplayName -ErrorAction Stop
+                $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($newSpn.Secret)
+                $UnsecureSecret = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+                Write-PSFMessage -Level Host -Message "Creating SPN DisplayName {0} and secret {1}. WARNING: Backup this key!!! If you lose it you will need to reset the credentials for this SPN!" -StringValues $DisplayName, $UnsecureSecret
+                $script:roleListToProcess.Add($newSpn)
+                return
+            }
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
             return
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
-    }
 
-    try
-    {
-        # We enter here from new-selfsigned certificate so we need to accept the data stamps passed in from the certificate
-        if($DisplayName -and $RegisteredApp -and $Cba)
-        {
-            Write-PSFMessage -Level Host -Message "Creating registered application and SPN {0}. Certificate uploaded to Azure application" -StringValues $DisplayName
-            $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
-            $script:roleListToProcess.Add($newSpn)
+        try {
+            # We enter here from new-selfsigned certificate so we need to accept the data stamps passed in from the certificate
+            if ($DisplayName -and $RegisteredApp -and $Cba) {
+                Write-PSFMessage -Level Host -Message "Creating registered application and SPN {0}. Certificate uploaded to Azure application" -StringValues $DisplayName
+                $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
+                $script:roleListToProcess.Add($newSpn)
+                return
+            }
+        }
+        catch {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
             return
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
     }
 }

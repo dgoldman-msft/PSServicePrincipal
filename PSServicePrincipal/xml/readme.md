@@ -2,8 +2,8 @@
 
 This is the folder where project XML files go, notably:
 
- - Format XML
- - Type Extension XML
+- Format XML
+- Type Extension XML
 
 External help files should _not_ be placed in this folder!
 
@@ -11,8 +11,8 @@ External help files should _not_ be placed in this folder!
 
 There should be only one format file and one type extension file per project, as importing them has a notable impact on import times.
 
- - The Format XML should be named `PSServicePrincipal.Format.ps1xml`
- - The Type Extension XML should be named `PSServicePrincipal.Types.ps1xml`
+- The Format XML should be named `PSServicePrincipal.Format.ps1xml`
+- The Type Extension XML should be named `PSServicePrincipal.Types.ps1xml`
 
 ## Tools
 
@@ -33,10 +33,10 @@ This function generates type extension XML that allows PowerShell to convert typ
 
 In order for a class to be eligible for this, it needs to conform to the following rules:
 
- - Have the `[Serializable]` attribute
- - Be public
- - Have an empty constructor
- - Allow all public properties/fields to be set (even if setting it doesn't do anything) without throwing an exception.
+- Have the `[Serializable]` attribute
+- Be public
+- Have an empty constructor
+- Allow all public properties/fields to be set (even if setting it doesn't do anything) without throwing an exception.
 
 ```
 non-public properties and fields will be lost in this process!

@@ -1,6 +1,5 @@
-﻿Function Remove-ServicePrincipalObject
-{
-	<#
+﻿Function Remove-ServicePrincipalObject {
+    <#
         .SYNOPSIS
             Deletes an single Azure active directory application or service principal.
 
@@ -127,68 +126,60 @@
         $EnableException
     )
 
-    if(-NOT ($DeleteEnterpriseApp -or $DeleteRegisteredApp -or $DeleteSpn))
-    {
-        Write-PSFMessage -Level Host -Message "You must past in one of the following switches -DeleteEnterpriseApp -DeleteRegisteredApp -or -DeleteSpn"
-        return
-    }
-
-    $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -include DisplayName, ApplicationId, ObjectId, ServicePrincipalName
-    if((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)){Connect-ToAzureInteractively}
-
-    if($DeleteEnterpriseApp)
-    {
-        Invoke-PSFProtectedCommand -Action "Enterprise application delete!" -Target $parameter.Values -ScriptBlock {
-            Remove-AzADApplication @parameter -ErrorAction Stop
-        } -EnableException $EnableException -PSCmdlet $PSCmdlet
-    }
-
-    if($DeleteRegisteredApp)
-    {
-        Invoke-PSFProtectedCommand -Action "Registered application deleted!" -Target $parameter.Values -ScriptBlock {
-            Remove-AzureADApplication @parameter -ErrorAction Stop
-
-        } -EnableException $EnableException -PSCmdlet $PSCmdlet
-    }
-
-    if($DeleteSpn)
-    {
-        if($parameter.ContainsValue($ServicePrincipalName) -and (-NOT $ServicePrincipalName.Contains('http://')))
-        {
-            $parameter.ServicePrincipalName = "http://$ServicePrincipalName"
+    process {
+        if (-NOT ($DeleteEnterpriseApp -or $DeleteRegisteredApp -or $DeleteSpn)) {
+            Write-PSFMessage -Level Host -Message "You must past in one of the following switches -DeleteEnterpriseApp -DeleteRegisteredApp -or -DeleteSpn"
+            return
         }
 
-        Invoke-PSFProtectedCommand -Action "Service principal deleted!" -Target $parameter.Values -ScriptBlock {
-            Remove-AzADServicePrincipal @parameter -ErrorAction Stop
-        } -EnableException $EnableException -PSCmdlet $PSCmdlet
+        $parameter = $PSBoundParameters | ConvertTo-PSFHashtable -include DisplayName, ApplicationId, ObjectId, ServicePrincipalName
+        if ((-NOT $script:AzSessionFound) -or (-NOT $script:AdSessionFound)) { Connect-ToAzureInteractively }
 
-        $userChoice = Get-PSFUserChoice -Options "1) No", "2) Yes" -Caption "Delete matching Azure enterprise application" -Message "Would you like to delete the matching Azure enterprise application?"
+        if ($DeleteEnterpriseApp) {
+            Invoke-PSFProtectedCommand -Action "Enterprise application delete!" -Target $parameter.Values -ScriptBlock {
+                Remove-AzADApplication @parameter -ErrorAction Stop
+            } -EnableException $EnableException -PSCmdlet $PSCmdlet
+        }
 
-        switch ($userChoice)
-        {
-            0
-            {
-                Write-PSFMessage -Level Host "No application deleted!"
-                return
+        if ($DeleteRegisteredApp) {
+            Invoke-PSFProtectedCommand -Action "Registered application deleted!" -Target $parameter.Values -ScriptBlock {
+                Remove-AzureADApplication @parameter -ErrorAction Stop
+
+            } -EnableException $EnableException -PSCmdlet $PSCmdlet
+        }
+
+        if ($DeleteSpn) {
+            if ($parameter.ContainsValue($ServicePrincipalName) -and (-NOT $ServicePrincipalName.Contains('http://'))) {
+                $parameter.ServicePrincipalName = "http://$ServicePrincipalName"
             }
 
-            1
-            {
-                # Remove-AzADApplication doesn't accept ServicePrincipal name so convert the parameter binding and set it to DisplayName
-                if($parameter.ContainsValue($ServicePrincipalName) -and ($ServicePrincipalName.Contains('http://')))
-                {
-                    $parameter.DisplayName = $ServicePrincipalName.substring(7)
-                    $parameter.Remove('ServicePrincipalName')
-                }
-                elseif($parameter.ContainsValue($ServicePrincipalName) -and (-NOT $ServicePrincipalName.Contains('http://')))
-                {
-                    $parameter.DisplayName = $ServicePrincipalName
-                    $parameter.Remove('ServicePrincipalName')
+            Invoke-PSFProtectedCommand -Action "Service principal deleted!" -Target $parameter.Values -ScriptBlock {
+                Remove-AzADServicePrincipal @parameter -ErrorAction Stop
+            } -EnableException $EnableException -PSCmdlet $PSCmdlet
+
+            $userChoice = Get-PSFUserChoice -Options "1) No", "2) Yes" -Caption "Delete matching Azure enterprise application" -Message "Would you like to delete the matching Azure enterprise application?"
+
+            switch ($userChoice) {
+                0 {
+                    Write-PSFMessage -Level Host "No application deleted!"
+                    return
                 }
 
-                Invoke-PSFProtectedCommand -Action "Removing application!" -Target $parameter.Values -ScriptBlock {
-                    Remove-AzADApplication @parameter -ErrorAction Stop
-                } -EnableException $EnableException -PSCmdlet $PSCmdlet
+                1 {
+                    # Remove-AzADApplication doesn't accept ServicePrincipal name so convert the parameter binding and set it to DisplayName
+                    if ($parameter.ContainsValue($ServicePrincipalName) -and ($ServicePrincipalName.Contains('http://'))) {
+                        $parameter.DisplayName = $ServicePrincipalName.substring(7)
+                        $parameter.Remove('ServicePrincipalName')
+                    }
+                    elseif ($parameter.ContainsValue($ServicePrincipalName) -and (-NOT $ServicePrincipalName.Contains('http://'))) {
+                        $parameter.DisplayName = $ServicePrincipalName
+                        $parameter.Remove('ServicePrincipalName')
+                    }
+
+                    Invoke-PSFProtectedCommand -Action "Removing application!" -Target $parameter.Values -ScriptBlock {
+                        Remove-AzADApplication @parameter -ErrorAction Stop
+                    } -EnableException $EnableException -PSCmdlet $PSCmdlet
+                }
             }
         }
     }

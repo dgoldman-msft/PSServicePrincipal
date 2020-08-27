@@ -1,5 +1,4 @@
-﻿Function Add-RoleToSPN
-{
+﻿Function Add-RoleToSPN {
     <#
 		.SYNOPSIS
             Cmdlet for applying Role Assignments to service principal.
@@ -29,20 +28,20 @@
         $EnableException
     )
 
-    foreach ($spn in $SpnToProcess) {
-        Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to SPN" -Target $spn -ScriptBlock {
-            Write-PSFMessage -Level Host -Message "Checking current Role Assignment. Waiting for AD Replication"
-            $checkRole = Get-AzRoleAssignment -ObjectId $spn.id
+    process {
+        foreach ($spn in $SpnToProcess) {
+            Invoke-PSFProtectedCommand -Action "Applying role assignment: Adding Contributor role to SPN" -Target $spn -ScriptBlock {
+                Write-PSFMessage -Level Host -Message "Checking current Role Assignment. Waiting for AD Replication"
+                $checkRole = Get-AzRoleAssignment -ObjectId $spn.id
 
-            if(-NOT $checkRole)
-            {
-                $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
-                Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0} to {1}" -StringValues $newRole.RoleDefinitionName, $newRole.DisplayName
-            }
-            else
-            {
-                Write-PSFMessage -Level Host -Message "{0} already has this role assignment" -StringValues $spn.DisplayName
-            }
-        } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 5 -RetryErrorType Microsoft.Rest.Azure.CloudException -EnableException $EnableException
+                if (-NOT $checkRole) {
+                    $newRole = New-AzRoleAssignment -ApplicationId $spn.ApplicationId -RoleDefinitionName "Contributor" -ErrorAction Stop
+                    Write-PSFMessage -Level Host -Message "Appling Role Assignment: {0} to {1}" -StringValues $newRole.RoleDefinitionName, $newRole.DisplayName
+                }
+                else {
+                    Write-PSFMessage -Level Host -Message "{0} already has this role assignment" -StringValues $spn.DisplayName
+                }
+            } -PSCmdlet $PSCmdlet -Continue -RetryCount 5 -RetryWait 5 -RetryErrorType Microsoft.Rest.Azure.CloudException -EnableException $EnableException
+        }
     }
 }

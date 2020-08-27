@@ -37,8 +37,14 @@
 
             This will create a new self-signed certificate using a DNS and SubjectAlterntiveName, certificate name and export the certs to the c:\temp location
 
+        .EXAMPLE
+            PS c:\> New-SelfSignedCert -DnsName yourtenant.onmicrosoft.com -Subject "CN=PSServicePrincipal" -CertificateName MyNewCertificate -Password (ConvertTo-SecureString 'YourPassword' -AsPlainText -force)
+
+            This will create a new self-signed certificate with a passed in secure password
+
         .NOTES
-            You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store.
+            You must run PowerShell as an administrator to run this function in order to create the certificate in the LocalMachine certificate store and to export to disk.
+
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
@@ -80,59 +86,61 @@
         $EnableException
     )
 
-    try
-    {
-        $CertStore = 'cert:\CurrentUser\my\'
-        $CurrentDate = Get-Date; $EndDate = $currentDate.AddYears(1)
-        Write-PSFMessage -Level Host -Message "Creating new self-signed certficate with DnsName {0} in the following certificate store {1}" -StringValues $DnsName, $certStore
-        $newSelfSignedCert = New-SelfSignedCertificate -certstorelocation $CertStore -Subject $SubjectAlternativeName -Dnsname $DnsName -NotBefore $CurrentDate -NotAfter $EndDate -Provider "Microsoft Enhanced RSA and AES Cryptographic Provider" -KeySpec KeyExchange -KeyExportPolicy Exportable -KeyUsage KeyEncipherment -KeyProtection None
-        $script:certCounter ++
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
-    }
-
-    try
-    {
-        if(-NOT (Test-Path -Path $FilePath))
+    process{
+        try
         {
-            Write-PSFMessage -Level Host -Message "File path {0} does not exist." -StringValues $FilePath
-            $userChoice = Get-PSFUserChoice -Options "1) Create a new directory", "2) Exit" -Caption "User option menu" -Message "What operation do you want to perform?"
+            $CertStore = 'cert:\CurrentUser\my\'
+            $CurrentDate = Get-Date; $EndDate = $currentDate.AddYears(1)
+            Write-PSFMessage -Level Host -Message "Creating new self-signed certficate with DnsName {0} in the following certificate store {1}" -StringValues $DnsName, $certStore
+            $newSelfSignedCert = New-SelfSignedCertificate -certstorelocation $CertStore -Subject $SubjectAlternativeName -Dnsname $DnsName -NotBefore $CurrentDate -NotAfter $EndDate -Provider "Microsoft Enhanced RSA and AES Cryptographic Provider" -KeySpec KeyExchange -KeyExportPolicy Exportable -KeyUsage KeyEncipherment -KeyProtection None
+            $script:certCounter ++
+        }
+        catch
+        {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+            return
+        }
 
-            switch($UserChoice)
+        try
+        {
+            if(-NOT (Test-Path -Path $FilePath))
             {
-                0 {if(New-Item -Path $FilePath -ItemType Directory){Write-PSFMessage -Level Host -Message "Directory {0} created!" -StringValues $FilePath}}
-                1 {return}
+                Write-PSFMessage -Level Host -Message "File path {0} does not exist." -StringValues $FilePath
+                $userChoice = Get-PSFUserChoice -Options "1) Create a new directory", "2) Exit" -Caption "User option menu" -Message "What operation do you want to perform?"
+
+                switch($UserChoice)
+                {
+                    0 {if(New-Item -Path $FilePath -ItemType Directory){Write-PSFMessage -Level Host -Message "Directory {0} created!" -StringValues $FilePath}}
+                    1 {return}
+                }
             }
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
-        return
-    }
-
-    try
-    {
-        # Export the pfx and cer files
-        $PFXCert = Join-Path $FilePath "$CertificateName.pfx"
-        $CERCert = Join-Path $FilePath "$CertificateName.cer"
-        Write-PSFMessage -Level Host -Message "Exporting self-signed certificates {0} and {1} complete!" -StringValues $PFXCert, $CERCert
-        $path = $certStore + $newSelfSignedCert.thumbprint
-        $null = Export-PfxCertificate -cert $path -FilePath $PFXCert -Password $Password
-        [System.IO.File]::WriteAllBytes((Resolve-PSFPath $CERCert -Provider FileSystem -SingleItem -NewChild ), $newSelfSignedCert.GetRawCertData())
-        $script:certExportedCounter = 2
-
-        if($Cba -and $RegisteredApp)
+        catch
         {
-            $keyValue = [System.Convert]::ToBase64String($newSelfSignedCert.GetRawCertData())
-            New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Cba -RegisteredApp
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+            return
         }
-    }
-    catch
-    {
-        Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+
+        try
+        {
+            # Export the pfx and cer files
+            $PFXCert = Join-Path $FilePath "$CertificateName.pfx"
+            $CERCert = Join-Path $FilePath "$CertificateName.cer"
+            $path = $certStore + $newSelfSignedCert.thumbprint
+            $null = Export-PfxCertificate -cert $path -FilePath $PFXCert -Password $Password
+            [System.IO.File]::WriteAllBytes((Resolve-PSFPath $CERCert -Provider FileSystem -SingleItem -NewChild ), $newSelfSignedCert.GetRawCertData())
+            Write-PSFMessage -Level Host -Message "Certificated created sucessfully! Exporting self-signed certificates {0} and {1} complete!" -StringValues $PFXCert, $CERCert
+            $script:certExportedCounter = 2
+
+            if($Cba -and $RegisteredApp)
+            {
+                $keyValue = [System.Convert]::ToBase64String($newSelfSignedCert.GetRawCertData())
+                New-ServicePrincipal -DisplayName $DisplayName -CertValue $keyValue -StartDate $newSelfSignedCert.NotBefore -EndDate $newSelfSignedCert.NotAfter -Cba -RegisteredApp
+            }
+        }
+        catch
+        {
+            Stop-PSFFunction -Message $_ -Cmdlet $PSCmdlet -ErrorRecord $_ -EnableException $EnableException
+        }
     }
 }
