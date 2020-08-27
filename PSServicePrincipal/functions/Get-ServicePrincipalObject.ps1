@@ -42,6 +42,7 @@
             Get an Azure active directory enterprise application by ObjectID.
     #>
 
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSReviewUnusedParameter', '')]
     [OutputType('System.String')]
     [CmdletBinding()]
     Param (

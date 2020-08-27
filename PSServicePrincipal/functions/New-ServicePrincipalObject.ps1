@@ -190,7 +190,7 @@
         # Adding admin check for Windows Version 2004 which needs admin access due to UAC
         if(-NOT (Test-PSFPowerShell -Elevated))
         {
-            Write-PSFMessage -Level Host -Message "PSServicePrincipal security components need PowerShell to run as an administrator. Please restart PowerShell as Admin" -StringValues $module
+            Write-PSFMessage -Level Host -Message "PSServicePrincipal security components need PowerShell to run as an administrator. Exiting" -StringValues $module
             return
         }
 
