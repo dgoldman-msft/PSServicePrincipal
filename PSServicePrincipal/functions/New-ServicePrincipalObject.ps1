@@ -323,7 +323,7 @@
                         }
                         if ($UploadCertToApp) {
                             Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for registered Azure application"
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -FriendlyName $DisplayName -UploadCertToApp -RegisteredApp -EnableException 
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -FriendlyName $DisplayName -UploadCertToApp -RegisteredApp -EnableException
                         }
                         else { $newApp = New-AzureADApplication -DisplayName $DisplayName -ErrorAction SilentlyContinue -ErrorVariable ProcessError }
 
