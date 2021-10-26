@@ -15,7 +15,7 @@
         .EXAMPLE
             PS c:\> Add-ExchangePermsToSPN -DisplayName 'CompanySPN'
 
-            Stamp the permissions on a registerd application by application id from the Azure active directory.
+            Stamp the permissions on a registered application by application id from the Azure active directory.
     #>
 
     [OutputType('System.String')]

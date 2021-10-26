@@ -31,7 +31,7 @@ At this point you have installed and loaded the PSServicePrincipal module and yo
 2. New-ServicePrincipalObject -DisplayName 'ExchangeCBAApp' -RegisteredApp -Cba -CreateSingleObject
 ```
 
-In the above example we will create a new service principal object in the Azure tenant with a display name of 'ExchangeCBAApp', and we are passing in three argument switches. These three switches instuct the PSServicePrincipal module to do the following:
+In the above example we will create a new service principal object in the Azure tenant with a display name of 'ExchangeCBAApp', and we are passing in three argument switches. These three switches instruct the PSServicePrincipal module to do the following:
 
 1. -RegisteredApp will create a registered Azure application (different from an Azure enterprise application).
 2. -Cba will perform the following steps:
@@ -40,7 +40,7 @@ In the above example we will create a new service principal object in the Azure 
   c. Import the certificate to your local user certificate store.
   d. Import the certificate thumbprint to your newly created registered Azure tenant application.
   e. Apply the necessary api rights (Exchange.ManageAsApp) permissions to your application. (This is needed for unattended automation)
-3. -CreateSingleObjectCreate will make sure we create a single service princiapl object (different from batch creation).
+3. -CreateSingleObjectCreate will make sure we create a single service principal object (different from batch creation).
 
 > This will allow for a local interactive PowerShell session to connect to Exchange Online via CBA. If your intent is to use unattended automation you will need to copy the certificate from the local user certificate store to the computer's localMachine certificate store.
 
