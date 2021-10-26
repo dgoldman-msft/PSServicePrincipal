@@ -40,7 +40,7 @@
         Used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
     .PARAMETER UploadCertToApp
-            Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
+        Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
     .PARAMETER EnableException
         Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
@@ -65,6 +65,9 @@
 
     .PARAMETER ObjectID
         ObjectId for a service principal in a tenant. Once created this property cannot be changed.
+
+    .Parameter DumpCerts
+        Switch indicating to display both certificate store
 
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -Reconnect
@@ -140,7 +143,7 @@
         [switch]
         $CreateSingleObject,
 
-        [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch indicating to display  both certificate stores")]
+        [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch indicating to display both certificate stores")]
         [switch]
         $DumpCerts,
 
@@ -314,9 +317,9 @@
                 if ($RegisteredApp) {
                     Write-PSFMessage -Level Host -Message "Creating registered applications"
                     if (-NOT $script:runningOnCore) {
-                        if ($Cba) { 
-                            Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for Exchange CBA" 
-                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException 
+                        if ($Cba) {
+                            Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for Exchange CBA"
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException
                         }
                         if ($UploadCertToApp) {
                             Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for registered Azure application"

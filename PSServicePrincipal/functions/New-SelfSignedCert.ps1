@@ -126,7 +126,7 @@
         try {
             if ($CertStore -eq "CurrentUser") {
                 Write-PSFMessage -Level Host -Message "Defaulted to CurrentUser certificate store"
-                $store = 'cert:\CurrentUser\my\' 
+                $store = 'cert:\CurrentUser\my\'
             }
             If ($CertStore -eq "LocalMachine") {
                 Write-PSFMessage -Level Host -Message "User selected LocalMachine certificate store. Checking for elevated permissions."
