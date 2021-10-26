@@ -220,7 +220,7 @@ $configurationScript = {
 	}
 }
 
-# Script that returns a boolean value. "True" if all prerequisites are installed, "False" if installation is required
+# Script that returns a Boolean value. "True" if all prerequisites are installed, "False" if installation is required
 $isInstalledScript = {
 	return $true
 }
@@ -239,13 +239,13 @@ $installationScript = {
 # Configuration settings to initialize
 if($IsMacOS)
 {
-	$loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "/Documents/PowerShell Script Logging"
+	$loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "/Documents/PSServiecPrincipal Logging"
 	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.PSServicePrincipal.FilePath' -Value "$($loggingFolder)/%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.PSServicePrincipal.LoggingFolderPath' -Value "$($loggingFolder)" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 }
 else
 {
-	$loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PowerShell Script Logging"
+	$loggingFolder = Join-Path ([Environment]::GetFolderPath("MyDocuments")) "\PSServiecPrincipal Logging"
 	if(-NOT (Test-Path -Path $loggingFolder)) { New-Item -Path $loggingFolder -ItemType Directory}
 	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.PSServicePrincipal.LoggingFolderPath' -Value "$($loggingFolder)" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"
 	Set-PSFConfig -Module PSServicePrincipal -Name 'Logging.PSServicePrincipal.FilePath' -Value "$($loggingFolder)\%logname%-%date%.csv" -Initialize -Validation string -Handler { } -Description "The path to where the logfile is written. Supports some placeholders such as %Date% to allow for timestamp in the name. For full documentation on the supported wildcards, see the documentation on https://psframework.org"

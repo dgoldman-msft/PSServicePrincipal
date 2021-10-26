@@ -10,7 +10,7 @@
             Application id of the Azure application you are working on.
 
         .PARAMETER CertValue
-            Certificate thumbprint being uploaded to the Azure registerd application.
+            Certificate thumbprint being uploaded to the Azure registered application.
 
         .PARAMETER CreateSPNWithPassword
             Used when a user supplied password is passed in.
@@ -25,6 +25,9 @@
             Certificate NotAfter time stamp.
 
         .PARAMETER Cba
+            Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
+
+        .PARAMETER UploadCertToApp
             Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
         .PARAMETER EnableException
@@ -83,12 +86,15 @@
         $Cba,
 
         [switch]
+        $UploadCertToApp,
+
+        [switch]
         $EnableException
     )
 
     process {
         try {
-            # We can not create applications or service principals with special characters and spaces via Powershell but can in the azure portal
+            # We can not create applications or service principals with special characters and spaces via PowerShell but can in the azure portal
             $DisplayName -replace '[\W]', ''
 
             if ($RegisteredApp -and $ApplicationID) {
@@ -144,6 +150,13 @@
         try {
             # We enter here from new-selfsigned certificate so we need to accept the data stamps passed in from the certificate
             if ($DisplayName -and $RegisteredApp -and $Cba) {
+                Write-PSFMessage -Level Host -Message "Creating registered application and SPN {0}. Certificate uploaded to Azure application" -StringValues $DisplayName
+                $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
+                $script:roleListToProcess.Add($newSpn)
+                return
+            }
+
+            if ($DisplayName -and $RegisteredApp -and $UploadCertToApp) {
                 Write-PSFMessage -Level Host -Message "Creating registered application and SPN {0}. Certificate uploaded to Azure application" -StringValues $DisplayName
                 $newSPN = New-AzADServicePrincipal -DisplayName $DisplayName -CertValue $CertValue -StartDate $StartDate -EndDate $EndDate -ErrorAction Stop
                 $script:roleListToProcess.Add($newSpn)

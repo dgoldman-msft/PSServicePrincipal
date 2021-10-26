@@ -3,7 +3,7 @@
 	RootModule = 'PSServicePrincipal.psm1'
 
 	# Version number of this module.
-	ModuleVersion = '1.0.13'
+	ModuleVersion = '1.0.49'
 
 	# ID used to uniquely identify this module
 	GUID = '2a29304f-a72b-47a5-b623-7cd998db75b3'
@@ -26,10 +26,10 @@
 	# Modules that must be imported into the global environment prior to importing
 	# this module
 	RequiredModules = @(
-		@{ ModuleName='PSFramework'; ModuleVersion='1.1.59' }
-		'AzureAD'
-		'Az.Accounts'
-		'Az.Resources'
+		@{ ModuleName='PSFramework'; ModuleVersion='1.6.205' }
+		@{ ModuleName='AzureAD'; ModuleVersion='2.0.2.140' }
+		@{ ModuleName='Az.Accounts'; ModuleVersion='2.6.0' }
+		@{ ModuleName='Az.Resources'; ModuleVersion='4.4.0' }
 		)
 
 	# Assemblies that must be loaded prior to importing this module

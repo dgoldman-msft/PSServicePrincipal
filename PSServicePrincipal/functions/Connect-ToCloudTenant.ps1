@@ -16,7 +16,6 @@
             PS c:\> Connect-ToCloudTenant -Reconnect
 
             Makes a connection to an Azure tenant or reconnect to another specified tenant.
-
     #>
 
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]

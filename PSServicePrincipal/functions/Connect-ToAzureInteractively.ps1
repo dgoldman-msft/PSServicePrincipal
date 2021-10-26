@@ -27,13 +27,13 @@
         # Can be modified by end user for interactive login to AzureAD and AzureAZ
         #$TenantID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxx-xxxxxx'
         #$ApplicationID = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxx-xxxxxx'
-        $CertThumbprint = (Get-ChildItem cert:\CurrentUser\My\ | Where-Object { $_.Subject -eq "CN=PSServicePrincipal" }).Thumbprint
+        $CertThumbprint = (Get-ChildItem Cert:\CurrentUser\My\ | Where-Object { $_.Subject -eq "CN=PSServicePrincipal" }).Thumbprint
     }
 
     process {
         if (-NOT $script:AdSessionFound) {
             if ($PSVersionTable.PSEdition -eq "Core") {
-                Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6." -Once "PS Core Doesn't work with AzureAD"
+                Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5.x" -Once "PS Core doesn't work with Connect-AzureAD"
                 $script:runningOnCore = $true
             }
             elseif ($PSVersionTable.PSEdition -eq "Desktop") {
@@ -43,7 +43,7 @@
                     $script:AdSessionFound = $true
                 }
                 catch {
-                    Write-PSFMessage -Level Host -Message "Automatic logon to AzureAD failed. Defaulting to interactive connection" -Once "Interactive Logon Failed"
+                    Write-PSFMessage -Level Host -Message "Automatic logon to AzureAD failed. Trying again with credentials." -Once "Interactive Logon Failed"
                     $script:AdSessionFound = $false
 
                     try {
@@ -66,7 +66,7 @@
                 $script:AzSessionFound = $true
             }
             catch {
-                Write-PSFMessage -Level Host -Message "Automatic logon to AzureAZ failed. Defaulting to interactive connection" -Once "Interactive Logon Failed"
+                Write-PSFMessage -Level Host -Message "Automatic logon to AzureAZ failed. Trying again with credentials." -Once "Interactive Logon Failed"
                 $script:AzSessionFound = $false
 
                 try {

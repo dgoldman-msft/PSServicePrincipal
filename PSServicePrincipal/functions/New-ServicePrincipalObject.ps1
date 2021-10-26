@@ -39,6 +39,9 @@
     .PARAMETER Cba
         Used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
 
+    .PARAMETER UploadCertToApp
+            Switch used to create a registered application, self-signed certificate, upload to the application, applies the correct application roll assignments.
+
     .PARAMETER EnableException
         Disables user-friendly warnings and enables the throwing of exceptions. This is less user friendly, but allows catching exceptions in calling scripts.
 
@@ -83,7 +86,7 @@
 
         Create a new Enterprise Application and service principal with a display name of 'CompanySPN' and a (user supplied password) and creates the service principal based on the application just created. The start date and end date are added to password credential.
 
-     .EXAMPLE
+    .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanyApp -CreateSingleObject -RegisteredApp -Cba
 
         Create a registered application with a display name of 'CompanyApp', a self-signed certificate which is uploaded to the application and applies the correct appRoll assignments.
@@ -101,7 +104,7 @@
     .EXAMPLE
         PS c:\> New-ServicePrincipalObject -DisplayName CompanySPN -CreateSPNsWithNameAndCert -CreateSingleObject -Certificate <public certificate as base64-encoded string>
 
-        Create a new Enterprise Application and service principal with a display name of 'CompanySPN' and certifcate and creates the service principal based on the application just created. The end date is added to key credential.
+        Create a new Enterprise Application and service principal with a display name of 'CompanySPN' and certificate and creates the service principal based on the application just created. The end date is added to key credential.
 
     .NOTES
         When passing in the application ID it is the Azure ApplicationID from your registered application.
@@ -128,18 +131,26 @@
         [switch]
         $Reconnect,
 
-        [parameter(Mandatory = $True, ParameterSetName = "DisplayName", HelpMessage = "Display name used to create or delete an SPN or application")]
+        [parameter(ParameterSetName = "DisplayName", HelpMessage = "Display name used to create or delete an SPN or application")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $DisplayName,
+        $DisplayName = "Default",
 
         [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch indicating to create a single service principal or application")]
         [switch]
         $CreateSingleObject,
 
+        [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch indicating to display  both certificate stores")]
+        [switch]
+        $DumpCerts,
+
         [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch for indicating to create self-signed certificate and upload it to the Azure application")]
         [switch]
         $Cba,
+
+        [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch for indicating to create self-signed certificate and upload it to the Azure application")]
+        [switch]
+        $UploadCertToApp,
 
         [parameter(ParameterSetName = "DisplayName", HelpMessage = "Switch for indicating we want to create a Registered Azure application")]
         [switch]
@@ -188,9 +199,8 @@
     process {
 
         # Adding admin check for Windows Version 2004 which needs admin access due to UAC
-        if(-NOT (Test-PSFPowerShell -Elevated))
-        {
-            Write-PSFMessage -Level Host -Message "PSServicePrincipal security components need PowerShell to run as an administrator. Exiting" -StringValues $module
+        if (-NOT (Test-PSFPowerShell -Elevated)) {
+            Write-PSFMessage -Level Host -Message "PSServicePrincipal needs PowerShell to run as an administrator if you are running on Windows 10 version 2004 or trying to save a certificate to the local machine certificate store. Exiting" -StringValues $module
             return
         }
 
@@ -226,7 +236,7 @@
             } -EnableException $EnableException -PSCmdlet $PSCmdlet
         }
 
-        Invoke-PSFProtectedCommand -Action "Attempting to create self-signed certificate!" -Target $parameter.Values -ScriptBlock {
+        Invoke-PSFProtectedCommand -Action "Attempting to Connecting to cloud!" -Target $parameter.Values -ScriptBlock {
             Connect-ToCloudTenant @parameters -EnableException
             return
         } -EnableException $EnableException -PSCmdlet $PSCmdlet
@@ -273,7 +283,7 @@
                             Write-PSFMessage -Level Host -Message "Registered Application created: DisplayName: {0} - ApplicationID {1}" -StringValues $newApp.DisplayName, $newApp.AppId
                             $script:roleListToProcess.Add($newApp)
 
-                            # Since we only create an AzureADapplicaiaton we need to create the matching service principal
+                            # Since we only create an AzureAD application we need to create the matching service principal
                             try {
                                 New-ServicePrincipal -ApplicationID $newApp.AppID
                             }
@@ -304,17 +314,24 @@
                 if ($RegisteredApp) {
                     Write-PSFMessage -Level Host -Message "Creating registered applications"
                     if (-NOT $script:runningOnCore) {
-                        if ($Cba) { New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException }
+                        if ($Cba) { 
+                            Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for Exchange CBA" 
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -Cba -RegisteredApp -EnableException 
+                        }
+                        if ($UploadCertToApp) {
+                            Write-PSFMessage -Level Host -Message "Creating a new self-signed certificate for registered Azure application"
+                            New-SelfSignedCert -CertificateName $DisplayName -SubjectAlternativeName $DisplayName -FriendlyName $DisplayName -UploadCertToApp -RegisteredApp -EnableException 
+                        }
                         else { $newApp = New-AzureADApplication -DisplayName $DisplayName -ErrorAction SilentlyContinue -ErrorVariable ProcessError }
 
                         if ($newApp) {
                             Write-PSFMessage -Level Host -Message "Registered Application created: DisplayName: {0} - ApplicationID {1}" -StringValues $newApp.DisplayName, $newApp.AppId
-                            New-ServicePrincipal -ApplicationID $newApp.AppId -RegisteredApp # Since we only create an AzureADapplicaiaton we need to create the matching service principal
+                            New-ServicePrincipal -ApplicationID $newApp.AppId -RegisteredApp # Since we only create an AzureAD application we need to create the matching service principal
                         }
                         elseif ($ProcessError) { Write-PSFMessage -Level Warning "WARNING: $($ProcessError[0].Exception.Message)" }
                     }
                     else {
-                        Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5 or 6 to create Registered Applications."
+                        Write-PSFMessage -Level Host -Message "At this time AzureAD PowerShell module does not work on PowerShell Core. Please use PowerShell version 5x."
                     }
                 }
                 elseif ($DisplayName -and $CreateSPNWithPassword) { New-ServicePrincipal -DisplayName $DisplayName -CreateSPNWithPassword }
@@ -359,7 +376,6 @@
     }
 
     end {
-        Write-PSFMessage -Level Host -Message "End script run: {0}" -StringValues (Get-Date)
-        Write-PSFMessage -Level Host -Message 'Log saved to: "{0}". Run Get-LogFolder to retrieve the output or debug logs.' -StringValues $script:loggingFolder
+        Write-PSFMessage -Level Host -Message 'Completed. Log saved to: "{0}". ' -StringValues $script:loggingFolder
     }
 }
